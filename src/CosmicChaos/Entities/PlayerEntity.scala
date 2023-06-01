@@ -1,4 +1,6 @@
-package CosmicChaos
+package CosmicChaos.Entities
+
+import CosmicChaos.Core.Stats
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
@@ -17,26 +19,25 @@ class PlayerEntity extends Entity with KeyboardInterface {
   private var velocityX: Float = 0
   private var velocityY: Float = 0
 
-  override val baseStats: Stats = Stats(health = 100, maxSpeed = 250, acceleration = 30)
+  override val name: String = "Player"
+  override val baseStats: Stats = Stats(maxHealth = 100, maxSpeed = 250, acceleration = 30)
   override var stats: Stats = baseStats
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     // Draw player sprite
-    g.draw(imgBitmap, x - spriteW/2, y - spriteH/2)
-
-    cameraStuff(g)
+    g.draw(imgBitmap, position.x - spriteW/2, position.y - spriteH/2)
   }
 
-  private def cameraStuff(g: GdxGraphics): Unit = {
+  def centerCameraOnPlayer(g: GdxGraphics): Unit = {
     val (screenW, screenH) = (g.getScreenWidth, g.getScreenHeight)
     val (mouseX, mouseY) = (Gdx.input.getX, Gdx.input.getY)
     val (mxRelToCenter, myRelToCenter) = ((mouseX - screenW / 2.0f) / (screenW / 2.0f), (mouseY - screenH / 2.0f) / (screenH / 2.0f))
 
     g.moveCamera(
-      x - screenW / 2 + 125 * mxRelToCenter,
-      y - screenH / 2 - 125 * myRelToCenter
+      position.x - screenW / 2 + 125 * mxRelToCenter,
+      position.y - screenH / 2 - 125 * myRelToCenter
     )
   }
 
@@ -65,8 +66,12 @@ class PlayerEntity extends Entity with KeyboardInterface {
     velocityX -= velocityX * 0.1f
     velocityY -= velocityY * 0.1f
 
-    x += velocityX * dt
-    y += velocityY * dt
+    position.x += velocityX * dt
+    position.y += velocityY * dt
+  }
+
+  override def onDeath(deathCause: Entity): Unit = {
+    super.onDeath(deathCause)
   }
 
   override def onKeyDown(i: Int): Unit = {

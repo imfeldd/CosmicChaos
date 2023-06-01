@@ -10,12 +10,11 @@ object Main extends PortableApplication( 1920, 1080) {
 
   def main(args: Array[String]): Unit = {
     println("Hello world!")
-    s.registerScreen(classOf[Screens.MainMenuScreen])
-    s.registerScreen(classOf[Screens.GameScreen])
   }
 
   override def onInit(): Unit = {
-    s.transitionTo(1, ScreenManager.TransactionType.SLICE)
+    s.registerScreen(classOf[Screens.GameScreen])
+    s.transitionTo(0, ScreenManager.TransactionType.SLICE)
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {

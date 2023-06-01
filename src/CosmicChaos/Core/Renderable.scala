@@ -1,4 +1,4 @@
-package CosmicChaos
+package CosmicChaos.Core
 
 import ch.hevs.gdx2d.lib.GdxGraphics
 
