@@ -1,13 +1,12 @@
 package CosmicChaos.Entities
 
-import CosmicChaos.Core.Stats
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.math.Vector3
 
 class ImmortalSnailEnemy extends Entity {
   override val name: String = "Immortal Snail"
-  override val baseStats: Stats = Stats(100, 12, 10)
-  override var stats: Stats = baseStats
+  override val baseStats: EntityStats = EntityStats(100, 12, 10, 9999999)
+  override var stats: EntityStats = baseStats
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     g.drawRectangle(position.x - 16, position.y - 16, 32, 32, 0)
@@ -23,8 +22,8 @@ class ImmortalSnailEnemy extends Entity {
 
     // If within player reach, kill them
     if(parentGameWorld.playerEntity.position.dst(position) < 25)
-      dealDamageTo(99999, parentGameWorld.playerEntity)
+      dealDamageTo(stats.baseDamage, parentGameWorld.playerEntity)
   }
 
-  override def onReceiveDamage(amount: Int, source: Entity): Unit = {}
+  override def onReceiveDamage(amount: Float, source: Entity): Unit = {}
 }

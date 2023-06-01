@@ -1,12 +1,12 @@
 package CosmicChaos.Entities
 
-import CosmicChaos.Core.{GameObject, Renderable, Spatial, Stats}
+import CosmicChaos.Core.{GameObject, Renderable, Spatial}
 import ch.hevs.gdx2d.lib.GdxGraphics
 
 abstract class Entity extends GameObject with Renderable with Spatial {
   val name: String
-  val baseStats: Stats
-  var stats: Stats
+  val baseStats: EntityStats
+  var stats: EntityStats
 
   var team: Int = -1
 
@@ -19,11 +19,11 @@ abstract class Entity extends GameObject with Renderable with Spatial {
   override def onUpdate(dt: Float): Unit = {}
   override def onGraphicRender(g: GdxGraphics): Unit = {}
 
-  def dealDamageTo(amount: Int, recipient: Entity): Unit = {
+  def dealDamageTo(amount: Float, recipient: Entity): Unit = {
     recipient.onReceiveDamage(amount, this)
   }
 
-  protected def onReceiveDamage(amount: Int, source: Entity): Unit = {
+  protected def onReceiveDamage(amount: Float, source: Entity): Unit = {
     currentHealth -= amount
 
     if(isDead) {

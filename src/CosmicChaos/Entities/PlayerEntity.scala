@@ -1,9 +1,9 @@
 package CosmicChaos.Entities
 
-import CosmicChaos.Core.Stats
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.{Gdx, Input}
 
 import scala.collection.mutable
@@ -20,8 +20,8 @@ class PlayerEntity extends Entity with KeyboardInterface {
   private var velocityY: Float = 0
 
   override val name: String = "Player"
-  override val baseStats: Stats = Stats(maxHealth = 100, maxSpeed = 250, acceleration = 30)
-  override var stats: Stats = baseStats
+  override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 250, acceleration = 30, baseDamage = 10)
+  override var stats: EntityStats = baseStats
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
 
@@ -68,6 +68,17 @@ class PlayerEntity extends Entity with KeyboardInterface {
 
     position.x += velocityX * dt
     position.y += velocityY * dt
+
+    // BULLET TEST
+    val leftMouseDown = Gdx.input.isButtonPressed(0)
+    if(leftMouseDown) {
+      val (screenW, screenH) = (Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+      val (mouseX, mouseY) = (Gdx.input.getX, Gdx.input.getY)
+      val (mxRelToCenter, myRelToCenter) = ((mouseX - screenW / 2.0f) / (screenW / 2.0f), (mouseY - screenH / 2.0f) / (screenH / 2.0f))
+      val projVel = new Vector2(mxRelToCenter, -myRelToCenter).nor.scl(690)
+      val projectile = new Projectile(10, projVel, this)
+      parentGameWorld.addGameObject(projectile)
+    }
   }
 
   override def onDeath(deathCause: Entity): Unit = {

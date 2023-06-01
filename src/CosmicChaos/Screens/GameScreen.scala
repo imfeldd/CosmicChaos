@@ -47,7 +47,8 @@ class GameScreen extends RenderingScreen {
     shapeRenderer.circle(10, 10, 10)
     shapeRenderer.end()
 
-    for(gameObject <- gameWorld.gameObjects) {
+    // We cast to array to prevent exception if the ArrayBuffer is mutated during the loop. TODO: Maybe find a better way to do this?
+    for(gameObject <- gameWorld.gameObjects.toArray) {
       gameObject.onUpdate( 1/60.0f )
 
       gameObject match {
