@@ -3,6 +3,7 @@ package CosmicChaos.Screens
 import CosmicChaos.Core.Renderable
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Entities.{ImmortalSnailEnemy, PlayerEntity}
+import CosmicChaos.HUD.PlayerHUD
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -13,8 +14,9 @@ import scala.util.Random
 class GameScreen extends RenderingScreen {
   val gameWorld: GameWorld = new GameWorld
   val player: PlayerEntity = new PlayerEntity{team = 1}
+  val playerHud: PlayerHUD = new PlayerHUD(player)
 
-  var cameraShake: Float = 0.5f
+  var cameraShake: Float = 0.0f
 
   override def onInit(): Unit = {
     val testEnemy = new ImmortalSnailEnemy{team = 2}
@@ -39,13 +41,9 @@ class GameScreen extends RenderingScreen {
   override def onGraphicRender(g: GdxGraphics): Unit = {
     g.clear()
 
-    doCameraShake(g)
+    g.begin()
 
-    val shapeRenderer = new ShapeRenderer()
-    shapeRenderer.setAutoShapeType(true)
-    shapeRenderer.begin()
-    shapeRenderer.circle(10, 10, 10)
-    shapeRenderer.end()
+    doCameraShake(g)
 
     // We cast to array to prevent exception if the ArrayBuffer is mutated during the loop. TODO: Maybe find a better way to do this?
     for(gameObject <- gameWorld.gameObjects.toArray) {
@@ -56,6 +54,8 @@ class GameScreen extends RenderingScreen {
         case _ =>
       }
     }
+    g.end()
+    playerHud.onGraphicRender(g)
   }
 
   private def doCameraShake(g: GdxGraphics): Unit= {

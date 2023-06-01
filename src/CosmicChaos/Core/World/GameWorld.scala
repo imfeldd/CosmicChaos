@@ -18,6 +18,7 @@ class GameWorld {
 
     gameObject.parentGameWorld = this
     gameObjects.addOne(gameObject)
+    gameObject.onEnterGameWorld
   }
 
   def removeGameObject(gameObject: GameObject): Unit = {

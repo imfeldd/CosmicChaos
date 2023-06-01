@@ -6,7 +6,7 @@ trait GameObject  {
 
   var parentGameWorld: GameWorld = null
 
-  def onInit
+  def onEnterGameWorld
 
   def onUpdate(dt: Float)
 

@@ -14,7 +14,10 @@ object Main extends PortableApplication( 1920, 1080) {
 
   override def onInit(): Unit = {
     s.registerScreen(classOf[Screens.GameScreen])
-    s.transitionTo(0, ScreenManager.TransactionType.SLICE)
+  }
+
+  override def onGameLogicUpdate(): Unit = {
+    super.onGameLogicUpdate()
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
