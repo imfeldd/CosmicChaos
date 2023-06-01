@@ -3,7 +3,6 @@ package CosmicChaos.Screens
 import CosmicChaos.{GameWorld, PlayerEntity, Renderable}
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
-import com.badlogic.gdx.Gdx
 
 class GameScreen extends RenderingScreen {
   val gameWorld: GameWorld = new GameWorld
@@ -11,7 +10,6 @@ class GameScreen extends RenderingScreen {
 
   override def onInit(): Unit = {
     gameWorld.gameObjects.addOne(player)
-    Gdx.input.
   }
 
   override def onKeyDown(keycode: Int): Unit = {
