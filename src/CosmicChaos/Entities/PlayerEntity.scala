@@ -5,6 +5,7 @@ import CosmicChaos.Screens.GameScreen
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.{Vector2, Vector3}
 import com.badlogic.gdx.{Gdx, Input}
 
@@ -16,7 +17,7 @@ class PlayerEntity extends Entity with KeyboardInterface {
   private val spriteW = imgBitmap.getWidth
   private val spriteH = imgBitmap.getHeight
 
-  private var weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this) {}
+  private val weapon: Weapon = new Weapon(Projectile(10, this), true, 14, this) {}
 
   override val name: String = "Player"
   override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10)
@@ -44,6 +45,15 @@ class PlayerEntity extends Entity with KeyboardInterface {
   }
 
   override def onUpdate(dt: Float): Unit = {
+    doMovement(dt)
+
+    if(isDead)
+      return
+
+    doShooting(dt)
+  }
+
+  private def doMovement(dt: Float): Unit = {
     val upPressed = keyStatus.getOrElse(Input.Keys.W, false)
     val downPressed = keyStatus.getOrElse(Input.Keys.S, false)
     val leftPressed = keyStatus.getOrElse(Input.Keys.A, false)
@@ -53,10 +63,10 @@ class PlayerEntity extends Entity with KeyboardInterface {
     velocity = velocity.scl(0.9f)
 
     // Get acceleration based on input
-    val acceleration = new Vector2(
+    val acceleration = if(!isDead) new Vector2(
       (if (rightPressed) 1 else 0) + (if (leftPressed) -1 else 0),
       (if (upPressed) 1 else 0) + (if (downPressed) -1 else 0)
-    )
+    ) else new Vector2(0, 0)
 
     // Apply acceleration to velocity
     velocity = velocity.add(acceleration.scl(stats.acceleration))
@@ -67,10 +77,12 @@ class PlayerEntity extends Entity with KeyboardInterface {
     // Update position based on velocity
     position.x += velocity.x * dt
     position.y += velocity.y * dt
+  }
 
+  private def doShooting(dt: Float): Unit = {
     val leftMouseDown = Gdx.input.isButtonPressed(0)
     weapon.update(leftMouseDown, dt)
-    if(weapon.isShootingThisFrame) {
+    if (weapon.isShootingThisFrame) {
       GameScreen.cameraShake = .5f
     }
   }

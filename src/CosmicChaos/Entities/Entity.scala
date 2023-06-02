@@ -15,6 +15,7 @@ abstract class Entity extends GameObject with Renderable with Spatial {
   var velocity: Vector2 = Vector2.Zero
 
   var currentHealth: Float = 50
+  var deathCause: Entity = _
   def isDead: Boolean = currentHealth <= 0
 
   override def onEnterGameWorld(): Unit = {
@@ -32,6 +33,7 @@ abstract class Entity extends GameObject with Renderable with Spatial {
 
     if(isDead) {
       onDeath(source)
+      deathCause = source
     }
   }
 
