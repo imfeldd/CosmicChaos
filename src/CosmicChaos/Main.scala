@@ -1,9 +1,11 @@
 package CosmicChaos
 
+import CosmicChaos.Screens.GameScreen
 import ch.hevs.gdx2d.desktop.PortableApplication
 import ch.hevs.gdx2d.lib.{GdxGraphics, ScreenManager}
 
 
+class Main()
 object Main extends PortableApplication( 1920, 1080) {
 
   val s: ScreenManager = new ScreenManager
@@ -14,10 +16,6 @@ object Main extends PortableApplication( 1920, 1080) {
 
   override def onInit(): Unit = {
     s.registerScreen(classOf[Screens.GameScreen])
-  }
-
-  override def onGameLogicUpdate(): Unit = {
-    super.onGameLogicUpdate()
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {

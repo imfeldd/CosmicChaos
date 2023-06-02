@@ -31,7 +31,7 @@ class PlayerEntity extends Entity with KeyboardInterface {
   }
 
   def centerCameraOnPlayer(g: GdxGraphics): Unit = {
-    val (screenW, screenH) = (g.getScreenWidth, g.getScreenHeight)
+    val (screenW, screenH) = (g.getScreenWidth*g.getCamera.zoom, g.getScreenHeight*g.getCamera.zoom)
     val (mouseX, mouseY) = (Gdx.input.getX, Gdx.input.getY)
     val (mxRelToCenter, myRelToCenter) = ((mouseX - screenW / 2.0f) / (screenW / 2.0f), (mouseY - screenH / 2.0f) / (screenH / 2.0f))
 

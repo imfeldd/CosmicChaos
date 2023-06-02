@@ -4,11 +4,11 @@ import CosmicChaos.Core.World.GameWorld
 
 trait GameObject  {
 
-  var parentGameWorld: GameWorld = null
+  var parentGameWorld: GameWorld = _
 
-  def onEnterGameWorld
+  def onEnterGameWorld(): Unit
 
-  def onUpdate(dt: Float)
+  def onUpdate(dt: Float): Unit
 
-  def onLeaveGameWorld = { }
+  def onLeaveGameWorld(): Unit = { }
 }

@@ -8,7 +8,7 @@ import scala.collection.mutable.ArrayBuffer
 class GameWorld {
   val gameObjects: ArrayBuffer[GameObject] = new ArrayBuffer[GameObject]
 
-  var playerEntity: PlayerEntity = null
+  var playerEntity: PlayerEntity = _
 
   def addGameObject(gameObject: GameObject): Unit= {
     gameObject match {
@@ -18,7 +18,7 @@ class GameWorld {
 
     gameObject.parentGameWorld = this
     gameObjects.addOne(gameObject)
-    gameObject.onEnterGameWorld
+    gameObject.onEnterGameWorld()
   }
 
   def removeGameObject(gameObject: GameObject): Unit = {

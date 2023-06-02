@@ -19,6 +19,7 @@ class GameScreen extends RenderingScreen {
   var cameraShake: Float = 0.0f
 
   override def onInit(): Unit = {
+    // Temporary testing code
     val testEnemy = new ImmortalSnailEnemy{team = 2}
     testEnemy.position = new Vector3(100, 100, 0)
 

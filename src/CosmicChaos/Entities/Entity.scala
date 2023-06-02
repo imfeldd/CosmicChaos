@@ -13,7 +13,7 @@ abstract class Entity extends GameObject with Renderable with Spatial {
   var currentHealth: Float = 50
   def isDead: Boolean = currentHealth <= 0
 
-  override def onEnterGameWorld = {
+  override def onEnterGameWorld(): Unit = {
     currentHealth = stats.maxHealth
   }
   override def onUpdate(dt: Float): Unit = {}
