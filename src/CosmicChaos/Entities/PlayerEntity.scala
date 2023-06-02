@@ -14,15 +14,14 @@ class PlayerEntity extends Entity with KeyboardInterface {
   private val spriteW = imgBitmap.getWidth
   private val spriteH = imgBitmap.getHeight
 
-  private var dirX: Int= 0
-  private var dirY: Int = 0
+  private var velocity: Vector2 = Vector2.Zero
   private var velocityX: Float = 0
   private var velocityY: Float = 0
 
   private var aimVector: Vector3 = Vector3.Zero
 
   override val name: String = "Player"
-  override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 250, acceleration = 30, baseDamage = 10)
+  override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10)
   override var stats: EntityStats = baseStats
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
@@ -52,27 +51,24 @@ class PlayerEntity extends Entity with KeyboardInterface {
     val leftPressed = keyStatus.getOrElse(Input.Keys.A, false)
     val rightPressed = keyStatus.getOrElse(Input.Keys.D, false)
 
-    def getNextDir(currDir: Int, posPressed: Boolean, negPressed: Boolean): Int =
-      (currDir, posPressed, negPressed) match {
-      case (-1, _, true) => -1
-      case (1, true, _) => 1
-      case (_, true, true) => 0
-      case (_, true, false) => 1
-      case (_, false, true) => -1
-      case _ => 0
-    }
+    // Deceleration
+    velocity = velocity.scl(0.9f)
 
-    dirY = getNextDir(dirY, upPressed, downPressed)
-    dirX = getNextDir(dirX, rightPressed, leftPressed)
+    // Get acceleration based on input
+    val acceleration = new Vector2(
+      (if (rightPressed) 1 else 0) + (if (leftPressed) -1 else 0),
+      (if (upPressed) 1 else 0) + (if (downPressed) -1 else 0)
+    )
 
-    velocityX += stats.acceleration * dirX
-    velocityY += stats.acceleration * dirY
+    // Apply acceleration to velocity
+    velocity = velocity.add(acceleration.scl(stats.acceleration))
 
-    velocityX -= velocityX * 0.1f
-    velocityY -= velocityY * 0.1f
+    // Limit speed to max speed
+    velocity.clamp(0, stats.maxSpeed)
 
-    position.x += velocityX * dt
-    position.y += velocityY * dt
+    // Update position based on velocity
+    position.x += velocity.x * dt
+    position.y += velocity.y * dt
 
     // BULLET TEST
     val leftMouseDown = Gdx.input.isButtonPressed(0)
