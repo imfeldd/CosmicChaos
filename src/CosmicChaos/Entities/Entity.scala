@@ -2,6 +2,7 @@ package CosmicChaos.Entities
 
 import CosmicChaos.Core.{GameObject, Renderable, Spatial}
 import ch.hevs.gdx2d.lib.GdxGraphics
+import com.badlogic.gdx.math.{Vector2, Vector3}
 
 abstract class Entity extends GameObject with Renderable with Spatial {
   val name: String
@@ -9,6 +10,9 @@ abstract class Entity extends GameObject with Renderable with Spatial {
   var stats: EntityStats
 
   var team: Int = -1
+
+  var aimVector: Vector3 = Vector3.Zero
+  var velocity: Vector2 = Vector2.Zero
 
   var currentHealth: Float = 50
   def isDead: Boolean = currentHealth <= 0

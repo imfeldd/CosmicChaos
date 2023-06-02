@@ -4,6 +4,7 @@ import CosmicChaos.Core.Renderable
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Entities.{ImmortalSnailEnemy, PlayerEntity}
 import CosmicChaos.HUD.PlayerHUD
+import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -15,8 +16,6 @@ class GameScreen extends RenderingScreen {
   val gameWorld: GameWorld = new GameWorld
   val player: PlayerEntity = new PlayerEntity{team = 1}
   val playerHud: PlayerHUD = new PlayerHUD(player)
-
-  var cameraShake: Float = 0.0f
 
   override def onInit(): Unit = {
     // Temporary testing code
@@ -62,7 +61,7 @@ class GameScreen extends RenderingScreen {
   private def doCameraShake(g: GdxGraphics): Unit= {
     def randFromMin1To1: Float = Random.between(-1.0f, 2.0f)
 
-    val shake = math.pow(math.min(1, cameraShake), 2)
+    val shake = math.pow(math.min(1, cameraShake), 4)
     val maxAngle = 10
     val maxOffset = 10
 
@@ -77,4 +76,8 @@ class GameScreen extends RenderingScreen {
 
     cameraShake *= 0.9f
   }
+}
+
+object GameScreen {
+  var cameraShake: Float = 0.0f
 }

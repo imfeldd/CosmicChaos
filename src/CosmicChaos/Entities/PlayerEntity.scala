@@ -1,5 +1,7 @@
 package CosmicChaos.Entities
 
+import CosmicChaos.Core.Weapons.Weapon
+import CosmicChaos.Screens.GameScreen
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
@@ -14,11 +16,7 @@ class PlayerEntity extends Entity with KeyboardInterface {
   private val spriteW = imgBitmap.getWidth
   private val spriteH = imgBitmap.getHeight
 
-  private var velocity: Vector2 = Vector2.Zero
-  private var velocityX: Float = 0
-  private var velocityY: Float = 0
-
-  private var aimVector: Vector3 = Vector3.Zero
+  private var weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this) {}
 
   override val name: String = "Player"
   override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10)
@@ -70,12 +68,10 @@ class PlayerEntity extends Entity with KeyboardInterface {
     position.x += velocity.x * dt
     position.y += velocity.y * dt
 
-    // BULLET TEST
     val leftMouseDown = Gdx.input.isButtonPressed(0)
-    if(leftMouseDown) {
-      val projVel = new Vector2(aimVector.x, aimVector.y).nor.scl(690)
-      val projectile = new Projectile(10, projVel, this)
-      parentGameWorld.addGameObject(projectile)
+    weapon.update(leftMouseDown, dt)
+    if(weapon.isShootingThisFrame) {
+      GameScreen.cameraShake = .5f
     }
   }
 

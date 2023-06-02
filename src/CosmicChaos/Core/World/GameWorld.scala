@@ -22,7 +22,7 @@ class GameWorld {
   }
 
   def removeGameObject(gameObject: GameObject): Unit = {
-    gameObject.onLeaveGameWorld
+    gameObject.onLeaveGameWorld()
     gameObjects -= gameObject
   }
 }

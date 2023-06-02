@@ -3,7 +3,7 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.{Vector2, Vector3}
 
-class Projectile(damage: Float, velocity: Vector2, parent: Entity) extends Entity {
+case class Projectile(damage: Float, parent: Entity) extends Entity {
   override val name: String = "Bullet"
   override val baseStats: EntityStats = EntityStats(0, 0, 0, damage)
   override var stats: EntityStats = baseStats
