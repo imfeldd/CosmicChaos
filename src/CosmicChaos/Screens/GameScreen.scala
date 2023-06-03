@@ -43,27 +43,28 @@ class GameScreen extends RenderingScreen {
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
-    g.clear()
-
     g.begin()
+    g.clear()
 
     doCameraShake(g)
 
-    // We cast to array to prevent exception if the ArrayBuffer is mutated during the loop. TODO: Maybe find a better way to do this?
     for(gameObject <- gameWorld.gameObjects.toArray) {
       gameObject.onUpdate(Gdx.graphics.getDeltaTime)
-
-      gameObject match {
-        case r: Renderable => r.onGraphicRender(g)
-        case _ =>
-      }
     }
+
+    val renderables = gameWorld.gameObjects.filter(_.isInstanceOf[Renderable]).map(_.asInstanceOf[Renderable])
+    for (renderable <- renderables.sortBy(x => (x.renderLayer, -x.position.y))) {  // Sort by render layer descending, then by y pos ascending
+      renderable.onGraphicRender(g)
+    }
+
     g.end()
+
+    // Keep the hud stuff after we're done with GdxGraphics since we're using our own Batches
     if(player.isDead) {
-      deathHud.onGraphicRender(g)
+      deathHud.onGraphicRender()
     }
     else {
-      gameplayHud.onGraphicRender(g)
+      gameplayHud.onGraphicRender()
     }
   }
 

@@ -1,19 +1,17 @@
 package CosmicChaos.HUD
 
-import CosmicChaos.Core.Renderable
 import CosmicChaos.Entities.PlayerEntity
-import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 
-class GameplayHUD(player: PlayerEntity) extends Renderable {
+class GameplayHUD(player: PlayerEntity) {
   val shapeRenderer = new ShapeRenderer()
   shapeRenderer.setAutoShapeType(true)
   val spriteBatch = new SpriteBatch()
   val bitmapFont = new BitmapFont()
 
-  override def onGraphicRender(g: GdxGraphics): Unit = {
+  def onGraphicRender(): Unit = {
     shapeRenderer.begin()
     shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
 

@@ -8,6 +8,8 @@ case class Projectile(damage: Float, parent: Entity) extends Entity {
   override val baseStats: EntityStats = EntityStats(0, 0, 0, damage)
   override var stats: EntityStats = baseStats
 
+  renderLayer = 1
+
   // Spawn at the parent's position, plus a little bit outwards to look like it goes out of the gun barrel
   // TODO: The distance from the center shouldn't be hard-coded. Maybe this shouldn't even be here
   position = new Vector3(parent.position.x, parent.position.y, 0).add(new Vector3(parent.aimVector.x, parent.aimVector.y, 0).nor.scl(110))
