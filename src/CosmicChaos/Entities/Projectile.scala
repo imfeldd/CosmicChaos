@@ -1,14 +1,14 @@
 package CosmicChaos.Entities
+import CosmicChaos.Core.Collideable
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.math.{Vector2, Vector3}
+import com.badlogic.gdx.math.{Rectangle, Vector2, Vector3}
 
-case class Projectile(damage: Float, parent: Entity) extends Entity {
+class Projectile(val damage: Float, val parent: CreatureEntity) extends Entity {
   override val name: String = "Bullet"
-  override val baseStats: EntityStats = EntityStats(0, 0, 0, damage)
-  override var stats: EntityStats = baseStats
+  override val collisionBox: Rectangle = new Rectangle(0, 0, 8, 8)
 
-  private var timeSinceShot: Float = 0
+  private var timer: Float = 0
 
   renderLayer = 1
 
@@ -19,19 +19,28 @@ case class Projectile(damage: Float, parent: Entity) extends Entity {
   override def onUpdate(dt: Float): Unit = {
     super.onUpdate(dt)
 
-    timeSinceShot += dt
+    timer += dt
     position.x += velocity.x * dt
     position.y += velocity.y * dt
 
     // Despawn the projectile after 3 seconds
-    if(timeSinceShot >= 3) {
+    if(timer >= 3) {
       parentGameWorld.removeGameObject(this)
     }
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
-    super.onGraphicRender(g)
+    g.drawFilledCircle(position.x - 5, position.y - 5, 10, if(parent.team == 1) Color.BLUE else Color.RED)
+  }
 
-    g.drawFilledCircle(position.x - 5, position.y - 5, 10, Color.RED)
+  override def onCollideWith(other: Collideable): Unit = {
+    super.onCollideWith(other)
+
+    other match {
+      case c: CreatureEntity =>
+        parentGameWorld.removeGameObject(this)
+        parent.dealDamageTo(damage, c)
+      case _ =>
+    }
   }
 }

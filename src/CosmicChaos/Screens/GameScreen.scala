@@ -1,14 +1,14 @@
 package CosmicChaos.Screens
 
-import CosmicChaos.Core.{Renderable, Spatial}
 import CosmicChaos.Core.World.GameWorld
-import CosmicChaos.Entities.{GunnerEnemyEntity, ImmortalSnailEnemy, PlayerEntity}
+import CosmicChaos.Core.{Collideable, Renderable, Spatial}
+import CosmicChaos.Entities.{GunnerEnemyEntity, ImmortalSnailEnemyEntity, PlayerEntity}
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.math.{Rectangle, Vector3}
 
 import scala.util.Random
 
@@ -20,14 +20,20 @@ class GameScreen extends RenderingScreen {
 
   override def onInit(): Unit = {
     // Temporary testing code
-    val testEnemy = new ImmortalSnailEnemy{team = 2}
+    val testEnemy = new ImmortalSnailEnemyEntity{team = 2}
     testEnemy.position = new Vector3(100, 100, 0)
     val testGunner = new GunnerEnemyEntity{team=2}
     testGunner.position = new Vector3(-100, 100, 0)
+    val testGunner2 = new GunnerEnemyEntity {team = 2}
+    testGunner2.position = new Vector3(-120, 170, 0)
+    val testGunner3 = new GunnerEnemyEntity {team = 2}
+    testGunner3.position = new Vector3(-150, 200, 0)
 
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
     gameWorld.addGameObject(testGunner)
+    gameWorld.addGameObject(testGunner2)
+    gameWorld.addGameObject(testGunner3)
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -47,6 +53,19 @@ class GameScreen extends RenderingScreen {
     g.clear()
 
     doCameraShake(g)
+
+    val collideables = gameWorld.gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])
+    for(firstCollidableIndex <- collideables.indices) {
+      for(secondCollidableIndex <- firstCollidableIndex + 1 until collideables.length) {
+        val (c1, c2) = (collideables(firstCollidableIndex), collideables(secondCollidableIndex))
+        val (cb1, cb2) = (c1.collisionBox, c2.collisionBox)
+        val (rec1, rec2) = (new Rectangle(cb1.x, cb1.y, cb1.getWidth, cb1.getWidth), new Rectangle(cb2.x, cb2.y, cb2.getWidth, cb2.getHeight))
+        if(rec1.setPosition(rec1.x + c1.position.x, rec1.y + c1.position.y).overlaps(rec2.setPosition(rec2.x + c2.position.x, rec2.y + c2.position.y))) {
+          c1.onCollideWith(c2)
+          c2.onCollideWith(c1)
+        }
+      }
+    }
 
     for(gameObject <- gameWorld.gameObjects.toArray) {
       gameObject.onUpdate(Gdx.graphics.getDeltaTime)

@@ -6,9 +6,9 @@ trait GameObject  {
 
   var parentGameWorld: GameWorld = _
 
-  def onEnterGameWorld(): Unit
+  def onEnterGameWorld(): Unit = {}
 
-  def onUpdate(dt: Float): Unit
+  def onUpdate(dt: Float): Unit = { }
 
   def onLeaveGameWorld(): Unit = { }
 }

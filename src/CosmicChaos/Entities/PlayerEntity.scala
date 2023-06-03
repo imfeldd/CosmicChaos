@@ -6,21 +6,23 @@ import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
 import com.badlogic.gdx.graphics.Texture.TextureFilter
-import com.badlogic.gdx.math.{Vector2, Vector3}
+import com.badlogic.gdx.math.{Rectangle, Vector2, Vector3}
 import com.badlogic.gdx.{Gdx, Input}
+
 import scala.collection.mutable
 
-class PlayerEntity extends Entity with KeyboardInterface {
+class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   private val playerTexture = new BitmapImage("data/images/hei-pi.png").getImage
   private val gunTexture = new BitmapImage("data/images/weapons/gun.png").getImage
   gunTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
-  private val weapon: Weapon = new Weapon(Projectile(10, this), true, 14, this) {}
+  private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 14.5f) {}
 
   override val name: String = "Player"
   override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10)
   override var stats: EntityStats = baseStats
+  override val collisionBox: Rectangle = new Rectangle(-playerTexture.getWidth/2, -playerTexture.getHeight, playerTexture.getWidth, playerTexture.getHeight - 20)
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
 
@@ -87,8 +89,15 @@ class PlayerEntity extends Entity with KeyboardInterface {
     }
   }
 
+  override def onReceiveDamage(amount: Float, source: Entity): Unit = {
+    if(source == this)
+      return
+
+    super.onReceiveDamage(amount, source)
+  }
+
   override def onDeath(deathCause: Entity): Unit = {
-    super.onDeath(deathCause)
+
   }
 
   override def onKeyDown(i: Int): Unit = {
