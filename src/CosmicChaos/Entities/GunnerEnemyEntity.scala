@@ -11,7 +11,7 @@ class GunnerEnemyEntity extends Entity {
   override val baseStats: EntityStats = EntityStats(100, 12, 10, 9999999)
   override var stats: EntityStats = baseStats
 
-  private val weapon: Weapon = new Weapon(Projectile(10, this), false, 2, this) {}
+  private val weapon: Weapon = new Weapon(Projectile(10, this), true, 4, this, ammoCapacity = 3, reloadTime = 1.5f) {}
 
   private val gunTexture = new BitmapImage("data/images/weapons/gun.png").getImage
   gunTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
