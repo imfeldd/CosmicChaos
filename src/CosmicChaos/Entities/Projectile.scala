@@ -8,6 +8,8 @@ case class Projectile(damage: Float, parent: Entity) extends Entity {
   override val baseStats: EntityStats = EntityStats(0, 0, 0, damage)
   override var stats: EntityStats = baseStats
 
+  private var timeSinceShot: Float = 0
+
   renderLayer = 1
 
   // Spawn at the parent's position, plus a little bit outwards to look like it goes out of the gun barrel
@@ -16,8 +18,15 @@ case class Projectile(damage: Float, parent: Entity) extends Entity {
 
   override def onUpdate(dt: Float): Unit = {
     super.onUpdate(dt)
+
+    timeSinceShot += dt
     position.x += velocity.x * dt
     position.y += velocity.y * dt
+
+    // Despawn the projectile after 3 seconds
+    if(timeSinceShot >= 3) {
+      parentGameWorld.removeGameObject(this)
+    }
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
