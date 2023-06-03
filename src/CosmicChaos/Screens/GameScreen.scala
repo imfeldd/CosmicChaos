@@ -1,6 +1,6 @@
 package CosmicChaos.Screens
 
-import CosmicChaos.Core.Renderable
+import CosmicChaos.Core.{Renderable, Spatial}
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Entities.{GunnerEnemyEntity, ImmortalSnailEnemy, PlayerEntity}
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
@@ -52,8 +52,8 @@ class GameScreen extends RenderingScreen {
       gameObject.onUpdate(Gdx.graphics.getDeltaTime)
     }
 
-    val renderables = gameWorld.gameObjects.filter(_.isInstanceOf[Renderable]).map(_.asInstanceOf[Renderable])
-    for (renderable <- renderables.sortBy(x => (x.renderLayer, -x.position.y))) {  // Sort by render layer descending, then by y pos ascending
+    val renderablesWithSpatial = gameWorld.gameObjects.filter(_.isInstanceOf[Renderable with Spatial]).map(_.asInstanceOf[Renderable with Spatial])
+    for (renderable <- renderablesWithSpatial.sortBy(x => (x.renderLayer, -x.position.y))) {  // Sort by render layer descending, then by y pos ascending
       renderable.onGraphicRender(g)
     }
 
