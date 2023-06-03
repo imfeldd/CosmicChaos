@@ -2,13 +2,12 @@ package CosmicChaos.Screens
 
 import CosmicChaos.Core.Renderable
 import CosmicChaos.Core.World.GameWorld
-import CosmicChaos.Entities.{ImmortalSnailEnemy, PlayerEntity}
+import CosmicChaos.Entities.{GunnerEnemyEntity, ImmortalSnailEnemy, PlayerEntity}
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector3
 
 import scala.util.Random
@@ -23,9 +22,12 @@ class GameScreen extends RenderingScreen {
     // Temporary testing code
     val testEnemy = new ImmortalSnailEnemy{team = 2}
     testEnemy.position = new Vector3(100, 100, 0)
+    val testGunner = new GunnerEnemyEntity{team=2}
+    testGunner.position = new Vector3(-100, 100, 0)
 
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
+    gameWorld.addGameObject(testGunner)
   }
 
   override def onKeyDown(keycode: Int): Unit = {

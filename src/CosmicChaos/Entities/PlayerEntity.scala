@@ -5,17 +5,16 @@ import CosmicChaos.Screens.GameScreen
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.Texture.TextureFilter
 import com.badlogic.gdx.math.{Vector2, Vector3}
 import com.badlogic.gdx.{Gdx, Input}
-
 import scala.collection.mutable
 
 class PlayerEntity extends Entity with KeyboardInterface {
 
-  private val imgBitmap = new BitmapImage("data/images/hei-pi.png").getImage
-  private val spriteW = imgBitmap.getWidth
-  private val spriteH = imgBitmap.getHeight
+  private val playerTexture = new BitmapImage("data/images/hei-pi.png").getImage
+  private val gunTexture = new BitmapImage("data/images/weapons/gun.png").getImage
+  gunTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   private val weapon: Weapon = new Weapon(Projectile(10, this), true, 14, this) {}
 
@@ -26,8 +25,8 @@ class PlayerEntity extends Entity with KeyboardInterface {
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
-    // Draw player sprite
-    g.draw(imgBitmap, position.x - spriteW/2, position.y - spriteH/2)
+    drawSprite(playerTexture, g)
+    drawGun(gunTexture, 10, g, scale = 2)
   }
 
   def centerCameraOnPlayer(g: GdxGraphics): Unit = {
@@ -41,7 +40,8 @@ class PlayerEntity extends Entity with KeyboardInterface {
     )
 
     // Get the vector that points from the player's position to the mouse position
-    aimVector = g.getCamera.unproject(new Vector3(mouseX, mouseY, 0)).sub(position)
+    val aimVector3 = g.getCamera.unproject(new Vector3(mouseX, mouseY, 0)).sub(position)
+    aimVector = new Vector2(aimVector3.x, aimVector3.y)
   }
 
   override def onUpdate(dt: Float): Unit = {
