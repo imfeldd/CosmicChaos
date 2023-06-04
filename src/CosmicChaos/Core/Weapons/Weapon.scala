@@ -1,11 +1,11 @@
 package CosmicChaos.Core.Weapons
 
-import CosmicChaos.Entities.{CreatureEntity, Projectile}
+import CosmicChaos.Entities.CreatureEntity
 import com.badlogic.gdx.math.Vector2
 
 import scala.util.Random
 
-abstract class Weapon(projectile: Projectile, isFullAuto: Boolean, shotsPerSecond: Int, holder: CreatureEntity, ammoCapacity: Int = -1, reloadTime: Float = 0.0f, inaccuracy: Float = 0.0f) {
+abstract class Weapon(var projectile: Projectile, isFullAuto: Boolean, shotsPerSecond: Int, holder: CreatureEntity, ammoCapacity: Int = -1, reloadTime: Float = 0.0f, inaccuracy: Float = 0.0f) {
 
   private val shotFrequency: Float = 1/shotsPerSecond.toFloat
   private var shootTimer: Float = 0
@@ -42,7 +42,7 @@ abstract class Weapon(projectile: Projectile, isFullAuto: Boolean, shotsPerSecon
 
       // TODO: Implement a pool of projectiles to prevent creating a new instance each shot?
       // TODO: Actual projectile firing shouldn't be done here. The holder entity should take care of that
-      val proj: Projectile = new Projectile(projectile.damage, projectile.parent)
+      val proj: Projectile = projectile.copy
       val shotInaccuracy = if(inaccuracy != 0) Random.between(-inaccuracy, inaccuracy) else 0.0f
       proj.velocity = new Vector2(holder.aimVector.x, holder.aimVector.y).nor().scl(700).rotate(shotInaccuracy) // TODO: Projectile speed should be handled in the Projectile class
       holder.parentGameWorld.addGameObject(proj)

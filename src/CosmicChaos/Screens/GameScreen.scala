@@ -54,6 +54,7 @@ class GameScreen extends RenderingScreen {
 
     doCameraShake(g)
 
+    // TODO: Move all this shit to GameWorld
     val collideables = gameWorld.gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])
     for(firstCollidableIndex <- collideables.indices) {
       for(secondCollidableIndex <- firstCollidableIndex + 1 until collideables.length) {

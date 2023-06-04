@@ -1,6 +1,6 @@
 package CosmicChaos.Entities
 
-import CosmicChaos.Core.Weapons.Weapon
+import CosmicChaos.Core.Weapons.{Rocket, Weapon}
 import CosmicChaos.Screens.GameScreen
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
@@ -17,7 +17,13 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   private val gunTexture = new BitmapImage("data/images/weapons/gun.png").getImage
   gunTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
-  private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 14.5f) {}
+  //private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 4.5f) {}
+  private val weapon: Weapon = new Weapon(
+    new Rocket(64, this),
+    false,
+    2,
+    this
+  ) {}
 
   override val name: String = "Player"
   override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10)

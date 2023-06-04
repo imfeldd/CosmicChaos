@@ -1,7 +1,8 @@
 package CosmicChaos.Core.World
 
-import CosmicChaos.Core.GameObject
+import CosmicChaos.Core.{Collideable, GameObject, Spatial}
 import CosmicChaos.Entities.PlayerEntity
+import com.badlogic.gdx.math.{Circle, Intersector, Rectangle}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -24,5 +25,16 @@ class GameWorld {
   def removeGameObject(gameObject: GameObject): Unit = {
     gameObject.onLeaveGameWorld()
     gameObjects -= gameObject
+  }
+
+  def getCollideablesWithinCircle(circle: Circle): Array[Collideable] = {
+    val collideables = gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])
+    val out: ArrayBuffer[Collideable] = new ArrayBuffer[Collideable]()
+    for (col <- collideables) {
+      val rec = new Rectangle(col.collisionBox.x + col.position.x, col.collisionBox.y + col.position.y, col.collisionBox.getWidth, col.collisionBox.getWidth)
+      if(Intersector.overlaps(circle, rec))
+        out.append(col)
+    }
+    out.toArray
   }
 }

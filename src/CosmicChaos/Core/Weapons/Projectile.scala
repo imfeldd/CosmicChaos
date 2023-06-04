@@ -1,12 +1,14 @@
-package CosmicChaos.Entities
+package CosmicChaos.Core.Weapons
+
 import CosmicChaos.Core.Collideable
+import CosmicChaos.Entities.{CreatureEntity, Entity}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.math.{Rectangle, Vector2, Vector3}
+import com.badlogic.gdx.math.{Rectangle, Vector3}
 
 class Projectile(val damage: Float, val parent: CreatureEntity) extends Entity {
   override val name: String = "Bullet"
-  override val collisionBox: Rectangle = new Rectangle(0, 0, 8, 8)
+  override val collisionBox: Rectangle = new Rectangle(-4, -4, 8, 8)
 
   private var timer: Float = 0
 
@@ -43,4 +45,6 @@ class Projectile(val damage: Float, val parent: CreatureEntity) extends Entity {
       case _ =>
     }
   }
+
+  def copy: Projectile = new Projectile(damage, parent)
 }

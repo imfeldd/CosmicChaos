@@ -1,6 +1,6 @@
 package CosmicChaos.Entities
 
-import CosmicChaos.Core.Weapons.Weapon
+import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture.TextureFilter
