@@ -5,7 +5,9 @@ import CosmicChaos.Screens.GameScreen
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Rectangle, Vector2, Vector3}
 import com.badlogic.gdx.{Gdx, Input}
 
@@ -13,9 +15,17 @@ import scala.collection.mutable
 
 class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
-  private val playerTexture = new BitmapImage("data/images/hei-pi.png").getImage
   private val gunTexture = new BitmapImage("data/images/weapons/gun.png").getImage
   gunTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
+
+  private val spritesheet: Texture = new Texture("data/images/entities/spacemarine_run.png")
+  private val deathSpritesheet: Texture = new Texture("data/images/entities/spacemarine_die.png")
+  private val (frameW, frameH) = (48, 48)
+  private val spriteScale = 3.0f
+  private val frames: Array[Array[TextureRegion]] = TextureRegion.split(spritesheet, frameW, frameH)
+  private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
+  private val frameTime: Float = 0.066f
+  private var animCounter: Float = 0.0f
 
   //private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 4.5f) {}
   private val weapon: Weapon = new Weapon(
@@ -28,13 +38,29 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   override val name: String = "Player"
   override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10)
   override var stats: EntityStats = baseStats
-  override val collisionBox: Rectangle = new Rectangle(-playerTexture.getWidth/2, -playerTexture.getHeight, playerTexture.getWidth, playerTexture.getHeight - 20)
+  override val collisionBox: Rectangle = new Rectangle(-frameW/2, -frameH/2, frameW, frameH - 20)
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
-    drawSprite(playerTexture, g)
-    drawGun(gunTexture, 10, g, scale = 2)
+    val sprite = if(isDead) {
+      deathFrames(0)(math.min(deathFrames(0).length - 1, animCounter / frameTime).toInt)
+    }
+    else {
+      frames(0)(if (velocity.len() <= 75.0f) {
+        // If we're almost stopped, show the idle frame
+        animCounter = 0
+        0
+      } else {
+        // Show the frame corresponding to the current animCounter
+        (animCounter / frameTime).toInt % (frames(0).length - 1) + 1 // skip frame 0
+      })
+    }
+
+    drawSprite(sprite, g, spriteScale)
+
+    if(!isDead)
+      drawGun(gunTexture, 0, g, scale = 2)
   }
 
   def centerCameraOnPlayer(g: GdxGraphics): Unit = {
@@ -53,6 +79,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   }
 
   override def onUpdate(dt: Float): Unit = {
+    animCounter += dt
+
     doMovement(dt)
 
     if(isDead)
@@ -103,7 +131,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   }
 
   override def onDeath(deathCause: Entity): Unit = {
-
+    animCounter = 0.0f  // Reset the animCounter so that death anim starts at the first frame
   }
 
   override def onKeyDown(i: Int): Unit = {

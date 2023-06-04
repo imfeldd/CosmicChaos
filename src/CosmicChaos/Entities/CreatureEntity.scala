@@ -2,6 +2,7 @@ package CosmicChaos.Entities
 
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 
 abstract class CreatureEntity extends Entity {
@@ -26,6 +27,9 @@ abstract class CreatureEntity extends Entity {
   }
 
   protected def onReceiveDamage(amount: Float, source: Entity): Unit = {
+    if(isDead)
+      return
+
     currentHealth -= amount
 
     if (isDead) {
@@ -44,10 +48,17 @@ abstract class CreatureEntity extends Entity {
     g.draw(sprite, position.x - spriteW / 2, position.y - spriteH / 2, spriteW, spriteH, 0, 0, sprite.getWidth, sprite.getHeight, flipX, false)
   }
 
+  protected def drawSprite(sprite: TextureRegion, g: GdxGraphics, scale: Float): Unit = {
+    val (spriteW, spriteH) = (sprite.getRegionWidth * scale, sprite.getRegionHeight * scale)
+    val flipX = aimVector.angle() > 90 && aimVector.angle() < 280
+    g.draw(sprite.getTexture, position.x - spriteW / 2, position.y - spriteH / 2, spriteW, spriteH, sprite.getRegionX, sprite.getRegionY, sprite.getRegionWidth, sprite.getRegionHeight, flipX, false)
+  }
+
   protected def drawGun(sprite: Texture, distance: Float, g: GdxGraphics, scale: Float = 1.0f): Unit = {
     val (spriteW, spriteH) = (sprite.getWidth*scale, sprite.getHeight*scale)
     val flipY = aimVector.angle() > 90 && aimVector.angle() < 280
     val gunPos = new Vector2(position.x, position.y).add(new Vector2(aimVector.x, aimVector.y).nor().scl(distance)).add(spriteW / 2, 0)
-    g.draw(sprite, gunPos.x - spriteW/2, gunPos.y - spriteW/2, 0, 0, spriteW, spriteH, 1, 1, aimVector.angle, 0, 0, sprite.getWidth, sprite.getHeight, true, flipY)
+    val angle = (aimVector.angle/8).toInt * 8.0f  // round the angle to its nearest multiple of 8 to make it feel a bit more retro
+    g.draw(sprite, gunPos.x - spriteW/2, gunPos.y - spriteW/4, 22, 10, spriteW, spriteH, 1, 1, angle, 0, 0, sprite.getWidth, sprite.getHeight, true, flipY)
   }
 }
