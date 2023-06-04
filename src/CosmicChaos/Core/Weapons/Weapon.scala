@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2
 
 import scala.util.Random
 
-abstract class Weapon(var projectile: Projectile, isFullAuto: Boolean, shotsPerSecond: Int, holder: CreatureEntity, ammoCapacity: Int = -1, reloadTime: Float = 0.0f, inaccuracy: Float = 0.0f) {
+abstract class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val shotsPerSecond: Int, val holder: CreatureEntity, val ammoCapacity: Int = -1, val reloadTime: Float = 0.0f, val inaccuracy: Float = 0.0f) {
 
   private val shotFrequency: Float = 1/shotsPerSecond.toFloat
   private var shootTimer: Float = 0
@@ -14,6 +14,8 @@ abstract class Weapon(var projectile: Projectile, isFullAuto: Boolean, shotsPerS
   private var ammoCount: Int = ammoCapacity
   private val hasAmmoCapacity: Boolean = ammoCapacity != -1
   private var reloadTimer: Float = 0.0f
+
+  def isMagasineEmpty: Boolean = hasAmmoCapacity && ammoCount == 0
 
   def update(triggerHeld: Boolean, dt: Float): Unit = {
     if(shootTimer > 0)
@@ -37,7 +39,7 @@ abstract class Weapon(var projectile: Projectile, isFullAuto: Boolean, shotsPerS
 
         // If we've reached the last round, start reloading
         if(ammoCount == 0)
-          reloadTimer = reloadTime
+          reload()
       }
 
       // TODO: Implement a pool of projectiles to prevent creating a new instance each shot?
@@ -56,6 +58,11 @@ abstract class Weapon(var projectile: Projectile, isFullAuto: Boolean, shotsPerS
     val triggerOk = (!isFullAuto && !triggerHeldLastFrame) || isFullAuto
     val ammoOK = !hasAmmoCapacity || ammoCount > 0
     timerOk && triggerOk && ammoOK
+  }
+
+  def reload(): Unit = {
+    ammoCount = 0
+    reloadTimer = reloadTime
   }
 
   def isShootingThisFrame: Boolean = shootingThisFrame

@@ -27,12 +27,15 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   private val frameTime: Float = 0.066f
   private var animCounter: Float = 0.0f
 
-  //private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 4.5f) {}
+  //private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 4.5f, ammoCapacity = 14, reloadTime = 0.66f) {}
+
   private val weapon: Weapon = new Weapon(
     new Rocket(64, this),
-    false,
-    2,
-    this
+    isFullAuto = false,
+    shotsPerSecond = 3,
+    ammoCapacity = 3,
+    reloadTime = 1.33f,
+    holder = this
   ) {}
 
   override val name: String = "Player"
@@ -44,7 +47,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     val sprite = if(isDead) {
-      deathFrames(0)(math.min(deathFrames(0).length - 1, animCounter / frameTime).toInt)
+      deathFrames(0)(math.min(deathFrames(0).length - 1, animCounter*0.5 / frameTime).toInt)
     }
     else {
       frames(0)(if (velocity.len() <= 75.0f) {
@@ -57,10 +60,15 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
       })
     }
 
-    drawSprite(sprite, g, spriteScale)
-
-    if(!isDead)
+    if(!isDead) {
       drawGun(gunTexture, 0, g, scale = 2)
+
+      if(weapon.isMagasineEmpty) {
+        g.drawString(position.x, position.y + 50, "RELOADING", 1)
+      }
+    }
+
+    drawSprite(sprite, g, spriteScale)
   }
 
   def centerCameraOnPlayer(g: GdxGraphics): Unit = {
@@ -116,6 +124,10 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   }
 
   private def doShooting(dt: Float): Unit = {
+    if(keyStatus.getOrElse(Input.Keys.R, false)) {
+      weapon.reload()
+    }
+
     val leftMouseDown = Gdx.input.isButtonPressed(0)
     weapon.update(leftMouseDown, dt)
     if (weapon.isShootingThisFrame) {
