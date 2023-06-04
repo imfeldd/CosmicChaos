@@ -16,8 +16,9 @@ import scala.util.Random
 class GameScreen extends RenderingScreen {
   val gameWorld: GameWorld = new GameWorld
   val player: PlayerEntity = new PlayerEntity{team = 1}
-  val gameplayHud: GameplayHUD = new GameplayHUD(player)
+  val gameplayHud: GameplayHUD = new GameplayHUD(player, this)
   val deathHud: DeathHUD = new DeathHUD(player)
+  var gameTimer: Float = 0.0f
 
   override def onInit(): Unit = {
     // Temporary testing code
@@ -54,6 +55,8 @@ class GameScreen extends RenderingScreen {
     g.clear()
 
     doCameraShake(g)
+
+    gameTimer += Gdx.graphics.getDeltaTime
 
     // TODO: Move all this shit to GameWorld
     val collideables = gameWorld.gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])
@@ -93,8 +96,8 @@ class GameScreen extends RenderingScreen {
     def randFromMin1To1: Float = Random.between(-1.0f, 2.0f)
 
     val shake = math.pow(math.min(1, cameraShake), 4)
-    val maxAngle = 10
-    val maxOffset = 10
+    val maxAngle = 20
+    val maxOffset = 20
 
     val angle = maxAngle * shake * randFromMin1To1
     val offsetX = maxOffset * shake * randFromMin1To1

@@ -1,19 +1,27 @@
 package CosmicChaos.HUD
 
 import CosmicChaos.Entities.PlayerEntity
+import CosmicChaos.Screens.GameScreen
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 
-class GameplayHUD(player: PlayerEntity) {
+class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
   val shapeRenderer = new ShapeRenderer()
   shapeRenderer.setAutoShapeType(true)
   val spriteBatch = new SpriteBatch()
   val bitmapFont = new BitmapFont()
 
   def onGraphicRender(): Unit = {
+    val (w, h) = (Gdx.graphics.getWidth, Gdx.graphics.getHeight)
+
     shapeRenderer.begin()
     shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
+
+    // Game timer background
+    shapeRenderer.setColor(Color.DARK_GRAY)
+    shapeRenderer.rect(w - 380, h - 70, 350, 40)
 
     // Healthbar background
     shapeRenderer.setColor(Color.DARK_GRAY)
@@ -28,6 +36,13 @@ class GameplayHUD(player: PlayerEntity) {
 
     // Healthbar counter
     bitmapFont.draw(spriteBatch, s"${player.currentHealth.toInt}/${player.stats.maxHealth.toInt}", 30, 55, 350, 1, false)
+
+    // Timer text
+    val totalMillis = (gameScreen.gameTimer* 1000).toInt
+    val minutes = totalMillis / (60 * 1000)
+    val seconds = (totalMillis % (60 * 1000)) / 1000
+    val milliseconds = totalMillis % 1000
+    bitmapFont.draw(spriteBatch, f"$minutes%02d:$seconds%02d.$milliseconds%03d", w - 380, h - 45, 350, 1, false)
 
     spriteBatch.end()
   }
