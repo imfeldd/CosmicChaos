@@ -1,5 +1,6 @@
-package CosmicChaos.Entities
+package CosmicChaos.Entities.Enemies
 
+import CosmicChaos.Entities.{CreatureEntity, Entity, EntityStats}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture.TextureFilter

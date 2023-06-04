@@ -2,7 +2,8 @@ package CosmicChaos.Screens
 
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
-import CosmicChaos.Entities.{GunnerEnemyEntity, ImmortalSnailEnemyEntity, PlayerEntity}
+import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, GunnerEnemyEntity, ImmortalSnailEnemyEntity}
+import CosmicChaos.Entities.PlayerEntity
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
@@ -22,11 +23,11 @@ class GameScreen extends RenderingScreen {
     // Temporary testing code
     val testEnemy = new ImmortalSnailEnemyEntity{team = 2}
     testEnemy.position = new Vector3(100, 100, 0)
-    val testGunner = new GunnerEnemyEntity{team=2}
+    val testGunner = new FlyingAlienEnemyEntity{team=2}
     testGunner.position = new Vector3(-100, 100, 0)
-    val testGunner2 = new GunnerEnemyEntity {team = 2}
+    val testGunner2 = new FlyingAlienEnemyEntity{team = 2}
     testGunner2.position = new Vector3(-120, 170, 0)
-    val testGunner3 = new GunnerEnemyEntity {team = 2}
+    val testGunner3 = new FlyingAlienEnemyEntity{team = 2}
     testGunner3.position = new Vector3(-150, 200, 0)
 
     gameWorld.addGameObject(player)
