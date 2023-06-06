@@ -1,6 +1,8 @@
 package CosmicChaos.Entities
 
+import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
@@ -8,6 +10,12 @@ import com.badlogic.gdx.math.Vector2
 import scala.util.Random
 
 abstract class CreatureEntity extends Entity {
+
+  private val deathExplosionTexture: Texture = new Texture("data/images/diseappear.png")
+  private val (frameW, frameH) = (100, 100)
+  private val frames: Array[Array[TextureRegion]] = TextureRegion.split(deathExplosionTexture, frameW, frameH)
+  protected val deathExplosionAnimation: Animation = new Animation(0.008f, frames(0), loop = false)
+
   val baseStats: EntityStats
   var stats: EntityStats
   var cash: Float = 0.0f
@@ -71,5 +79,11 @@ abstract class CreatureEntity extends Entity {
 
     // Draw the gun sprite, rotated around the creature's position
     g.draw(sprite, gunPos.x - spriteW/2 + offset.x, gunPos.y - spriteH/2 + offset.y, 0, spriteH/2, spriteW, spriteH, 1, flipY, angle, 0, 0, sprite.getWidth, sprite.getHeight, false, false)
+  }
+
+  protected def drawDeathExplosionAnimation(g: GdxGraphics): Unit = {
+    deathExplosionAnimation.update(Gdx.graphics.getDeltaTime)
+    val scale = 3.0f
+    g.draw(deathExplosionAnimation.getCurrentFrame, position.x - frameW*scale/2, position.y - frameH*scale/2, frameW * scale, frameH * scale)
   }
 }

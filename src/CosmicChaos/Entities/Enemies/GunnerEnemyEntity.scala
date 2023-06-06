@@ -12,6 +12,9 @@ abstract class GunnerEnemyEntity extends CreatureEntity {
   protected var aggro: Entity = null
 
   override def onUpdate(dt: Float): Unit = {
+    if(isDead)
+      return
+
     if(aggro == null)
       // Aggro the player by default
       aggro = parentGameWorld.playerEntity

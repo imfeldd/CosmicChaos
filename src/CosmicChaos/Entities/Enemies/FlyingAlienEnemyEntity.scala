@@ -1,6 +1,6 @@
 package CosmicChaos.Entities.Enemies
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
-import CosmicChaos.Entities.EntityStats
+import CosmicChaos.Entities.{Entity, EntityStats}
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
@@ -22,10 +22,21 @@ class FlyingAlienEnemyEntity extends GunnerEnemyEntity {
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     animation.update(Gdx.graphics.getDeltaTime)
-    drawSprite(animation.getCurrentFrame, g, spriteScale)
+    if(!isDead){
+      drawSprite(animation.getCurrentFrame, g, spriteScale)
+    }
+    else {
+      drawDeathExplosionAnimation(g)
+    }
   }
+
+  override def onDeath(deathCause: Entity): Unit = {}
 
   override def onUpdate(dt: Float): Unit = {
     super.onUpdate(dt)
+
+    if(isDead && deathExplosionAnimation.isCurrentlyOver) {
+      parentGameWorld.removeGameObject(this)
+    }
   }
 }
