@@ -20,7 +20,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   private val spritesheet: Texture = new Texture("data/images/entities/spacemarine_run.png")
   private val deathSpritesheet: Texture = new Texture("data/images/entities/spacemarine_die.png")
-  private val (frameW, frameH) = (29, 38)
+  private val (frameW, frameH) = (48, 48)
   private val spriteScale = 3.0f
   private val frames: Array[Array[TextureRegion]] = TextureRegion.split(spritesheet, frameW, frameH)
   private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
@@ -41,7 +41,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   override val name: String = "Player"
   override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10, criticalChance = 0.02f)
   override var stats: EntityStats = baseStats
-  override val collisionBox: Rectangle = new Rectangle(-frameW/2, -frameH/2, frameW, frameH - 10)
+  private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 30*spriteScale)
+  override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
 
