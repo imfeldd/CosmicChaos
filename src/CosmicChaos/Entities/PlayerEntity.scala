@@ -1,14 +1,15 @@
 package CosmicChaos.Entities
 
+import CosmicChaos.Core.Interactable
 import CosmicChaos.Core.Weapons.{Rocket, Weapon}
 import CosmicChaos.Screens.GameScreen
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
-import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.graphics.Texture.TextureFilter
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.{Rectangle, Vector2, Vector3}
+import com.badlogic.gdx.graphics.{Color, Texture}
+import com.badlogic.gdx.math.{Circle, Rectangle, Vector2, Vector3}
 import com.badlogic.gdx.{Gdx, Input}
 
 import scala.collection.mutable
@@ -41,8 +42,10 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   override val name: String = "Player"
   override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10, criticalChance = 0.02f)
   override var stats: EntityStats = baseStats
+
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 30*spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)
+  var interactableOfInterest: Option[Interactable] = None
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
 
@@ -65,7 +68,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
       drawGun(gunTexture, 8, g, scale = 2, offset = new Vector2(0, 5))
 
       if(weapon.isMagasineEmpty) {
-        g.drawString(position.x, position.y + 50, "RELOADING", 1)
+        g.drawString(position.x, position.y + 80, "RELOADING", 1)
       }
     }
 
@@ -84,12 +87,15 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     )
 
     // Get the vector that points from the player's position to the mouse position
-    val aimVector3 = g.getCamera.unproject(new Vector3(mouseX, mouseY, 0)).sub(position)
-    aimVector = new Vector2(aimVector3.x, aimVector3.y)
+    if(!isDead) {
+      val aimVector3 = g.getCamera.unproject(new Vector3(mouseX, mouseY, 0)).sub(position)
+      aimVector = new Vector2(aimVector3.x, aimVector3.y)
+    }
   }
 
   override def onUpdate(dt: Float): Unit = {
     animCounter += dt
+    interactableOfInterest = None
 
     doMovement(dt)
 
@@ -97,6 +103,15 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
       return
 
     doShooting(dt)
+
+    parentGameWorld.getCollideablesWithinCircle(new Circle(position.x, position.y, 40))
+      .find(x => x.isInstanceOf[Interactable] && x.asInstanceOf[Interactable].isInteractable)
+      .map(_.asInstanceOf[Interactable])
+      .foreach(i => {
+        interactableOfInterest = Some(i)
+        if (keyStatus.getOrElse(Input.Keys.E, false))
+          i.interact(this)
+      })
   }
 
   private def doMovement(dt: Float): Unit = {
@@ -139,11 +154,15 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     }
   }
 
-  override def onReceiveDamage(amount: Float, source: Entity): Unit = {
+  protected override def onReceiveDamage(amount: Float, source: CreatureEntity): Unit = {
     if(source == this)
       return
 
     super.onReceiveDamage(amount, source)
+  }
+
+  override def onKill(killed: CreatureEntity): Unit = {
+    cash += killed.cash
   }
 
   override def onDeath(deathCause: Entity): Unit = {

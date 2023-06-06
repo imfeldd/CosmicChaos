@@ -17,6 +17,8 @@ class FlyingAlienEnemyEntity extends GunnerEnemyEntity {
   private val frameTime: Float = 0.066f
   private var animCounter: Float = 0.0f
 
+  cash = 100
+
   override def onGraphicRender(g: GdxGraphics): Unit = {
     val sprite = frames(0)((animCounter / frameTime).toInt % frames(0).length)
 

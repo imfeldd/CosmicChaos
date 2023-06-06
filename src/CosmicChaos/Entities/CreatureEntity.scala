@@ -10,6 +10,7 @@ import scala.util.Random
 abstract class CreatureEntity extends Entity {
   val baseStats: EntityStats
   var stats: EntityStats
+  var cash: Float = 0.0f
 
   var team: Int = -1
 
@@ -31,21 +32,24 @@ abstract class CreatureEntity extends Entity {
     recipient.onReceiveDamage(amnt, this)
   }
 
-  protected def onReceiveDamage(amount: Float, source: Entity): Unit = {
+  protected def onReceiveDamage(amount: Float, source: CreatureEntity): Unit = {
     if(isDead)
       return
 
     currentHealth -= amount
 
     if (isDead) {
-      onDeath(source)
+      source.onKill(this)
       deathCause = source
+      onDeath(source)
     }
   }
 
   protected def onDeath(deathCause: Entity): Unit = {
     parentGameWorld.removeGameObject(this)
   }
+
+  protected def onKill(killed: CreatureEntity): Unit = {}
 
   protected def drawSprite(sprite: Texture, g: GdxGraphics, scale: Float = 1.0f): Unit = {
     val (spriteW, spriteH) = (sprite.getWidth*scale, sprite.getHeight*scale)

@@ -7,3 +7,4 @@ Game based on Risk Of Rain
 * https://opengameart.org/content/gun-sprites-0
 * https://opengameart.org/content/pixel-explosion-12-frames
 * https://opengameart.org/content/sideview-sci-fi-patreon-collection
+* https://opengameart.org/content/treasure-chests-32x32

@@ -3,7 +3,7 @@ package CosmicChaos.Screens
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
 import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
-import CosmicChaos.Entities.PlayerEntity
+import CosmicChaos.Entities.{NormalChest, PlayerEntity}
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
@@ -31,11 +31,14 @@ class GameScreen extends RenderingScreen {
     val testGunner3 = new FlyingAlienEnemyEntity{team = 2}
     testGunner3.position = new Vector3(-150, 200, 0)
 
+    val chest = new NormalChest
+
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
     gameWorld.addGameObject(testGunner)
     gameWorld.addGameObject(testGunner2)
     gameWorld.addGameObject(testGunner3)
+    gameWorld.addGameObject(chest)
   }
 
   override def onKeyDown(keycode: Int): Unit = {

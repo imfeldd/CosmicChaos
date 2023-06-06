@@ -1,6 +1,6 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Entities.{CreatureEntity, Entity, EntityStats}
+import CosmicChaos.Entities.{CreatureEntity, EntityStats}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture.TextureFilter
@@ -39,5 +39,5 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
     }
   }
 
-  override def onReceiveDamage(amount: Float, source: Entity): Unit = {}
+  protected override def onReceiveDamage(amount: Float, source: CreatureEntity): Unit = {}
 }
