@@ -1,7 +1,9 @@
 package CosmicChaos.Entities.Enemies
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import CosmicChaos.Entities.EntityStats
+import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
@@ -14,19 +16,16 @@ class FlyingAlienEnemyEntity extends GunnerEnemyEntity {
   private val (frameW, frameH) = (83, 64)
   private val spriteScale = 2.3f
   private val frames: Array[Array[TextureRegion]] = TextureRegion.split(spritesheet, frameW, frameH)
-  private val frameTime: Float = 0.066f
-  private var animCounter: Float = 0.0f
+  private val animation: Animation = new Animation(0.066f, frames(0), loop = true)
 
   cash = 100
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
-    val sprite = frames(0)((animCounter / frameTime).toInt % frames(0).length)
-
-    drawSprite(sprite, g, spriteScale)
+    animation.update(Gdx.graphics.getDeltaTime)
+    drawSprite(animation.getCurrentFrame, g, spriteScale)
   }
 
   override def onUpdate(dt: Float): Unit = {
-    animCounter += dt
     super.onUpdate(dt)
   }
 }

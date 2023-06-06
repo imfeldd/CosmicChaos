@@ -1,5 +1,6 @@
 package CosmicChaos.Entities
 import CosmicChaos.Screens.GameScreen
+import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -12,10 +13,10 @@ class Explosion(damage: Float, radius: Float, parent: CreatureEntity) extends En
 
   private var timer: Float = 0.0f
 
-  private val spritesheet: Texture = new Texture("data/images/explosion.png")
   private val (frameW, frameH) = (96, 96)
+  private val spritesheet: Texture = new Texture("data/images/explosion.png")
   private val frames: Array[Array[TextureRegion]] = TextureRegion.split(spritesheet, frameW, frameH)
-  private val frameTime: Float = 0.1f
+  private val animation = new Animation(0.1f, frames(0), loop = false)
 
   override def onEnterGameWorld(): Unit = {
     super.onEnterGameWorld()
@@ -34,7 +35,8 @@ class Explosion(damage: Float, radius: Float, parent: CreatureEntity) extends En
 
   override def onUpdate(dt: Float): Unit = {
     timer += dt
-    if(timer >= frames(0).length * frameTime){
+    animation.update(dt)
+    if(animation.isCurrentlyOver) {
       parentGameWorld.removeGameObject(this)
     }
   }
@@ -42,6 +44,6 @@ class Explosion(damage: Float, radius: Float, parent: CreatureEntity) extends En
   override def onGraphicRender(g: GdxGraphics): Unit = {
     val (scaleX, scaleY) = (radius*2/frameW, radius*2/frameH)
     val (w, h) = (frameW*scaleX, frameH*scaleY)
-    g.draw(frames(0)(math.min(frames(0).length - 1, (timer/frameTime).toInt)), position.x - w/2, position.y - h/2, w, h)
+    g.draw(animation.getCurrentFrame, position.x - w/2, position.y - h/2, w, h)
   }
 }
