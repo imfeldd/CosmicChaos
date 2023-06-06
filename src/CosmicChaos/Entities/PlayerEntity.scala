@@ -105,14 +105,16 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     val leftPressed = keyStatus.getOrElse(Input.Keys.A, false)
     val rightPressed = keyStatus.getOrElse(Input.Keys.D, false)
 
-    // Deceleration
-    velocity = velocity.scl(0.9f)
-
     // Get acceleration based on input
     val acceleration = if(!isDead) new Vector2(
       (if (rightPressed) 1 else 0) + (if (leftPressed) -1 else 0),
       (if (upPressed) 1 else 0) + (if (downPressed) -1 else 0)
     ) else new Vector2(0, 0)
+
+    // Apply deceleration if there's no acceleration
+    if(acceleration.len() == 0.0f) {
+      velocity = velocity.scl(0.9f)
+    }
 
     // Apply acceleration to velocity
     velocity = velocity.add(acceleration.scl(stats.acceleration))
