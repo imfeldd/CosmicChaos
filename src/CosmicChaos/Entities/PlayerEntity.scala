@@ -5,7 +5,7 @@ import CosmicChaos.Screens.GameScreen
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.graphics.Texture.TextureFilter
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Rectangle, Vector2, Vector3}
@@ -20,7 +20,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   private val spritesheet: Texture = new Texture("data/images/entities/spacemarine_run.png")
   private val deathSpritesheet: Texture = new Texture("data/images/entities/spacemarine_die.png")
-  private val (frameW, frameH) = (48, 48)
+  private val (frameW, frameH) = (29, 38)
   private val spriteScale = 3.0f
   private val frames: Array[Array[TextureRegion]] = TextureRegion.split(spritesheet, frameW, frameH)
   private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
@@ -39,9 +39,9 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   ) {}
 
   override val name: String = "Player"
-  override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10)
+  override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10, criticalChance = 0.02f)
   override var stats: EntityStats = baseStats
-  override val collisionBox: Rectangle = new Rectangle(-frameW/2, -frameH/2, frameW, frameH - 20)
+  override val collisionBox: Rectangle = new Rectangle(-frameW/2, -frameH/2, frameW, frameH - 10)
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
 
@@ -61,7 +61,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     }
 
     if(!isDead) {
-      drawGun(gunTexture, 0, g, scale = 2)
+      drawGun(gunTexture, 8, g, scale = 2, offset = new Vector2(0, 5))
 
       if(weapon.isMagasineEmpty) {
         g.drawString(position.x, position.y + 50, "RELOADING", 1)
@@ -69,6 +69,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     }
 
     drawSprite(sprite, g, spriteScale)
+    g.drawFilledCircle(position.x, position.y, 2, Color.PINK)
   }
 
   def centerCameraOnPlayer(g: GdxGraphics): Unit = {

@@ -54,11 +54,13 @@ abstract class CreatureEntity extends Entity {
     g.draw(sprite.getTexture, position.x - spriteW / 2, position.y - spriteH / 2, spriteW, spriteH, sprite.getRegionX, sprite.getRegionY, sprite.getRegionWidth, sprite.getRegionHeight, flipX, false)
   }
 
-  protected def drawGun(sprite: Texture, distance: Float, g: GdxGraphics, scale: Float = 1.0f): Unit = {
+  protected def drawGun(sprite: Texture, distance: Float, g: GdxGraphics, scale: Float = 1.0f, offset: Vector2 = new Vector2(0, 0)): Unit = {
     val (spriteW, spriteH) = (sprite.getWidth*scale, sprite.getHeight*scale)
-    val flipY = aimVector.angle() > 90 && aimVector.angle() < 280
+    val flipY = if(aimVector.angle() > 90 && aimVector.angle() < 280) -1 else 1
     val gunPos = new Vector2(position.x, position.y).add(new Vector2(aimVector.x, aimVector.y).nor().scl(distance)).add(spriteW / 2, 0)
     val angle = (aimVector.angle/8).toInt * 8.0f  // round the angle to its nearest multiple of 8 to make it feel a bit more retro
-    g.draw(sprite, gunPos.x - spriteW/2, gunPos.y - spriteW/4, 22, 10, spriteW, spriteH, 1, 1, angle, 0, 0, sprite.getWidth, sprite.getHeight, true, flipY)
+
+    // Draw the gun sprite, rotated around the creature's position
+    g.draw(sprite, gunPos.x - spriteW/2 + offset.x, gunPos.y - spriteH/2 + offset.y, 0, spriteH/2, spriteW, spriteH, 1, flipY, angle, 0, 0, sprite.getWidth, sprite.getHeight, false, false)
   }
 }
