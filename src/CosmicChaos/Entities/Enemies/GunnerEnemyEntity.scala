@@ -1,13 +1,11 @@
 package CosmicChaos.Entities.Enemies
 
 import CosmicChaos.Core.Weapons.Weapon
-import CosmicChaos.Entities.{CreatureEntity, Entity, EntityStats}
+import CosmicChaos.Entities.{CreatureEntity, Entity}
 import com.badlogic.gdx.math.{Rectangle, Vector2, Vector3}
 
 abstract class GunnerEnemyEntity extends CreatureEntity {
   override val name: String = "Gunner"
-  override val baseStats: EntityStats = EntityStats(100, 12, 10, 100)
-  override var stats: EntityStats = baseStats
   override val collisionBox: Rectangle = new Rectangle(-32, -32, 64, 64)
 
   protected val weapon: Weapon

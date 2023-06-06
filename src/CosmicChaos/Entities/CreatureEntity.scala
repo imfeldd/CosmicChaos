@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 
+import scala.util.Random
+
 abstract class CreatureEntity extends Entity {
   val baseStats: EntityStats
   var stats: EntityStats
@@ -23,7 +25,10 @@ abstract class CreatureEntity extends Entity {
   }
 
   def dealDamageTo(amount: Float, recipient: CreatureEntity): Unit = {
-    recipient.onReceiveDamage(amount, this)
+    // Roll for critical
+    val amnt = if(Random.nextFloat() <= stats.criticalChance) amount * 2 else amount
+
+    recipient.onReceiveDamage(amnt, this)
   }
 
   protected def onReceiveDamage(amount: Float, source: Entity): Unit = {

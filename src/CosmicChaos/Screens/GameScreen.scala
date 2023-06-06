@@ -2,7 +2,7 @@ package CosmicChaos.Screens
 
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, GunnerEnemyEntity, ImmortalSnailEnemyEntity}
+import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
 import CosmicChaos.Entities.PlayerEntity
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake

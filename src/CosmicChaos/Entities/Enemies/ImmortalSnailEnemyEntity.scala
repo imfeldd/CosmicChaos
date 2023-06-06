@@ -12,7 +12,7 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
   snailTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   override val name: String = "Immortal Snail"
-  override val baseStats: EntityStats = EntityStats(100, 12, 10, 9999999)
+  override val baseStats: EntityStats = EntityStats(100, 12, 10, 9999999, 1.0f)
   override var stats: EntityStats = baseStats
   override val collisionBox: Rectangle = new Rectangle(-snailTexture.getWidth*scale/2, -snailTexture.getHeight/2, snailTexture.getWidth*scale, snailTexture.getHeight*scale)
 
