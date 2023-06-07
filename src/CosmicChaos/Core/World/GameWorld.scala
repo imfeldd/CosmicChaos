@@ -10,7 +10,8 @@ class GameWorld {
   val gameObjects: ArrayBuffer[GameObject] = new ArrayBuffer[GameObject]
 
   var playerEntity: PlayerEntity = _
-
+  val MyAlgo = new CellularAutomata(width = 6000, height = 6000, seed = 1234)
+  MyAlgo.worldCreation()
   def addGameObject(gameObject: GameObject): Unit= {
     gameObject match {
       case entity: PlayerEntity => playerEntity = entity

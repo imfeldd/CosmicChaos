@@ -2,8 +2,8 @@ package CosmicChaos.Screens
 
 import CosmicChaos.Core.World.{CellularAutomata, GameWorld}
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
-import CosmicChaos.Entities.{NormalChest, PlayerEntity}
+import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
+import CosmicChaos.Entities.{NormalChest, PlayerEntity, Teleporter}
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
@@ -24,8 +24,7 @@ class GameScreen extends RenderingScreen {
   val deathHud: DeathHUD = new DeathHUD(player)
   var gameTimer: Float = 0.0f
   val seed = 1234L
-  val MyAlgo = new CellularAutomata(width = 6000, height = 6000, seed)
-  MyAlgo.worldCreation()
+
   override def onInit(): Unit = {
     // Temporary testing code
     val testEnemy = new ImmortalSnailEnemyEntity{team = 2}
@@ -38,6 +37,8 @@ class GameScreen extends RenderingScreen {
     testGunner3.position = new Vector3(-150, 200, 0)
 
     val chest = new NormalChest
+    val teleporter = new Teleporter
+    val magicMage = new FirstBossEntity
 
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
@@ -45,6 +46,8 @@ class GameScreen extends RenderingScreen {
     gameWorld.addGameObject(testGunner2)
     gameWorld.addGameObject(testGunner3)
     gameWorld.addGameObject(chest)
+    gameWorld.addGameObject(teleporter)
+    gameWorld.addGameObject(magicMage)
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -63,9 +66,9 @@ class GameScreen extends RenderingScreen {
     g.begin()
     g.clear()
     doCameraShake(g)
-    MyAlgo.draw(g)
+    gameWorld.MyAlgo.draw(g)
 
-    g.getCamera.zoom = 8
+    g.getCamera.zoom = 9
 
     gameTimer += Gdx.graphics.getDeltaTime
 

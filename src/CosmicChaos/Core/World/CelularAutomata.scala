@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color
 
 import scala.util.Random
 
-class CellularAutomata(width: Int, height: Int, seed: Long) {
+class CellularAutomata(val width: Int, val height: Int, seed: Long) {
 
   private val random = new Random(seed)
   private var grid: Array[Array[Boolean]] = Array.ofDim[Boolean](width, height)
@@ -75,9 +75,9 @@ class CellularAutomata(width: Int, height: Int, seed: Long) {
   // Determine whether a cell should be alive based on its current state and the count of alive neighbors
   private def shouldLive(isAlive: Boolean, count: Int): Boolean = {
     if (isAlive) {
-      count >= 3 && count <= 5
+      count >= 2 && count <= 5
     } else {
-      count >= 2 && count <= 6
+      count >= 1 && count <= 6
     }
   }
 }
