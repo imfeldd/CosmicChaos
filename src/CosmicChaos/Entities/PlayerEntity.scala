@@ -53,6 +53,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     attackSpeed = 1.0f
   )
   override var stats: EntityStats = baseStats
+  override val collisionLayer: Int = CollisionLayers.player
+  override val collisionMask: Int = CollisionLayers.world + CollisionLayers.props
 
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 30*spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)

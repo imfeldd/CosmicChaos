@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.{Rectangle, Vector2, Vector3}
 abstract class GunnerEnemyEntity extends CreatureEntity {
   override val name: String = "Gunner"
   override val collisionBox: Rectangle = new Rectangle(-32, -32, 64, 64)
+  override val collisionLayer: Int = CollisionLayers.enemy
+  override val collisionMask: Int = CollisionLayers.world + CollisionLayers.props
 
   protected val weapon: Weapon
   protected var aggro: Entity = null

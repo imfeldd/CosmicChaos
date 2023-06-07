@@ -9,7 +9,8 @@ import com.badlogic.gdx.math.{Rectangle, Vector3}
 class Projectile(var damage: Float, val parent: CreatureEntity) extends Entity {
   override val name: String = "Bullet"
   override val collisionBox: Rectangle = new Rectangle(-4, -4, 8, 8)
-  override val collisionLayer: Int = Integer.parseInt("01010101", 2)
+  override val collisionLayer: Int = CollisionLayers.bullet
+  override val collisionMask: Int = CollisionLayers.enemy + CollisionLayers.player + CollisionLayers.world + CollisionLayers.props
 
   private var timer: Float = 0
 

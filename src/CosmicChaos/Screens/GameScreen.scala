@@ -12,10 +12,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.{Rectangle, Vector3}
 
 import scala.util.Random
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.math.MathUtils.random
-
-import scala.util.Random
 
 class GameScreen extends RenderingScreen {
   val gameWorld: GameWorld = new GameWorld
@@ -65,8 +61,6 @@ class GameScreen extends RenderingScreen {
     doCameraShake(g)
     MyAlgo.draw(g)
 
-    g.getCamera.zoom = 8
-
     gameTimer += Gdx.graphics.getDeltaTime
 
     // TODO: Move all this shit to GameWorld
@@ -77,8 +71,12 @@ class GameScreen extends RenderingScreen {
         val (cb1, cb2) = (c1.collisionBox, c2.collisionBox)
         val (rec1, rec2) = (new Rectangle(cb1.x, cb1.y, cb1.getWidth, cb1.getWidth), new Rectangle(cb2.x, cb2.y, cb2.getWidth, cb2.getHeight))
         if(rec1.setPosition(rec1.x + c1.position.x, rec1.y + c1.position.y).overlaps(rec2.setPosition(rec2.x + c2.position.x, rec2.y + c2.position.y))) {
-          c1.onCollideWith(c2)
-          c2.onCollideWith(c1)
+          if(c1.shouldCollideWith(c2)) {
+            c1.onCollideWith(c2)
+          }
+          if(c2.shouldCollideWith(c1)) {
+            c2.onCollideWith(c1)
+          }
         }
       }
     }
