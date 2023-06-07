@@ -1,12 +1,15 @@
 package CosmicChaos.Entities
 
 import CosmicChaos.Utils.Animation
+import CosmicChaos.Core.Items.Item
+import CosmicChaos.Core.Stats.EntityStats
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 
+import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 abstract class CreatureEntity extends Entity {
@@ -19,6 +22,7 @@ abstract class CreatureEntity extends Entity {
   val baseStats: EntityStats
   var stats: EntityStats
   var cash: Float = 0.0f
+  val itemsInventory: ArrayBuffer[Item] = new ArrayBuffer[Item]()
 
   var team: Int = -1
 
@@ -29,15 +33,35 @@ abstract class CreatureEntity extends Entity {
 
   def isDead: Boolean = currentHealth <= 0
 
+  override def onUpdate(dt: Float): Unit = {
+    super.onUpdate(dt)
+
+    stats = baseStats.copy()
+    itemsInventory.foreach(x =>
+      x.modify(stats)
+    )
+  }
+
   override def onEnterGameWorld(): Unit = {
     currentHealth = stats.maxHealth
   }
 
   def dealDamageTo(amount: Float, recipient: CreatureEntity): Unit = {
     // Roll for critical
-    val amnt = if(Random.nextFloat() <= stats.criticalChance) amount * 2 else amount
+    val amnt = if(Random.nextFloat() <= math.max(1.0f, stats.criticalChance.value)) amount * 2 else amount
 
     recipient.onReceiveDamage(amnt, this)
+  }
+
+  def addItemToInventory(item: Item, amount: Int = 1): Unit = {
+    // If there's already an item of that type in the inventory, increment the stack size
+    // otherwise just add the item to the inventory
+    val i = itemsInventory.find(_.name == item.name)
+    item.stackSize = amount
+    i match {
+      case Some(itm) => itm.stackSize += amount
+      case None => itemsInventory.addOne(item)
+    }
   }
 
   protected def onReceiveDamage(amount: Float, source: CreatureEntity): Unit = {

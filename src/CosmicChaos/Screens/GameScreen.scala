@@ -2,8 +2,8 @@ package CosmicChaos.Screens
 
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
-import CosmicChaos.Entities.{NormalChest, PlayerEntity}
+import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
+import CosmicChaos.Entities.{NormalChest, PlayerEntity, Teleporter}
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
@@ -19,6 +19,7 @@ class GameScreen extends RenderingScreen {
   val gameplayHud: GameplayHUD = new GameplayHUD(player, this)
   val deathHud: DeathHUD = new DeathHUD(player)
   var gameTimer: Float = 0.0f
+  val seed = 1234L
 
   override def onInit(): Unit = {
     // Temporary testing code
@@ -32,6 +33,8 @@ class GameScreen extends RenderingScreen {
     testGunner3.position = new Vector3(-150, 200, 0)
 
     val chest = new NormalChest
+    val teleporter = new Teleporter
+    val magicMage = new FirstBossEntity
 
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
@@ -39,6 +42,8 @@ class GameScreen extends RenderingScreen {
     gameWorld.addGameObject(testGunner2)
     gameWorld.addGameObject(testGunner3)
     gameWorld.addGameObject(chest)
+    gameWorld.addGameObject(teleporter)
+    gameWorld.addGameObject(magicMage)
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -56,8 +61,10 @@ class GameScreen extends RenderingScreen {
   override def onGraphicRender(g: GdxGraphics): Unit = {
     g.begin()
     g.clear()
-
     doCameraShake(g)
+    gameWorld.MyAlgo.draw(g)
+
+    //g.getCamera.zoom = 9
 
     gameTimer += Gdx.graphics.getDeltaTime
 
@@ -69,8 +76,12 @@ class GameScreen extends RenderingScreen {
         val (cb1, cb2) = (c1.collisionBox, c2.collisionBox)
         val (rec1, rec2) = (new Rectangle(cb1.x, cb1.y, cb1.getWidth, cb1.getWidth), new Rectangle(cb2.x, cb2.y, cb2.getWidth, cb2.getHeight))
         if(rec1.setPosition(rec1.x + c1.position.x, rec1.y + c1.position.y).overlaps(rec2.setPosition(rec2.x + c2.position.x, rec2.y + c2.position.y))) {
-          c1.onCollideWith(c2)
-          c2.onCollideWith(c1)
+          if(c1.shouldCollideWith(c2)) {
+            c1.onCollideWith(c2)
+          }
+          if(c2.shouldCollideWith(c1)) {
+            c2.onCollideWith(c1)
+          }
         }
       }
     }
