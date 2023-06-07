@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.math.Vector2
 
 class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
   val shapeRenderer = new ShapeRenderer()
@@ -37,6 +38,29 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
 
     shapeRenderer.end()
     spriteBatch.begin()
+
+    val itemsPerCol = 8
+    val iconSize = 64
+    val iconMargin = 16
+    val basePos = new Vector2(30, 150)
+    for(itemIdx <- player.itemsInventory.indices) {
+      val item = player.itemsInventory(itemIdx)
+      val col = itemIdx / itemsPerCol
+      val row = itemIdx % itemsPerCol
+      val (posX, posY) = (basePos.x + col * (iconSize + iconMargin), basePos.y + row * (iconSize + iconMargin))
+
+      // Draw the item icon
+      spriteBatch.draw(
+        item.icon,
+        posX,
+        posY,
+        iconSize, iconSize
+      )
+
+      // Draw the item stack count
+      if(item.stackSize != 0)
+        bitmapFont.draw(spriteBatch, s"x${item.stackSize}", posX, posY)
+    }
 
     // Healthbar counter
     bitmapFont.draw(spriteBatch, s"${player.currentHealth.toInt}/${player.stats.maxHealth.toInt}", 30, 55, 350, 1, false)

@@ -9,6 +9,9 @@ import com.badlogic.gdx.math.{Circle, Rectangle}
 class Explosion(damage: Float, radius: Float, parent: CreatureEntity) extends Entity {
   override val name: String = "Explosion"
   override val collisionBox: Rectangle = new Rectangle(0, 0, 0, 0)
+  override val collisionLayer: Int = CollisionLayers.none
+  override val collisionMask: Int = CollisionLayers.all
+
   renderLayer = 2
 
   private var timer: Float = 0.0f

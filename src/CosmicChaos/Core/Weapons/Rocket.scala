@@ -24,7 +24,7 @@ class Rocket(damage: Float, parent: CreatureEntity) extends Projectile(damage, p
   }
 
   private def explode(): Unit = {
-    val explosion = new Explosion(100, 96, parent)
+    val explosion = new Explosion(damage * parent.stats.damage, 96, parent)
     explosion.position = new Vector3(position.x, position.y, 0)
     parentGameWorld.addGameObject(explosion)
     parentGameWorld.removeGameObject(this)
