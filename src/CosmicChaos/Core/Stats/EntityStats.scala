@@ -1,0 +1,23 @@
+package CosmicChaos.Core.Stats
+
+case class EntityStats(
+  maxHealth: StatValue,
+  maxSpeed: StatValue,
+  acceleration: StatValue,
+  damage: StatValue,
+  criticalChance: StatValue,
+  attackSpeed: StatValue
+) extends Stats {
+
+  def this(maxHealth: Float, maxSpeed: Float, acceleration: Float, damage: Float, criticalChance: Float, attackSpeed: Float) = {
+    this(StatValue(maxHealth), StatValue(maxSpeed), StatValue(acceleration), StatValue(damage), StatValue(criticalChance), StatValue(attackSpeed))
+  }
+
+  override def accept(modifier: StatsModifier): Unit = {
+    modifier.modify(this)
+  }
+
+  def copy(): EntityStats = {
+    new EntityStats(maxHealth.baseValue, maxSpeed.baseValue, acceleration.baseValue, damage.baseValue, criticalChance.baseValue, attackSpeed.baseValue)
+  }
+}

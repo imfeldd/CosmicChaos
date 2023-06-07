@@ -31,7 +31,7 @@ abstract class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val s
       ammoCount = ammoCapacity
 
     if(triggerHeld && canShootThisFrame) {
-      shootTimer = shotFrequency
+      shootTimer = shotFrequency * (1.0f/holder.stats.attackSpeed)
       shootingThisFrame = true
 
       if(hasAmmoCapacity) {
@@ -44,8 +44,9 @@ abstract class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val s
 
       // TODO: Implement a pool of projectiles to prevent creating a new instance each shot?
       // TODO: Actual projectile firing shouldn't be done here. The holder entity should take care of that
-      val proj: Projectile = projectile.copy
       val shotInaccuracy = if(inaccuracy != 0) Random.between(-inaccuracy, inaccuracy) else 0.0f
+      val proj: Projectile = projectile.copy
+      proj.damage *= holder.stats.damage
       proj.velocity = new Vector2(holder.aimVector.x, holder.aimVector.y).nor().scl(700).rotate(shotInaccuracy) // TODO: Projectile speed should be handled in the Projectile class
       holder.parentGameWorld.addGameObject(proj)
     }

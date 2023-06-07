@@ -12,6 +12,8 @@ abstract class GunnerEnemyEntity extends CreatureEntity {
   protected var aggro: Entity = null
 
   override def onUpdate(dt: Float): Unit = {
+    super.onUpdate(dt)
+
     if(aggro == null)
       // Aggro the player by default
       aggro = parentGameWorld.playerEntity
@@ -28,7 +30,7 @@ abstract class GunnerEnemyEntity extends CreatureEntity {
     if(vecToPlayer.len() < 500) {
       // Move away from player if we're too close
       aimVector = vecToPlayer.rotate(180).nor
-      position.add(new Vector3(aimVector.x, aimVector.y, 0).scl(90*dt))
+      position.add(new Vector3(aimVector.x, aimVector.y, 0).scl(stats.maxSpeed*dt))
     }
     else {
       // Shoot at the player

@@ -1,6 +1,7 @@
 package CosmicChaos.Entities
 
 import CosmicChaos.Core.Interactable
+import CosmicChaos.Core.Stats.EntityStats
 import CosmicChaos.Core.Weapons.{Rocket, Weapon}
 import CosmicChaos.Screens.GameScreen
 import CosmicChaos.Utils.Animation
@@ -31,11 +32,10 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
   private val deathAnimation = new Animation(0.120f, deathFrames(0), loop = false)
 
-
-  //private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 4.5f, ammoCapacity = 14, reloadTime = 0.66f) {}
+ // private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 4.5f, ammoCapacity = 14, reloadTime = 0.66f) {}
 
   private val weapon: Weapon = new Weapon(
-    new Rocket(64, this),
+    new Rocket(1.5f, this),
     isFullAuto = false,
     shotsPerSecond = 3,
     ammoCapacity = 3,
@@ -44,7 +44,14 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   ) {}
 
   override val name: String = "Player"
-  override val baseStats: EntityStats = EntityStats(maxHealth = 100, maxSpeed = 550, acceleration = 40, baseDamage = 10, criticalChance = 0.02f)
+  override val baseStats: EntityStats = new EntityStats(
+    maxHealth = 100,
+    maxSpeed = 550,
+    acceleration = 40,
+    damage = 15,
+    criticalChance = 0.02f,
+    attackSpeed = 1.0f
+  )
   override var stats: EntityStats = baseStats
 
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 30*spriteScale)
@@ -99,6 +106,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   }
 
   override def onUpdate(dt: Float): Unit = {
+    super.onUpdate(dt)
+
     interactableOfInterest = None
 
     doMovement(dt)

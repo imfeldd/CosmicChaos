@@ -1,6 +1,7 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Entities.{CreatureEntity, EntityStats}
+import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Entities.CreatureEntity
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture.TextureFilter
@@ -12,7 +13,14 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
   snailTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   override val name: String = "Immortal Snail"
-  override val baseStats: EntityStats = EntityStats(100, 12, 10, 9999999, 1.0f)
+  override val baseStats: EntityStats = new EntityStats(
+    maxHealth = 100,
+    maxSpeed =  12,
+    acceleration = 10,
+    damage = 9999999,
+    criticalChance = 1.0f,
+    attackSpeed = 1.0f
+  )
   override var stats: EntityStats = baseStats
   override val collisionBox: Rectangle = new Rectangle(-snailTexture.getWidth*scale/2, -snailTexture.getHeight/2, snailTexture.getWidth*scale, snailTexture.getHeight*scale)
 
@@ -21,6 +29,8 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
   }
 
   override def onUpdate(dt: Float): Unit = {
+    super.onUpdate(dt)
+
     val (a, b) = (parentGameWorld.playerEntity.position, position)
     val vecToPlayer = new Vector3(a.x - b.x, a.y - b.y, a.z- b.z)
 
@@ -29,12 +39,12 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
 
     if(parentGameWorld.playerEntity.position.dst(position) < 50) {
       // If within player reach, kill them
-      dealDamageTo(stats.baseDamage, parentGameWorld.playerEntity)
+      dealDamageTo(stats.damage, parentGameWorld.playerEntity)
     }
     else {
       // Move slowly towards the player
       val speed = stats.maxSpeed
-      position = position.add(vecToPlayer.nor.scl(speed * dt, speed * dt, speed * dt))
+      position = position.add(vecToPlayer.nor.scl(speed*dt))
 
     }
   }
