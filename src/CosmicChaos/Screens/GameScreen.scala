@@ -1,6 +1,6 @@
 package CosmicChaos.Screens
 
-import CosmicChaos.Core.World.GameWorld
+import CosmicChaos.Core.World.{CellularAutomata, GameWorld}
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
 import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
 import CosmicChaos.Entities.{NormalChest, PlayerEntity}
@@ -12,6 +12,10 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.{Rectangle, Vector3}
 
 import scala.util.Random
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.math.MathUtils.random
+
+import scala.util.Random
 
 class GameScreen extends RenderingScreen {
   val gameWorld: GameWorld = new GameWorld
@@ -19,7 +23,9 @@ class GameScreen extends RenderingScreen {
   val gameplayHud: GameplayHUD = new GameplayHUD(player, this)
   val deathHud: DeathHUD = new DeathHUD(player)
   var gameTimer: Float = 0.0f
-
+  val seed = 1234L
+  val MyAlgo = new CellularAutomata(width = 6000, height = 6000, seed)
+  MyAlgo.worldCreation()
   override def onInit(): Unit = {
     // Temporary testing code
     val testEnemy = new ImmortalSnailEnemyEntity{team = 2}
@@ -56,8 +62,10 @@ class GameScreen extends RenderingScreen {
   override def onGraphicRender(g: GdxGraphics): Unit = {
     g.begin()
     g.clear()
-
     doCameraShake(g)
+    MyAlgo.draw(g)
+
+    g.getCamera.zoom = 8
 
     gameTimer += Gdx.graphics.getDeltaTime
 
