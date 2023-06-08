@@ -28,7 +28,7 @@ abstract class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val s
 
     // If we've reached the end of the reload timer, load a full mag
     if(reloadTimer <= 0 && ammoCount == 0)
-      ammoCount = ammoCapacity
+      ammoCount = (ammoCapacity * holder.stats.attackCapacity).toInt
 
     if(triggerHeld && canShootThisFrame) {
       shootTimer = shotFrequency * (1.0f/holder.stats.attackSpeed)
@@ -44,7 +44,12 @@ abstract class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val s
 
       // TODO: Implement a pool of projectiles to prevent creating a new instance each shot?
       // TODO: Actual projectile firing shouldn't be done here. The holder entity should take care of that
-      val shotInaccuracy = if(inaccuracy != 0) Random.between(-inaccuracy, inaccuracy) else 0.0f
+      val shotInaccuracy =
+        if(inaccuracy != 0)
+          Random.between(-inaccuracy, inaccuracy) * (1.0f / holder.stats.attackAccuracy)
+        else
+          0.0f
+
       val proj: Projectile = projectile.copy
       proj.damage *= holder.stats.damage
       proj.velocity = new Vector2(holder.aimVector.x, holder.aimVector.y).nor().scl(700).rotate(shotInaccuracy) // TODO: Projectile speed should be handled in the Projectile class

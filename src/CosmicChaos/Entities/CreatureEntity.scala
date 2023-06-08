@@ -1,5 +1,6 @@
 package CosmicChaos.Entities
 
+import CosmicChaos.Core.Items.Effects.{BeforeDealDamageEffect, DealtDamageEffect, OnGetHitEffect, OnKillEffect}
 import CosmicChaos.Utils.Animation
 import CosmicChaos.Core.Items.Item
 import CosmicChaos.Core.Stats.EntityStats
@@ -37,20 +38,36 @@ abstract class CreatureEntity extends Entity {
     super.onUpdate(dt)
 
     stats = baseStats.copy()
-    itemsInventory.foreach(x =>
-      x.modify(stats)
-    )
+    for(itm <- itemsInventory) {
+      itm.update(dt)
+      itm.modify(stats)
+    }
   }
 
   override def onEnterGameWorld(): Unit = {
     currentHealth = stats.maxHealth
   }
 
+  def heal(amount: Float): Unit = {
+    currentHealth = math.min(stats.maxHealth, currentHealth + amount)
+  }
+
   def dealDamageTo(amount: Float, recipient: CreatureEntity): Unit = {
     // Roll for critical
-    val amnt = if(Random.nextFloat() <= math.max(1.0f, stats.criticalChance.value)) amount * 2 else amount
+    var amnt = if(Random.nextFloat() <= math.min(1.0f, stats.criticalChance.value)) amount * 2 else amount
+    val crit = amnt != amount
 
-    recipient.onReceiveDamage(amnt, this)
+    val beforeDealDamageEffect = itemsInventory.filter(_.isInstanceOf[BeforeDealDamageEffect]).map(_.asInstanceOf[BeforeDealDamageEffect])
+    for (i <- beforeDealDamageEffect) {
+      amnt = i.beforeDealDamage(amnt, crit, recipient)
+    }
+
+    recipient.onReceiveDamage(amnt, this, crit)
+
+    val onDealDamageItems = itemsInventory.filter(_.isInstanceOf[DealtDamageEffect]).map(_.asInstanceOf[DealtDamageEffect])
+    for (i <- onDealDamageItems) {
+      i.dealtDamage(amnt, crit, recipient)
+    }
   }
 
   def addItemToInventory(item: Item, amount: Int = 1): Unit = {
@@ -58,13 +75,14 @@ abstract class CreatureEntity extends Entity {
     // otherwise just add the item to the inventory
     val i = itemsInventory.find(_.name == item.name)
     item.stackSize = amount
+    item.holder = this
     i match {
       case Some(itm) => itm.stackSize += amount
       case None => itemsInventory.addOne(item)
     }
   }
 
-  protected def onReceiveDamage(amount: Float, source: CreatureEntity): Unit = {
+  protected def onReceiveDamage(amount: Float, source: CreatureEntity, wasCrit: Boolean): Unit = {
     if(isDead)
       return
 
@@ -75,13 +93,24 @@ abstract class CreatureEntity extends Entity {
       deathCause = source
       onDeath(source)
     }
+    else {
+      val onGetHitItems = itemsInventory.filter(_.isInstanceOf[OnGetHitEffect]).map(_.asInstanceOf[OnGetHitEffect])
+      for (i <- onGetHitItems) {
+        i.gotHit(source, amount, wasCrit)
+      }
+    }
   }
 
   protected def onDeath(deathCause: Entity): Unit = {
     parentGameWorld.removeGameObject(this)
   }
 
-  protected def onKill(killed: CreatureEntity): Unit = {}
+  protected def onKill(killed: CreatureEntity): Unit = {
+    val onKillEffectItems = itemsInventory.filter(_.isInstanceOf[OnKillEffect]).map(_.asInstanceOf[OnKillEffect])
+    for(i <- onKillEffectItems) {
+      i.onKill(killed)
+    }
+  }
 
   protected def drawSprite(sprite: Texture, g: GdxGraphics, scale: Float = 1.0f): Unit = {
     val (spriteW, spriteH) = (sprite.getWidth*scale, sprite.getHeight*scale)

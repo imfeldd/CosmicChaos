@@ -2,7 +2,7 @@ package CosmicChaos.Entities
 
 import CosmicChaos.Core.Interactable
 import CosmicChaos.Core.Stats.EntityStats
-import CosmicChaos.Core.Weapons.{Rocket, Weapon}
+import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import CosmicChaos.Screens.GameScreen
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
@@ -32,8 +32,9 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
   private val deathAnimation = new Animation(0.120f, deathFrames(0), loop = false)
 
- // private val weapon: Weapon = new Weapon(new Projectile(10, this), true, 14, this, inaccuracy = 4.5f, ammoCapacity = 14, reloadTime = 0.66f) {}
+  private val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, ammoCapacity = 14, reloadTime = 0.66f) {}
 
+  /*
   private val weapon: Weapon = new Weapon(
     new Rocket(1.5f, this),
     isFullAuto = false,
@@ -43,6 +44,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     holder = this
   ) {}
 
+   */
   override val name: String = "Player"
   override val baseStats: EntityStats = new EntityStats(
     maxHealth = 100,
@@ -53,6 +55,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     attackSpeed = 1.0f
   )
   override var stats: EntityStats = baseStats
+
   override val collisionLayer: Int = CollisionLayers.player
   override val collisionMask: Int = CollisionLayers.world + CollisionLayers.props
 
@@ -79,7 +82,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     }
 
     if(!isDead) {
-      drawGun(gunTexture, 8, g, scale = 2, offset = new Vector2(0, 5))
+      drawGun(gunTexture, 6, g, scale = 2, offset = new Vector2(0, 5))
 
       if(weapon.isMagasineEmpty) {
         g.drawString(position.x, position.y + 80, "RELOADING", 1)
@@ -169,14 +172,16 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     }
   }
 
-  protected override def onReceiveDamage(amount: Float, source: CreatureEntity): Unit = {
+  protected override def onReceiveDamage(amount: Float, source: CreatureEntity, wasCrit: Boolean): Unit = {
     if(source == this)
       return
 
-    super.onReceiveDamage(amount, source)
+    super.onReceiveDamage(amount, source, wasCrit)
   }
 
   override def onKill(killed: CreatureEntity): Unit = {
+    super.onKill(killed)
+
     cash += killed.cash
   }
 
