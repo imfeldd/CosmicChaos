@@ -24,6 +24,9 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
   override var stats: EntityStats = baseStats
   override val collisionBox: Rectangle = new Rectangle(-snailTexture.getWidth*scale/2, -snailTexture.getHeight/2, snailTexture.getWidth*scale, snailTexture.getHeight*scale)
 
+  override val collisionLayer: Int = CollisionLayers.enemy
+  override val collisionMask: Int = CollisionLayers.world + CollisionLayers.props
+
   override def onGraphicRender(g: GdxGraphics): Unit = {
     drawSprite(snailTexture, g, scale)
   }
@@ -49,5 +52,5 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
     }
   }
 
-  protected override def onReceiveDamage(amount: Float, source: CreatureEntity): Unit = {}
+  protected override def onReceiveDamage(amount: Float, source: CreatureEntity, wasCrit: Boolean): Unit = {}
 }

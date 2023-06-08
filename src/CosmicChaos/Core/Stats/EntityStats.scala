@@ -6,11 +6,13 @@ case class EntityStats(
   acceleration: StatValue,
   damage: StatValue,
   criticalChance: StatValue,
-  attackSpeed: StatValue
+  attackSpeed: StatValue,
+  attackAccuracy: StatValue,
+  attackCapacity: StatValue
 ) extends Stats {
 
-  def this(maxHealth: Float, maxSpeed: Float, acceleration: Float, damage: Float, criticalChance: Float, attackSpeed: Float) = {
-    this(StatValue(maxHealth), StatValue(maxSpeed), StatValue(acceleration), StatValue(damage), StatValue(criticalChance), StatValue(attackSpeed))
+  def this(maxHealth: Float, maxSpeed: Float, acceleration: Float, damage: Float, criticalChance: Float, attackSpeed: Float, attackAccuracy: Float = 1.0f, attackCapacity: Float = 1.0f) = {
+    this(StatValue(maxHealth), StatValue(maxSpeed), StatValue(acceleration), StatValue(damage), StatValue(criticalChance), StatValue(attackSpeed), StatValue(attackAccuracy), StatValue(attackCapacity))
   }
 
   override def accept(modifier: StatsModifier): Unit = {
@@ -18,6 +20,6 @@ case class EntityStats(
   }
 
   def copy(): EntityStats = {
-    new EntityStats(maxHealth.baseValue, maxSpeed.baseValue, acceleration.baseValue, damage.baseValue, criticalChance.baseValue, attackSpeed.baseValue)
+    new EntityStats(maxHealth.baseValue, maxSpeed.baseValue, acceleration.baseValue, damage.baseValue, criticalChance.baseValue, attackSpeed.baseValue, attackAccuracy.baseValue, attackCapacity.baseValue)
   }
 }

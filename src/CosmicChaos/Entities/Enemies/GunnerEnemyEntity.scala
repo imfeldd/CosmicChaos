@@ -44,8 +44,8 @@ abstract class GunnerEnemyEntity extends CreatureEntity {
     }
   }
 
-  protected override def onReceiveDamage(amount: Float, source: CreatureEntity): Unit = {
-    super.onReceiveDamage(amount, source)
+  protected override def onReceiveDamage(amount: Float, source: CreatureEntity, wasCrit: Boolean): Unit = {
+    super.onReceiveDamage(amount, source, wasCrit)
     aggro = source
   }
 }
