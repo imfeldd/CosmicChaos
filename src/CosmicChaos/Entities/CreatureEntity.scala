@@ -74,7 +74,6 @@ abstract class CreatureEntity extends Entity {
     // If there's already an item of that type in the inventory, increment the stack size
     // otherwise just add the item to the inventory
     val i = itemsInventory.find(_.name == item.name)
-    item.stackSize = amount
     item.holder = this
     i match {
       case Some(itm) => itm.stackSize += amount

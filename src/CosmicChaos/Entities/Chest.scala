@@ -42,6 +42,10 @@ abstract class Chest extends Entity with Interactable {
       else
         GameScreen.itemsList.filter(_.rarity == ItemRarity.legendary)
 
+    // TODO: This sucks because this is a ref to the item in GameScreen.itemsList
+    //        so if we mutate the item in the player's inventory, it's also gonna
+    //        be mutated in the global itemsList. Need to find a way to copy/clone
+    //        the Item, or create a new instance.
     val item = possibleItems(Random.nextInt(possibleItems.length))
     player.addItemToInventory(item, 1)
 
