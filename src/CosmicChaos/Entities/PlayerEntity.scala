@@ -1,8 +1,10 @@
 package CosmicChaos.Entities
 
 import CosmicChaos.Core.Interactable
+import CosmicChaos.Core.Items.Item
 import CosmicChaos.Core.Stats.EntityStats
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
+import CosmicChaos.HUD.GameplayHUD
 import CosmicChaos.Screens.GameScreen
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
@@ -170,6 +172,11 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     if (weapon.isShootingThisFrame) {
       GameScreen.cameraShake = .5f
     }
+  }
+
+  override def addItemToInventory(item: Item, amount: Int): Unit = {
+    super.addItemToInventory(item, amount)
+    GameplayHUD.showItemNotification(item)
   }
 
   protected override def onReceiveDamage(amount: Float, source: CreatureEntity, wasCrit: Boolean): Unit = {

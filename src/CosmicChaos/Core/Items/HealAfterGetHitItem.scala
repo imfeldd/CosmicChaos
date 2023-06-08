@@ -1,6 +1,7 @@
 package CosmicChaos.Core.Items
 
 import CosmicChaos.Core.Items.Effects.OnGetHitEffect
+import CosmicChaos.Core.Items.ItemRarity.ItemRarity
 import CosmicChaos.Entities.CreatureEntity
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import com.badlogic.gdx.graphics.Texture
@@ -10,6 +11,7 @@ class HealAfterGetHitItem extends Item with OnGetHitEffect {
   override val name: String = "First Aid Kit"
   override val description: String = "Heal for 8 (+5 per stack) health points 2 seconds after getting hit."
   override val icon: Texture = new BitmapImage("data/images/items/healthpack.png").getImage
+  override val rarity: ItemRarity = ItemRarity.common
   icon.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   private var healTimer: Float = 0.0f

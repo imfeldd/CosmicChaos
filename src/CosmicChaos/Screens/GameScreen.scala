@@ -1,9 +1,10 @@
 package CosmicChaos.Screens
 
+import CosmicChaos.Core.Items._
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
 import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
-import CosmicChaos.Entities.{NormalChest, PlayerEntity, Teleporter}
+import CosmicChaos.Entities.{LegendaryChest, NormalChest, PlayerEntity, RareChest, Teleporter}
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
@@ -32,7 +33,23 @@ class GameScreen extends RenderingScreen {
     val testGunner3 = new FlyingAlienEnemyEntity{team = 2}
     testGunner3.position = new Vector3(-150, 200, 0)
 
-    val chest = new NormalChest
+    player.cash = 1000000
+    for(i <- 0 until 30) {
+      val chest = new NormalChest
+      chest.position = new Vector3(-110 * i, -30, 0)
+      gameWorld.addGameObject(chest)
+    }
+    for (i <- 0 until 30) {
+      val chest = new RareChest
+      chest.position = new Vector3(-110 * i, -110, 0)
+      gameWorld.addGameObject(chest)
+    }
+    for (i <- 0 until 30) {
+      val chest = new LegendaryChest
+      chest.position = new Vector3(-110 * i, -190, 0)
+      gameWorld.addGameObject(chest)
+    }
+
     val teleporter = new Teleporter
     val magicMage = new FirstBossEntity
 
@@ -41,7 +58,6 @@ class GameScreen extends RenderingScreen {
     gameWorld.addGameObject(testGunner)
     gameWorld.addGameObject(testGunner2)
     gameWorld.addGameObject(testGunner3)
-    gameWorld.addGameObject(chest)
     gameWorld.addGameObject(teleporter)
     gameWorld.addGameObject(magicMage)
   }
@@ -128,4 +144,20 @@ class GameScreen extends RenderingScreen {
 
 object GameScreen {
   var cameraShake: Float = 0.0f
+
+  val itemsList: Array[Item] = Array[Item](
+    new HealAfterGetHitItem,
+    new HealOnCritItem,
+    new ItemOnKillItem,
+    new MoreAccuracyItem,
+    new MoreAmmoItem,
+    new MoreAttackSpeedItem,
+    new MoreCritsItem,
+    new MoreDamageItem,
+    new MoreDamageSameEnemyItem,
+    new MoreHealthItem,
+    new MoreMoneyOnKill,
+    new MoreSpeedItem,
+    new RollbackHealthItem
+  )
 }

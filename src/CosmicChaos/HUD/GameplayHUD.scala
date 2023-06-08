@@ -1,12 +1,17 @@
 package CosmicChaos.HUD
 
+import CosmicChaos.Core.Items.{Item, ItemRarity}
 import CosmicChaos.Entities.PlayerEntity
+import CosmicChaos.HUD.GameplayHUD.newItems
 import CosmicChaos.Screens.GameScreen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
+import com.badlogic.gdx.graphics.g2d.{BitmapFont, GlyphLayout, SpriteBatch}
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.Vector2
+
+import scala.collection.mutable
+
 
 class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
   val shapeRenderer = new ShapeRenderer()
@@ -14,7 +19,23 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
   val spriteBatch = new SpriteBatch()
   val bitmapFont = new BitmapFont()
 
+  private var newItemToDisplay: Option[Item] = None
+  private var newItemTimer: Float = 0.0f
+
   def onGraphicRender(): Unit = {
+
+    if(newItemToDisplay.nonEmpty) {
+      newItemTimer -= Gdx.graphics.getDeltaTime
+      if(newItemTimer <= 0) {
+        newItemToDisplay = None
+      }
+    }
+
+    if(newItemToDisplay.isEmpty && newItems.nonEmpty) {
+      newItemToDisplay = Some(newItems.dequeue())
+      newItemTimer = 3.0f
+    }
+
     val (w, h) = (Gdx.graphics.getWidth, Gdx.graphics.getHeight)
 
     shapeRenderer.begin()
@@ -35,6 +56,28 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     // Healthbar foreground
     shapeRenderer.setColor(Color.GREEN)
     shapeRenderer.rect(30, 30, 350 * math.max(0, player.currentHealth/player.stats.maxHealth), 40)
+
+    // New Item notification background
+    if(newItemToDisplay.nonEmpty) {
+      val i = newItemToDisplay.get
+      val gl = new GlyphLayout()
+      gl.setText(bitmapFont, i.description)
+      val lines = math.max(2, math.ceil(gl.width / 350 + 0.01f))
+
+      // Text Background
+      shapeRenderer.setColor(Color.DARK_GRAY)
+      shapeRenderer.rect(w/2 - 64 - 20 - 8, 150 - 34*lines.toInt, 350 + 64 + 20*2, 40 + 34*lines.toInt)
+
+      // Icon Background
+      shapeRenderer.setColor(i.rarity match {
+        case ItemRarity.common => Color.WHITE
+        case ItemRarity.rare => Color.YELLOW
+        case ItemRarity.legendary => Color.RED
+      })
+      shapeRenderer.set(ShapeRenderer.ShapeType.Line)
+      shapeRenderer.rect(w/2 - 64 - 20, 100 ,64, 64)
+      shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
+    }
 
     shapeRenderer.end()
     spriteBatch.begin()
@@ -78,10 +121,26 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
       bitmapFont.draw(spriteBatch, text, w/2, 30, 100, 1, false)
     }
 
+    // New Item notification
+    if(newItemToDisplay.nonEmpty) {
+      val i = newItemToDisplay.get
+      bitmapFont.draw(spriteBatch, i.name, w/2, 170, 350, 1, false)
+      bitmapFont.draw(spriteBatch, i.description, w/2, 130, 350, 1, true)
+      spriteBatch.draw(i.icon, w/2 - 64 - 20, 100, 64, 64)
+    }
+
     // Player money text
     bitmapFont.draw(spriteBatch, f"${player.cash}$$", 30, 105, 150, 1, false)
 
     spriteBatch.end()
+  }
+}
+
+object GameplayHUD {
+  val newItems = new mutable.Queue[Item]()
+
+  def showItemNotification(item: Item): Unit = {
+    newItems.enqueue(item)
   }
 }
 
