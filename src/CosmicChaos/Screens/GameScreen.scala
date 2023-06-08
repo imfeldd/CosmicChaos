@@ -64,7 +64,12 @@ class GameScreen extends RenderingScreen {
     doCameraShake(g)
     gameWorld.MyAlgo.draw(g)
 
+
     //g.getCamera.zoom = 9
+
+
+    g.getCamera.zoom = 9
+
 
     gameTimer += Gdx.graphics.getDeltaTime
 

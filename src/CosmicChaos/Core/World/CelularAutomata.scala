@@ -13,6 +13,7 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
   val numColumns = width / tileSize
   val numRows = height / tileSize
   val probabilityWall = 0.3
+  val probabilityWall = 0.45
 
   def worldCreation() = {
     //size world
@@ -26,6 +27,7 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
       }
     }
     iterate(7)
+    iterate(3)
   }
 
   def draw(g: GdxGraphics) = {
@@ -76,8 +78,10 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
   private def shouldLive(isAlive: Boolean, count: Int): Boolean = {
     if (isAlive) {
       count >= 2 && count <= 5
+      count >= 3 && count <= 4
     } else {
       count >= 1 && count <= 6
+      count >= 2 && count <= 5
     }
   }
 }
