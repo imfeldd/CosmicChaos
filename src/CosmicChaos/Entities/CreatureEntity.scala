@@ -124,6 +124,8 @@ abstract class CreatureEntity extends Entity {
     for(i <- onKillEffectItems) {
       i.onKill(killed)
     }
+
+    experience += killed.level * 5.0f
   }
 
   protected def drawSprite(sprite: Texture, g: GdxGraphics, scale: Float = 1.0f): Unit = {
