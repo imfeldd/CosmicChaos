@@ -22,22 +22,35 @@ abstract class CreatureEntity extends Entity {
 
   val baseStats: EntityStats
   var stats: EntityStats
+
   var cash: Float = 0.0f
+  var experience: Float = 0.0f
+  var currentHealth: Float = 50
+
   val itemsInventory: ArrayBuffer[Item] = new ArrayBuffer[Item]()
 
   var team: Int = -1
 
   var aimVector: Vector2 = new Vector2(0, 0)
 
-  var currentHealth: Float = 50
   var deathCause: Entity = _
 
   def isDead: Boolean = currentHealth <= 0
 
+  def level: Float =
+    (math.log(0.0275f * experience + 1) / math.log(1.55f)).toFloat + 1   // totally stolen from RoR2
+
+  def setLevel(level: Float): Unit =
+    experience = ((math.pow(1.55, level - 1) - 1) / 0.0275f).toFloat
+
   override def onUpdate(dt: Float): Unit = {
     super.onUpdate(dt)
-
     stats = baseStats.copy()
+
+    val extraLevels = math.floor(level - 1).toFloat
+    stats.maxHealth.baseAddition += extraLevels * 5.0f
+    stats.damage.baseAddition += extraLevels * 0.66f
+
     for(itm <- itemsInventory) {
       itm.update(dt)
       itm.modify(stats)

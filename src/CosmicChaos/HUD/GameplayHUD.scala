@@ -2,7 +2,7 @@ package CosmicChaos.HUD
 
 import CosmicChaos.Core.Items.{Item, ItemRarity}
 import CosmicChaos.Entities.PlayerEntity
-import CosmicChaos.HUD.GameplayHUD.{newItems, redFont, whiteFont, yellowFont}
+import CosmicChaos.HUD.GameplayHUD.{greenFont, newItems, redFont, whiteFont, yellowFont}
 import CosmicChaos.Screens.GameScreen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -46,7 +46,7 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
 
     // Player money background
     shapeRenderer.setColor(Color.DARK_GRAY)
-    shapeRenderer.rect(30, 80, 150, 40)
+    shapeRenderer.rect(w - 180, h - 120, 150, 40)
 
     // Healthbar background
     shapeRenderer.setColor(Color.DARK_GRAY)
@@ -55,6 +55,15 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     // Healthbar foreground
     shapeRenderer.setColor(new Color(0.0f, 0.7f, 0.0f, 1.0f))
     shapeRenderer.rect(30, 30, 350 * math.max(0, player.currentHealth/player.stats.maxHealth), 40)
+
+    // Level background
+    shapeRenderer.setColor(Color.DARK_GRAY)
+    shapeRenderer.rect(30, 85, 350, 30)
+
+    // Level foreground
+    val levelPercent = (player.level - math.floor(player.level)) / 1.0f
+    shapeRenderer.setColor(new Color(0.3f, 0.2f, 0.8f, 1.0f))
+    shapeRenderer.rect(30, 85, (350 * levelPercent).toInt, 30)
 
     // New Item notification background
     if(newItemToDisplay.nonEmpty) {
@@ -114,6 +123,10 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     val milliseconds = totalMillis % 1000
     whiteFont.draw(spriteBatch, f"$minutes%02d:$seconds%02d.$milliseconds%03d", w - 180, h - 45, 150, 1, false)
 
+    // Player money text
+    greenFont.getData.setScale(0.8f)
+    greenFont.draw(spriteBatch, f"${player.cash}$$", w - 180, h - 95, 150, 1, false)
+
     // Interaction text
     if(player.interactableOfInterest.isDefined) {
       val text = "[E] "+ player.interactableOfInterest.get.getInteractText
@@ -135,8 +148,8 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
       spriteBatch.draw(i.icon, w/2 - 64 - 20, 100, 64, 64)
     }
 
-    // Player money text
-    whiteFont.draw(spriteBatch, f"${player.cash}$$", 30, 105, 150, 1, false)
+    // Player level text
+    whiteFont.draw(spriteBatch, f"lvl. ${player.level.toInt}", 30, 105, 350, 1, false)
 
     // Player ammo counter
     whiteFont.draw(spriteBatch, s"${player.weapon.currentAmmoCount}/${player.weapon.ammoCapacity}",  Gdx.input.getX + 24, Gdx.graphics.getHeight - Gdx.input.getY)
