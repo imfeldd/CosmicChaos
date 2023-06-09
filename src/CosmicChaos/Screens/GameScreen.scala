@@ -1,10 +1,9 @@
 package CosmicChaos.Screens
 
-import CosmicChaos.Core.Items._
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
 import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
-import CosmicChaos.Entities.{LegendaryChest, NormalChest, PlayerEntity, RareChest, Teleporter}
+import CosmicChaos.Entities._
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
@@ -144,20 +143,4 @@ class GameScreen extends RenderingScreen {
 
 object GameScreen {
   var cameraShake: Float = 0.0f
-
-  val itemsList: Array[Item] = Array[Item](
-    new HealAfterGetHitItem,
-    new HealOnCritItem,
-    new ItemOnKillItem,
-    new MoreAccuracyItem,
-    new MoreAmmoItem,
-    new MoreAttackSpeedItem,
-    new MoreCritsItem,
-    new MoreDamageItem,
-    new MoreDamageSameEnemyItem,
-    new MoreHealthItem,
-    new MoreMoneyOnKill,
-    new MoreSpeedItem,
-    new RollbackHealthItem
-  )
 }

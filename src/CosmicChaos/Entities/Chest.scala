@@ -1,8 +1,7 @@
 package CosmicChaos.Entities
 
 import CosmicChaos.Core.Interactable
-import CosmicChaos.Core.Items.ItemRarity
-import CosmicChaos.Screens.GameScreen
+import CosmicChaos.Core.Items.{Item, ItemRarity}
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture
 
@@ -34,19 +33,14 @@ abstract class Chest extends Entity with Interactable {
 
     // Roll for item
     val roll = Random.nextFloat()
-    val possibleItems =
+    val item =
       if(roll <= commonChance)
-        GameScreen.itemsList.filter(_.rarity == ItemRarity.common)
+        Item.getRandomItemOfRarity(ItemRarity.common)
       else if(roll <= commonChance + rareChance)
-        GameScreen.itemsList.filter(_.rarity == ItemRarity.rare)
+        Item.getRandomItemOfRarity(ItemRarity.rare)
       else
-        GameScreen.itemsList.filter(_.rarity == ItemRarity.legendary)
+        Item.getRandomItemOfRarity(ItemRarity.legendary)
 
-    // TODO: This sucks because this is a ref to the item in GameScreen.itemsList
-    //        so if we mutate the item in the player's inventory, it's also gonna
-    //        be mutated in the global itemsList. Need to find a way to copy/clone
-    //        the Item, or create a new instance.
-    val item = possibleItems(Random.nextInt(possibleItems.length))
     player.addItemToInventory(item, 1)
 
     opened = true
