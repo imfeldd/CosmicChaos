@@ -124,13 +124,18 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     // New Item notification
     if(newItemToDisplay.nonEmpty) {
       val i = newItemToDisplay.get
+      bitmapFont.getData.setScale(1.5f)
       bitmapFont.draw(spriteBatch, i.name, w/2, 170, 350, 1, false)
+      bitmapFont.getData.setScale(1.0f)
       bitmapFont.draw(spriteBatch, i.description, w/2, 130, 350, 1, true)
       spriteBatch.draw(i.icon, w/2 - 64 - 20, 100, 64, 64)
     }
 
     // Player money text
     bitmapFont.draw(spriteBatch, f"${player.cash}$$", 30, 105, 150, 1, false)
+
+    // Player ammo counter
+    bitmapFont.draw(spriteBatch, s"${player.weapon.currentAmmoCount}/${player.weapon.ammoCapacity}",  Gdx.input.getX + 24, Gdx.graphics.getHeight - Gdx.input.getY)
 
     spriteBatch.end()
   }

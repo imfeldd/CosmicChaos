@@ -34,7 +34,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
   private val deathAnimation = new Animation(0.120f, deathFrames(0), loop = false)
 
-  private val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, ammoCapacity = 14, reloadTime = 0.66f) {}
+  val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, baseAmmoCapacity = 14, reloadTime = 0.66f) {}
 
   /*
   private val weapon: Weapon = new Weapon(

@@ -9,6 +9,7 @@ import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.math.{Rectangle, Vector3}
 
 import scala.util.Random
@@ -20,8 +21,11 @@ class GameScreen extends RenderingScreen {
   val deathHud: DeathHUD = new DeathHUD(player)
   var gameTimer: Float = 0.0f
   val seed = 1234L
+  val crosshair = new Pixmap(Gdx.files.internal("data/images/crosshair.png"))
 
   override def onInit(): Unit = {
+    Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, crosshair.getWidth/2, crosshair.getHeight/2))
+
     // Temporary testing code
     val testEnemy = new ImmortalSnailEnemyEntity{team = 2}
     testEnemy.position = new Vector3(100, 100, 0)

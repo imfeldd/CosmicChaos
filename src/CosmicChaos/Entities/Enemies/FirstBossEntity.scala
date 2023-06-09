@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Rectangle
 import scala.util.Random
 
 class FirstBossEntity extends GunnerEnemyEntity {
-  override protected val weapon: Weapon = new Weapon(new Projectile(10,this), true, 1,this, ammoCapacity = 10, reloadTime = 1.5f, inaccuracy = 5.5f ) {}
+  override protected val weapon: Weapon = new Weapon(new Projectile(10,this), true, 1,this, baseAmmoCapacity = 10, reloadTime = 1.5f, inaccuracy = 5.5f ) {}
   override val baseStats: EntityStats = new EntityStats(
     maxHealth = 1000,
     maxSpeed = 12,

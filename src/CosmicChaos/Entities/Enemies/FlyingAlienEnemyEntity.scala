@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 class FlyingAlienEnemyEntity extends GunnerEnemyEntity {
-  override protected val weapon: Weapon = new Weapon(new Projectile(1, this), true, 8, this, ammoCapacity = 4, reloadTime = 1.5f, inaccuracy = 5.5f) {}
+  override protected val weapon: Weapon = new Weapon(new Projectile(1, this), true, 8, this, baseAmmoCapacity = 4, reloadTime = 1.5f, inaccuracy = 5.5f) {}
   override val baseStats: EntityStats = new EntityStats(
     maxHealth = 100,
     maxSpeed = 180,
