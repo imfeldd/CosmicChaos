@@ -41,6 +41,7 @@ abstract class Chest extends Entity with Interactable {
         Item.getRandomItemOfRarity(ItemRarity.legendary)
 
     player.addItemToInventory(item, 1)
+    player.experience += 5
 
     opened = true
     isInteractable = false
