@@ -31,7 +31,7 @@ class FlyingAlienEnemyEntity extends GunnerEnemyEntity {
   cash = 100
 
   override def onEnterGameWorld(): Unit = {
-
+    super.onEnterGameWorld()
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {

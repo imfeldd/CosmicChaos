@@ -4,11 +4,12 @@ import CosmicChaos.Core.Items.Effects.{BeforeDealDamageEffect, DealtDamageEffect
 import CosmicChaos.Utils.Animation
 import CosmicChaos.Core.Items.Item
 import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.HUD.GameplayHUD
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{Vector2, Vector3}
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
@@ -19,6 +20,8 @@ abstract class CreatureEntity extends Entity {
   private val (frameW, frameH) = (100, 100)
   private val frames: Array[Array[TextureRegion]] = TextureRegion.split(deathExplosionTexture, frameW, frameH)
   protected val deathExplosionAnimation: Animation = new Animation(0.008f, frames(0), loop = false)
+
+  private var healTimer: Float = 0.0f
 
   val baseStats: EntityStats
   var stats: EntityStats
@@ -43,28 +46,49 @@ abstract class CreatureEntity extends Entity {
   def setLevel(level: Float): Unit =
     experience = ((math.pow(1.55, level - 1) - 1) / 0.0275f).toFloat
 
+
+  override def onEnterGameWorld(): Unit = {
+    computeStats(0)
+    currentHealth = stats.maxHealth.value
+  }
+
   override def onUpdate(dt: Float): Unit = {
     super.onUpdate(dt)
     stats = baseStats.copy()
 
+    computeStats(dt)
+
+    healTimer += dt
+
+    if(healTimer >= 1.0f) {
+      heal(stats.healthRegenerationAmount)
+      healTimer = 0
+    }
+  }
+
+  private def computeStats(dt: Float): Unit = {
     val extraLevels = math.floor(level - 1).toFloat
     stats.maxHealth.baseAddition += extraLevels * 5.0f
+    stats.healthRegenerationAmount.multiplier += 1.0f + extraLevels * 0.33f
     stats.damage.baseAddition += extraLevels * 0.66f
 
-    for(itm <- itemsInventory) {
+    for (itm <- itemsInventory) {
       itm.update(dt)
       itm.modify(stats)
     }
 
-    heal(stats.healthRegenerationAmount * dt)
-  }
-
-  override def onEnterGameWorld(): Unit = {
-    currentHealth = stats.maxHealth
   }
 
   def heal(amount: Float): Unit = {
+    if(currentHealth >= stats.maxHealth.value - Float.MinPositiveValue || amount <= Float.MinPositiveValue)
+      return
+
     currentHealth = math.min(stats.maxHealth, currentHealth + amount)
+
+    // show heal number
+    val floatingText = new FloatingText(s"${amount.toInt}", 0.66f, new Vector2(Random.between(-2, 20), 200.0f), GameplayHUD.greenFont)
+    floatingText.position = new Vector3(position.x, position.y, 0)
+    parentGameWorld.addGameObject(floatingText)
   }
 
   def dealDamageTo(amount: Float, recipient: CreatureEntity): Unit = {
@@ -101,6 +125,11 @@ abstract class CreatureEntity extends Entity {
       return
 
     currentHealth -= amount
+
+    // Show damage number
+    val floatingText = new FloatingText(s"-${amount.toInt}", 0.66f, new Vector2(Random.between(-200, 200), 250.0f), if(wasCrit) GameplayHUD.yellowFont else GameplayHUD.redFont)
+    floatingText.position = new Vector3(position.x, position.y, 0)
+    parentGameWorld.addGameObject(floatingText)
 
     if (isDead) {
       source.onKill(this)
