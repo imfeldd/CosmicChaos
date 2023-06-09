@@ -42,6 +42,8 @@ abstract class CreatureEntity extends Entity {
       itm.update(dt)
       itm.modify(stats)
     }
+
+    heal(stats.healthRegenerationAmount * dt)
   }
 
   override def onEnterGameWorld(): Unit = {

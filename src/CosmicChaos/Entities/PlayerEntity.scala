@@ -54,7 +54,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     acceleration = 40,
     damage = 15,
     criticalChance = 0.02f,
-    attackSpeed = 1.0f
+    attackSpeed = 1.0f,
+    healthRegenAmount = 1.0f
   )
   override var stats: EntityStats = baseStats
 
