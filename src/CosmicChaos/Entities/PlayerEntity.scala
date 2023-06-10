@@ -169,7 +169,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
       weapon.reload()
     }
 
-    val leftMouseDown = Gdx.input.isButtonPressed(0)
+    val leftMouseDown = Gdx.input.isButtonPressed(0) || keyStatus.getOrElse(Input.Keys.X, false)
     weapon.update(leftMouseDown, dt)
     if (weapon.isShootingThisFrame) {
       GameScreen.cameraShake = .5f

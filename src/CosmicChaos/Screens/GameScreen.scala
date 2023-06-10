@@ -1,9 +1,8 @@
 package CosmicChaos.Screens
 
-import CosmicChaos.Core.Items.RollbackHealthItem
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
-import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity, ShadowBossEntity}
+import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
 import CosmicChaos.Entities._
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
@@ -97,15 +96,12 @@ class GameScreen extends RenderingScreen {
     gameWorld.MyAlgo.draw(g)
 
 
+    gameWorld.update(Gdx.graphics.getDeltaTime)
 
     g.getCamera.zoom = 1
 
 
     gameTimer += Gdx.graphics.getDeltaTime
-
-    // TODO : MOVE THIS TO THE FUCKING GameWorld
-    if(gameWorld.currentBoss.isDefined && gameWorld.currentBoss.get.isDead)
-      gameWorld.currentBoss = None
 
     // TODO: Move all this shit to GameWorld
     val collideables = gameWorld.gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])

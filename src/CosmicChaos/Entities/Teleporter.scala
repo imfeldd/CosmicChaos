@@ -16,10 +16,17 @@ class Teleporter extends Warp with Interactable {
   private val teleporterSpritesheet: Texture = new Texture("data/images/warp/teleporter_charged.png")
   private val teleporterFrame: Array[Array[TextureRegion]] = TextureRegion.split(teleporterSpritesheet, frameW,frameH)
   private val teleporterAnimation = new Animation(0.15f, teleporterFrame(0), loop = true)
-  private var charged: Boolean = false
   renderLayer = -2
 
+  val chargeTime: Float = 100.0f  // seconds
+  var charge: Float = 0.0f
+  var charging: Boolean = false
+
+  def charged: Boolean = charge >= chargeTime
+  def chargePercent: Float = charge/chargeTime
+
   override protected def getTexture =  teleporterSpritesheet
+
   override def onGraphicRender(g: GdxGraphics): Unit = {
     val tex = getTexture
     val (w,h) = (frameW*textureScale, frameH*textureScale)
@@ -34,20 +41,29 @@ class Teleporter extends Warp with Interactable {
   }
 
   override def onUpdate(dt: Float): Unit = {
-
-    position.add(5*dt,0*dt,0)
+    if(charging && charge < chargeTime)
+      charge += dt
   }
 
   override def interact(player: PlayerEntity): Unit = {
+    if(parentGameWorld.isTeleporterEventActive)
+      return
+
     if(charged)
       super.interact(player)
-    else
-      charged = true
+    else if(!charging) {
+      charging = true
+      parentGameWorld.startTeleporterEvent()
+    }
   }
 
-  override def getInteractText: String =
+  override def getInteractText: String = {
+    if(parentGameWorld.isTeleporterEventActive)
+      return ""
+
     if(charged)
       "Teleport..."
     else
       "Activate teleporter..."
+  }
 }
