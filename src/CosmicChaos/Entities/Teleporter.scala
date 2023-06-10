@@ -17,7 +17,7 @@ class Teleporter extends Warp with Interactable {
   private val teleporterFrame: Array[Array[TextureRegion]] = TextureRegion.split(teleporterSpritesheet, frameW,frameH)
   private val teleporterAnimation = new Animation(0.15f, teleporterFrame(0), loop = true)
   private var charged: Boolean = false
-
+  renderLayer = -2
 
   override protected def getTexture =  teleporterSpritesheet
   override def onGraphicRender(g: GdxGraphics): Unit = {
