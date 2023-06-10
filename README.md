@@ -3,6 +3,7 @@
 Game based on Risk Of Rain
 
 ## Assets Credits
+# Art
 * https://opengameart.org/content/sj-monsters
 * https://opengameart.org/content/gun-sprites-0
 * https://opengameart.org/content/pixel-explosion-12-frames
@@ -20,4 +21,7 @@ Game based on Risk Of Rain
 * https://arcade.itch.io/vga-typewriter
 =======
 * https://opengameart.org/content/warp-effect-2
->>>>>>> Stashed changes
+# Music
+* https://www.royaltyfreemusicclips.com/pir/free_music_loops.shtml
+* https://opengameart.org/content/warp-sound-4
+* 

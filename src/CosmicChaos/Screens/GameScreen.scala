@@ -7,6 +7,7 @@ import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, Im
 import CosmicChaos.Entities._
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
@@ -25,8 +26,10 @@ class GameScreen extends RenderingScreen {
   val crosshair = new Pixmap(Gdx.files.internal("data/images/crosshair.png"))
 
   override def onInit(): Unit = {
-    Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, crosshair.getWidth/2, crosshair.getHeight/2))
 
+
+
+    Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, crosshair.getWidth/2, crosshair.getHeight/2))
     // Temporary testing code
     val testEnemy = new ImmortalSnailEnemyEntity{team = 2}
     testEnemy.position = new Vector3(100, 100, 0)
@@ -61,7 +64,7 @@ class GameScreen extends RenderingScreen {
     shadow.position = new Vector3(0, -500, 0)
 
     gameWorld.currentBoss = Some(shadow)
-    //val goldenTeleporter = new GoldenTeleporter
+
 
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
@@ -71,7 +74,8 @@ class GameScreen extends RenderingScreen {
     gameWorld.addGameObject(teleporter)
     gameWorld.addGameObject(magicMage)
     gameWorld.addGameObject(shadow)
-    //gameWorld.addGameObject(goldenTeleporter)
+
+
   }
 
   override def onKeyDown(keycode: Int): Unit = {

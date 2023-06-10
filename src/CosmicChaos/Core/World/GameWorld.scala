@@ -2,12 +2,16 @@ package CosmicChaos.Core.World
 
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
 import CosmicChaos.Entities.{CreatureEntity, PlayerEntity}
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import com.badlogic.gdx.math.{Circle, Intersector, Rectangle}
 
 import scala.collection.mutable.ArrayBuffer
 
 class GameWorld {
   val gameObjects: ArrayBuffer[GameObject] = new ArrayBuffer[GameObject]
+  val Music = new MusicPlayer("data/music/mainMusic.mp3")
+  Music.setVolume(0.5f)
+  Music.loop()
 
   var playerEntity: PlayerEntity = _
   var currentBoss: Option[CreatureEntity] = None

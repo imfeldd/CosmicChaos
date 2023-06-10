@@ -2,6 +2,7 @@ package CosmicChaos.Entities
 
 import CosmicChaos.Core.Interactable
 import CosmicChaos.Core.World.CellularAutomata
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.math.{Vector2, Vector3}
 
@@ -27,6 +28,8 @@ abstract class Warp extends Entity with Interactable {
     val teleportPosition = findTeleportPosition(parentGameWorld.MyAlgo) // Find a valid teleport position in the new world
     println(teleportPosition)
     player.position = new Vector3(teleportPosition.x, teleportPosition.y, 0)
+    val soundEffect = new MusicPlayer("data/music/warp.wav")
+    soundEffect.play()
   }
 
   override def getInteractText: String

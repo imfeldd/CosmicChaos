@@ -9,4 +9,5 @@ class MainMenuScreen extends RenderingScreen {
   override def onGraphicRender(g: GdxGraphics): Unit = {
     g.drawStringCentered(g.getScreenHeight/2, "Cosmic Chaos")
   }
+
 }

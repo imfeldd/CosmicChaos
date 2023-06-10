@@ -1,6 +1,7 @@
 package CosmicChaos
 
 import CosmicChaos.Screens.GameScreen
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.desktop.PortableApplication
 import ch.hevs.gdx2d.lib.{GdxGraphics, ScreenManager}
 

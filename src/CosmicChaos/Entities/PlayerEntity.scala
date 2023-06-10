@@ -7,6 +7,7 @@ import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import CosmicChaos.HUD.GameplayHUD
 import CosmicChaos.Screens.GameScreen
 import CosmicChaos.Utils.Animation
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
@@ -36,17 +37,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, baseAmmoCapacity = 14, reloadTime = 0.66f) {}
 
-  /*
-  private val weapon: Weapon = new Weapon(
-    new Rocket(1.5f, this),
-    isFullAuto = false,
-    shotsPerSecond = 3,
-    ammoCapacity = 3,
-    reloadTime = 1.33f,
-    holder = this
-  ) {}
 
-   */
   override val name: String = "Player"
   override val baseStats: EntityStats = new EntityStats(
     maxHealth = 100,
@@ -205,6 +196,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   override def onDeath(deathCause: Entity): Unit = {
 
+    val soundEffect = new MusicPlayer("data/music/death.wav")
+    soundEffect.play()
   }
 
   override def onKeyDown(i: Int): Unit = {
