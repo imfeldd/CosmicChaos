@@ -1,7 +1,7 @@
 package CosmicChaos.Core.World
 
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
-import CosmicChaos.Entities.PlayerEntity
+import CosmicChaos.Entities.{CreatureEntity, PlayerEntity}
 import com.badlogic.gdx.math.{Circle, Intersector, Rectangle}
 
 import scala.collection.mutable.ArrayBuffer
@@ -10,6 +10,8 @@ class GameWorld {
   val gameObjects: ArrayBuffer[GameObject] = new ArrayBuffer[GameObject]
 
   var playerEntity: PlayerEntity = _
+  var currentBoss: Option[CreatureEntity] = None
+
   val MyAlgo = new CellularAutomata(width = 6000, height = 6000, seed = 1234)
   //MyAlgo.worldCreation()
 

@@ -59,14 +59,18 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   )
   override var stats: EntityStats = baseStats
 
-  override val collisionLayer: Int = CollisionLayers.player
-  override val collisionMask: Int = CollisionLayers.world + CollisionLayers.props
+  collisionLayer = CollisionLayers.player
+  collisionMask = CollisionLayers.world + CollisionLayers.props
 
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 30*spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)
   var interactableOfInterest: Option[Interactable] = None
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
+
+  override def onEnterGameWorld(): Unit = {
+    super.onEnterGameWorld()
+  }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     val sprite = if(isDead) {
@@ -83,6 +87,9 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
         runAnimation.getCurrentFrame
       }
     }
+
+    // Make it look like the character is running backwards if we're aiming in the other direction we're moving
+    runAnimation.reverse = math.abs(aimVector.angle(velocity)) > 90.0f
 
     if(!isDead) {
       drawGun(gunTexture, 6, g, scale = 2, offset = new Vector2(0, 5))

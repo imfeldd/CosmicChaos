@@ -23,7 +23,7 @@ class RollbackHealthItem extends Item with OnGetHitEffect {
     chargeTimer -= dt
 
     healthValues.enqueue(holder.currentHealth)
-    if(healthValues.length >= 300) {  // hold approx. 5 seconds of health history
+    if(healthValues.length >= 600) {  // hold approx. 10 seconds of health history
       healthValues.dequeue()
     }
   }

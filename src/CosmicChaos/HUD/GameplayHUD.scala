@@ -2,7 +2,7 @@ package CosmicChaos.HUD
 
 import CosmicChaos.Core.Items.{Item, ItemRarity}
 import CosmicChaos.Entities.PlayerEntity
-import CosmicChaos.HUD.GameplayHUD.{greenFont, newItems, redFont, whiteFont, yellowFont}
+import CosmicChaos.HUD.GameplayHUD._
 import CosmicChaos.Screens.GameScreen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -87,6 +87,20 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
       shapeRenderer.set(ShapeRenderer.ShapeType.Filled)
     }
 
+    // Boss healthbar background
+    if (player.parentGameWorld.currentBoss.nonEmpty) {
+      val boss = player.parentGameWorld.currentBoss.get
+      val healthPercent = boss.currentHealth/boss.stats.maxHealth
+
+      // Healthbar background
+      shapeRenderer.setColor(Color.DARK_GRAY)
+      shapeRenderer.rect(w/2 - 350/2, h - 35, 350, 33)
+
+      // Healthbar foreground
+      shapeRenderer.setColor(new Color(0.7f, 0.1f, 0.1f, 1.0f))
+      shapeRenderer.rect(w/2 - 350/2, h - 35, 350 * healthPercent, 33)
+    }
+
     shapeRenderer.end()
     spriteBatch.begin()
 
@@ -153,6 +167,16 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
 
     // Player ammo counter
     whiteFont.draw(spriteBatch, s"${player.weapon.currentAmmoCount}/${player.weapon.ammoCapacity}",  Gdx.input.getX + 24, Gdx.graphics.getHeight - Gdx.input.getY)
+
+    // Boss health text
+    if(player.parentGameWorld.currentBoss.nonEmpty) {
+      val boss = player.parentGameWorld.currentBoss.get
+      whiteFont.draw(spriteBatch, s"${boss.currentHealth.toInt} / ${boss.stats.maxHealth.value.toInt}", w/2 - 350/2, h - 10, 350, 1, false)
+      whiteFont.getData.setScale(2.0f)
+      whiteFont.draw(spriteBatch, boss.name, w/2 - 350/2, h - 50, 350, 1, false)
+      whiteFont.getData.setScale(1.0f)
+      whiteFont.draw(spriteBatch, s"- ${boss.nameSubtitle} -", w / 2 - 350 / 2, h - 105, 350, 1, false)
+    }
 
     spriteBatch.end()
   }

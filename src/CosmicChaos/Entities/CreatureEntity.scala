@@ -23,6 +23,8 @@ abstract class CreatureEntity extends Entity {
 
   private var healTimer: Float = 0.0f
 
+  val nameSubtitle: String = ""
+
   val baseStats: EntityStats
   var stats: EntityStats
 
@@ -66,7 +68,7 @@ abstract class CreatureEntity extends Entity {
     }
   }
 
-  private def computeStats(dt: Float): Unit = {
+  protected def computeStats(dt: Float): Unit = {
     val extraLevels = math.floor(level - 1).toFloat
     stats.maxHealth.baseAddition += extraLevels * 5.0f
     stats.healthRegenerationAmount.multiplier += 1.0f + extraLevels * 0.33f
@@ -80,7 +82,7 @@ abstract class CreatureEntity extends Entity {
   }
 
   def heal(amount: Float): Unit = {
-    if(currentHealth >= stats.maxHealth.value - Float.MinPositiveValue || amount <= Float.MinPositiveValue)
+    if(isDead || currentHealth >= stats.maxHealth.value - Float.MinPositiveValue || amount <= Float.MinPositiveValue)
       return
 
     currentHealth = math.min(stats.maxHealth, currentHealth + amount)
@@ -113,6 +115,7 @@ abstract class CreatureEntity extends Entity {
     // If there's already an item of that type in the inventory, increment the stack size
     // otherwise just add the item to the inventory
     val i = itemsInventory.find(_.name == item.name)
+    item.stackSize = amount
     item.holder = this
     i match {
       case Some(itm) => itm.stackSize += amount
