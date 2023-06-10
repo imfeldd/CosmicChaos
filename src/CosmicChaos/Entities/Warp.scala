@@ -1,24 +1,35 @@
 package CosmicChaos.Entities
 
 import CosmicChaos.Core.Interactable
+import CosmicChaos.Core.World.CellularAutomata
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.math.Vector2
+
+import scala.util.Random
 
 abstract class Warp extends Entity with Interactable {
 
-  protected val basicTexture: Texture
+  protected def getTexture: Texture
   protected val textureScale: Float
+  collisionLayer = CollisionLayers.props
+  collisionMask = CollisionLayers.none
 
-
-  override def onGraphicRender(g: GdxGraphics): Unit = {
-    val tex = basicTexture
-    val (w, h) = (tex.getWidth * textureScale, tex.getHeight * textureScale)
-    g.draw(tex, position.x - w / 2, position.y - h / 2, w, h)
+  private def findTeleportPosition(world: CellularAutomata): Vector2 = {
+    // Logic to find a valid teleport position in the new world
+    // Example: Randomly selecting a position
+    val randomX = Random.nextInt(world.width)
+    val randomY = Random.nextInt(world.height)
+    new Vector2(randomX * world.tileSize, randomY * world.tileSize)
   }
+
 
   override def interact(player: PlayerEntity): Unit = {
-    isInteractable = false
+    val newWorld = new CellularAutomata(800, 600, seed = 1234)
+    newWorld.worldCreation()
+    val teleportPosition = findTeleportPosition(newWorld) // Find a valid teleport position in the new world
+    player.setPosition(teleportPosition.x, teleportPosition.y)
   }
 
-  override def getInteractText: String = f"$name is travelling you to the next world"
+  override def getInteractText: String
 }

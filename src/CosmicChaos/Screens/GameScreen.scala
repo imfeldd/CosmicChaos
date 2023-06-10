@@ -61,6 +61,7 @@ class GameScreen extends RenderingScreen {
     shadow.position = new Vector3(0, -500, 0)
 
     gameWorld.currentBoss = Some(shadow)
+    //val goldenTeleporter = new GoldenTeleporter
 
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
@@ -70,6 +71,7 @@ class GameScreen extends RenderingScreen {
     gameWorld.addGameObject(teleporter)
     gameWorld.addGameObject(magicMage)
     gameWorld.addGameObject(shadow)
+    //gameWorld.addGameObject(goldenTeleporter)
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -90,7 +92,10 @@ class GameScreen extends RenderingScreen {
     doCameraShake(g)
     gameWorld.MyAlgo.draw(g)
 
-    //g.getCamera.zoom = 9
+
+
+    g.getCamera.zoom = 1
+
 
     gameTimer += Gdx.graphics.getDeltaTime
 
