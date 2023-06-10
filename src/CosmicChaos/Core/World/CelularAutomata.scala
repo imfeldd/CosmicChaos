@@ -12,7 +12,6 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
   val tileSize = 128 // Assuming a cell size of 50x50 pixels
   val numColumns = width / tileSize
   val numRows = height / tileSize
-  val probabilityWall = 0.3
   val probabilityWall = 0.45
 
   def worldCreation() = {
@@ -26,10 +25,16 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
 
       }
     }
-    iterate(7)
     iterate(3)
   }
 
+  def TreasureRoomCreation() = {
+
+    val roomWidth = numColumns/10
+    val roomHeight = numRows/10
+
+    grid(numColumns)(numRows)
+  }
   def draw(g: GdxGraphics) = {
     for (row <- 0 until numRows) {
 
@@ -77,10 +82,8 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
   // Determine whether a cell should be alive based on its current state and the count of alive neighbors
   private def shouldLive(isAlive: Boolean, count: Int): Boolean = {
     if (isAlive) {
-      count >= 2 && count <= 5
       count >= 3 && count <= 4
     } else {
-      count >= 1 && count <= 6
       count >= 2 && count <= 5
     }
   }

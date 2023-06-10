@@ -3,8 +3,13 @@ package CosmicChaos.Screens
 import CosmicChaos.Core.Items.RollbackHealthItem
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
+<<<<<<< Updated upstream
 import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity, ShadowBossEntity}
 import CosmicChaos.Entities._
+=======
+import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
+import CosmicChaos.Entities.{GoldenTeleporter, NormalChest, PlayerEntity, Teleporter}
+>>>>>>> Stashed changes
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
@@ -56,11 +61,15 @@ class GameScreen extends RenderingScreen {
 
     val teleporter = new Teleporter
     val magicMage = new FirstBossEntity
+<<<<<<< Updated upstream
     val shadow = new ShadowBossEntity
     shadow.addItemToInventory(new RollbackHealthItem, 1)
     shadow.position = new Vector3(0, -500, 0)
 
     gameWorld.currentBoss = Some(shadow)
+=======
+    //val goldenTeleporter = new GoldenTeleporter
+>>>>>>> Stashed changes
 
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
@@ -69,7 +78,11 @@ class GameScreen extends RenderingScreen {
     gameWorld.addGameObject(testGunner3)
     gameWorld.addGameObject(teleporter)
     gameWorld.addGameObject(magicMage)
+<<<<<<< Updated upstream
     gameWorld.addGameObject(shadow)
+=======
+    //gameWorld.addGameObject(goldenTeleporter)
+>>>>>>> Stashed changes
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -91,10 +104,8 @@ class GameScreen extends RenderingScreen {
     gameWorld.MyAlgo.draw(g)
 
 
-    //g.getCamera.zoom = 9
 
-
-    g.getCamera.zoom = 9
+    g.getCamera.zoom = 1
 
 
     gameTimer += Gdx.graphics.getDeltaTime
