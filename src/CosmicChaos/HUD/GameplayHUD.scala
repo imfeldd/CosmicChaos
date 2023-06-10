@@ -1,6 +1,7 @@
 package CosmicChaos.HUD
 
 import CosmicChaos.Core.Items.{Item, ItemRarity}
+import CosmicChaos.Core.World.TeleporterEventState
 import CosmicChaos.Entities.PlayerEntity
 import CosmicChaos.HUD.GameplayHUD._
 import CosmicChaos.Screens.GameScreen
@@ -47,6 +48,10 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     // Player money background
     shapeRenderer.setColor(Color.DARK_GRAY)
     shapeRenderer.rect(w - 180, h - 120, 150, 40)
+
+    // Current objective background
+    shapeRenderer.setColor(Color.DARK_GRAY)
+    shapeRenderer.rect(w - 180, h - 170, 150, 40)
 
     // Healthbar background
     shapeRenderer.setColor(Color.DARK_GRAY)
@@ -140,6 +145,14 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     // Player money text
     greenFont.getData.setScale(0.8f)
     greenFont.draw(spriteBatch, f"${player.cash}$$", w - 180, h - 95, 150, 1, false)
+
+    // Objective text
+    val objective = player.parentGameWorld.teleporterEventState match {
+      case TeleporterEventState.notStarted => "Find the teleporter"
+      case TeleporterEventState.charging => s"Charging (${(player.parentGameWorld.teleporter.chargePercent*100).toInt}%)"
+      case TeleporterEventState.charged => "Go trough the teleporter"
+    }
+    whiteFont.draw(spriteBatch, objective, w - 180, h - 145, 150, 1, false)
 
     // Interaction text
     if(player.interactableOfInterest.isDefined) {
