@@ -12,8 +12,8 @@ class GameWorld {
   var playerEntity: PlayerEntity = _
   var currentBoss: Option[CreatureEntity] = None
 
-  val MyAlgo = new CellularAutomata(width = 6000, height = 6000, seed = 1234)
-  //MyAlgo.worldCreation()
+  var MyAlgo = new CellularAutomata(width = 6000, height = 6000, seed = 1234)
+  MyAlgo.worldCreation()
 
   def addGameObject(gameObject: GameObject): Unit= {
     gameObject match {

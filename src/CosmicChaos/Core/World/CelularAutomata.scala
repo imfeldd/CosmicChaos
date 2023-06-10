@@ -7,7 +7,7 @@ import scala.util.Random
 
 class CellularAutomata(val width: Int, val height: Int, seed: Long) {
 
-  private val random = new Random(seed)
+  private var random = new Random(seed)
   private var grid: Array[Array[Boolean]] = Array.ofDim[Boolean](width, height)
   val tileSize = 128 // Assuming a cell size of 50x50 pixels
   val numColumns = width / tileSize
@@ -16,6 +16,8 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
 
   def worldCreation() = {
     //size world
+
+    random = new Random()
 
     // Initialize the grid randomly
     for (row <- 0 until numRows) {

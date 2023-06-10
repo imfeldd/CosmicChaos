@@ -135,9 +135,6 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
     doShooting(dt)
 
-
-
-
     parentGameWorld.getCollideablesWithinCircle(new Circle(position.x, position.y, 40))
       .find(x => x.isInstanceOf[Interactable] && x.asInstanceOf[Interactable].isInteractable)
       .map(_.asInstanceOf[Interactable])
@@ -217,11 +214,4 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   override def onKeyUp(i: Int): Unit = {
     keyStatus(i) = false
   }
-  private var positionInAnotherWorld:Vector2 = new Vector2()
-  def setPosition(x: Float, y:Float): Unit = {
-
-    positionInAnotherWorld.set(x,y)
-  }
-
-
 }
