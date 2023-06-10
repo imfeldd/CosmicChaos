@@ -1,8 +1,10 @@
 package CosmicChaos.Entities
 
 import CosmicChaos.Core.Interactable
+import CosmicChaos.Core.Items.Item
 import CosmicChaos.Core.Stats.EntityStats
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
+import CosmicChaos.HUD.GameplayHUD
 import CosmicChaos.Screens.GameScreen
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
@@ -32,7 +34,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
   private val deathAnimation = new Animation(0.120f, deathFrames(0), loop = false)
 
-  private val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, ammoCapacity = 14, reloadTime = 0.66f) {}
+  val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, baseAmmoCapacity = 14, reloadTime = 0.66f) {}
 
   /*
   private val weapon: Weapon = new Weapon(
@@ -52,18 +54,23 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     acceleration = 40,
     damage = 15,
     criticalChance = 0.02f,
-    attackSpeed = 1.0f
+    attackSpeed = 1.0f,
+    healthRegenAmount = 1.0f
   )
   override var stats: EntityStats = baseStats
 
-  override val collisionLayer: Int = CollisionLayers.player
-  override val collisionMask: Int = CollisionLayers.world + CollisionLayers.props
+  collisionLayer = CollisionLayers.player
+  collisionMask = CollisionLayers.world + CollisionLayers.props
 
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 30*spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)
   var interactableOfInterest: Option[Interactable] = None
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
+
+  override def onEnterGameWorld(): Unit = {
+    super.onEnterGameWorld()
+  }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     val sprite = if(isDead) {
@@ -80,6 +87,9 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
         runAnimation.getCurrentFrame
       }
     }
+
+    // Make it look like the character is running backwards if we're aiming in the other direction we're moving
+    runAnimation.reverse = math.abs(aimVector.angle(velocity)) > 90.0f
 
     if(!isDead) {
       drawGun(gunTexture, 6, g, scale = 2, offset = new Vector2(0, 5))
@@ -170,6 +180,11 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     if (weapon.isShootingThisFrame) {
       GameScreen.cameraShake = .5f
     }
+  }
+
+  override def addItemToInventory(item: Item, amount: Int): Unit = {
+    super.addItemToInventory(item, amount)
+    GameplayHUD.showItemNotification(item)
   }
 
   protected override def onReceiveDamage(amount: Float, source: CreatureEntity, wasCrit: Boolean): Unit = {

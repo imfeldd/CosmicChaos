@@ -16,3 +16,4 @@ Game based on Risk Of Rain
 * https://opengameart.org/content/shadowless-lpc-food
 * https://c1aymor3.itch.io/halo-weapon
 * https://opengameart.org/content/admurins-miscellaneous-items
+* https://arcade.itch.io/vga-typewriter

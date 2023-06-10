@@ -5,17 +5,20 @@ import com.badlogic.gdx.math.Vector2
 
 import scala.util.Random
 
-abstract class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val shotsPerSecond: Int, val holder: CreatureEntity, val ammoCapacity: Int = -1, val reloadTime: Float = 0.0f, val inaccuracy: Float = 0.0f) {
+abstract class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val shotsPerSecond: Int, val holder: CreatureEntity, val baseAmmoCapacity: Int = -1, val reloadTime: Float = 0.0f, val inaccuracy: Float = 0.0f) {
 
-  private val shotFrequency: Float = 1/shotsPerSecond.toFloat
   private var shootTimer: Float = 0
   private var triggerHeldLastFrame: Boolean = false
   private var shootingThisFrame: Boolean = false
-  private var ammoCount: Int = ammoCapacity
-  private val hasAmmoCapacity: Boolean = ammoCapacity != -1
+  private var ammoCount: Int = baseAmmoCapacity
+  private val hasAmmoCapacity: Boolean = baseAmmoCapacity != -1
   private var reloadTimer: Float = 0.0f
 
   def isMagasineEmpty: Boolean = hasAmmoCapacity && ammoCount == 0
+  def currentAmmoCount: Int = ammoCount
+  def ammoCapacity: Int = (baseAmmoCapacity * holder.stats.attackCapacity).toInt
+  def shotFrequency: Float = 1.0f/shotsPerSecond * holder.stats.attackSpeed
+
 
   def update(triggerHeld: Boolean, dt: Float): Unit = {
     if(shootTimer > 0)
@@ -28,10 +31,10 @@ abstract class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val s
 
     // If we've reached the end of the reload timer, load a full mag
     if(reloadTimer <= 0 && ammoCount == 0)
-      ammoCount = (ammoCapacity * holder.stats.attackCapacity).toInt
+      ammoCount = (baseAmmoCapacity * holder.stats.attackCapacity).toInt
 
     if(triggerHeld && canShootThisFrame) {
-      shootTimer = shotFrequency * (1.0f/holder.stats.attackSpeed)
+      shootTimer = shotFrequency
       shootingThisFrame = true
 
       if(hasAmmoCapacity) {

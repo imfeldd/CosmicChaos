@@ -1,6 +1,7 @@
 package CosmicChaos.Core.Items
 
 import CosmicChaos.Core.Items.Effects.OnGetHitEffect
+import CosmicChaos.Core.Items.ItemRarity.ItemRarity
 import CosmicChaos.Entities.CreatureEntity
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import com.badlogic.gdx.graphics.Texture
@@ -12,6 +13,7 @@ class RollbackHealthItem extends Item with OnGetHitEffect {
   override val name: String = "Marco's Watch"
   override val description: String = "Whenever your health gets too low, gain back the health you had a moment ago. Needs to recharge after use."
   override val icon: Texture = new BitmapImage("data/images/items/watch.png").getImage
+  override val rarity: ItemRarity = ItemRarity.legendary
   icon.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   private var healthValues: mutable.Queue[Float] = new mutable.Queue[Float]
@@ -21,7 +23,7 @@ class RollbackHealthItem extends Item with OnGetHitEffect {
     chargeTimer -= dt
 
     healthValues.enqueue(holder.currentHealth)
-    if(healthValues.length >= 300) {  // hold approx. 5 seconds of health history
+    if(healthValues.length >= 600) {  // hold approx. 10 seconds of health history
       healthValues.dequeue()
     }
   }

@@ -4,8 +4,8 @@ import com.badlogic.gdx.math.Rectangle
 
 trait Collideable {
   val collisionBox: Rectangle
-  val collisionLayer: Int = 0   // The layer the Collideable lives on
-  val collisionMask: Int = 0    // The layer the Collideable interacts with
+  var collisionLayer: Int = 0   // The layer the Collideable lives on
+  var collisionMask: Int = 0    // The layer the Collideable interacts with
 
   def onCollideWith(other: Collideable): Unit = { }
 

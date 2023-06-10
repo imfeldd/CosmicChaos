@@ -2,7 +2,7 @@ package CosmicChaos.Utils
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
-class Animation(val frameTime: Float, val frames: Array[TextureRegion], val loop: Boolean = true) {
+class Animation(val frameTime: Float, val frames: Array[TextureRegion], var loop: Boolean = true, var reverse: Boolean = false) {
 
   val framesCount: Int = frames.length
   var animationCounter: Float = 0.0f
@@ -12,11 +12,18 @@ class Animation(val frameTime: Float, val frames: Array[TextureRegion], val loop
   }
 
   def getFrameIndex(t: Float): Int = {
-    if(loop) {
+    val frameIndex = if(loop) {
       (t / frameTime).toInt % framesCount
     }
     else {
       math.min(framesCount - 1, t / frameTime).toInt
+    }
+
+    if(reverse) {
+      framesCount - frameIndex - 1
+    }
+    else {
+      frameIndex
     }
   }
 
@@ -37,7 +44,7 @@ class Animation(val frameTime: Float, val frames: Array[TextureRegion], val loop
   }
 
   def isOver(t: Float): Boolean = {
-    !loop && getCurrentFrameIndex + 1 == framesCount
+    !loop && ((reverse && getCurrentFrameIndex - 1 == -1) || (!reverse && getCurrentFrameIndex + 1 == framesCount))
   }
 
   def isCurrentlyOver: Boolean = {
