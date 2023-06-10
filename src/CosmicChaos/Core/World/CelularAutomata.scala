@@ -12,7 +12,7 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
   val tileSize = 128 // Assuming a cell size of 50x50 pixels
   val numColumns = width / tileSize
   val numRows = height / tileSize
-  val probabilityWall = 0.3
+  val probabilityWall = 0.52f
 
   def worldCreation() = {
     //size world
@@ -21,11 +21,11 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
     for (row <- 0 until numRows) {
 
       for (column <- 0 until numColumns) {
-        grid(column)(row) = random.nextFloat() < probabilityWall
+        grid(column)(row) = random.nextFloat() <= probabilityWall
 
       }
     }
-    iterate(7)
+    iterate(3)
   }
 
   def draw(g: GdxGraphics) = {
@@ -46,11 +46,11 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
 
   // Run a number of iterations to update the grid randomly
   def iterate(iterations: Int): Unit = {
+    val newGrid = Array.ofDim[Boolean](width, height)
     for (_ <- 0 until iterations) {
-      val newGrid = Array.ofDim[Boolean](width, height)
 
       for (x <- 0 until width; y <- 0 until height) {
-        val count = countAliveNeighbors(x, y)
+        val count = countAliveNeighbors(x, y) + (if(grid(x)(y)) 1 else 0)
         newGrid(x)(y) = shouldLive(grid(x)(y), count)
       }
       grid = newGrid
@@ -60,25 +60,23 @@ class CellularAutomata(val width: Int, val height: Int, seed: Long) {
   // Count the number of alive neighbors around a cell
   private def countAliveNeighbors(x: Int, y: Int): Int = {
     var count = 0
-    for (dx <- -1 to 1; dy <- -1 to 1) {
+    for (dx <- -1 to 1;
+         dy <- -1 to 1) {
       if (!(dx == 0 && dy == 0)) {
-        val nx = (x + dx + width) % width
-        val ny = (y + dy + height) % height
-        if (grid(nx)(ny)) {
+        val nx = x + dx
+        val ny = y + dy
+        if (nx >= 0 && nx < width && ny >= 0 && ny < height && grid(nx)(ny)) {
           count += 1
         }
       }
     }
+
     count
   }
 
   // Determine whether a cell should be alive based on its current state and the count of alive neighbors
   private def shouldLive(isAlive: Boolean, count: Int): Boolean = {
-    if (isAlive) {
-      count >= 2 && count <= 5
-    } else {
-      count >= 1 && count <= 6
-    }
+    count > 4 || (isAlive && count > 3)
   }
 }
 
