@@ -19,3 +19,4 @@ Game based on Risk Of Rain
 * https://arcade.itch.io/vga-typewriter
 * https://opengameart.org/content/lpc-terrain-extension
 * https://opengameart.org/content/warp-effect-2
+* https://opengameart.org/content/shield-spell

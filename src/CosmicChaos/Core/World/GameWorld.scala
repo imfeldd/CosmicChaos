@@ -3,7 +3,7 @@ package CosmicChaos.Core.World
 import CosmicChaos.Core.Items.{FreeItemsItem, RollbackHealthItem}
 import CosmicChaos.Core.World.TeleporterEventState.TeleporterEventState
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ShadowBossEntity}
+import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, SquidBossEntity}
 import CosmicChaos.Entities._
 import com.badlogic.gdx.math._
 
@@ -137,7 +137,7 @@ class GameWorld {
 
   def startTeleporterEvent(): Unit = {
     // Spawn boss
-    val shadow = new ShadowBossEntity
+    val shadow = new SquidBossEntity
     shadow.addItemToInventory(new RollbackHealthItem, 1)
 
     val newPos: Vector2 = new Vector2(1, 1).rotate(Random.between(0, 360)).nor().scl(Random.between(50, 200))
