@@ -1,6 +1,6 @@
 package CosmicChaos.Core.World
 
-import CosmicChaos.Core.Items.{FreeItemsItem, RollbackHealthItem}
+import CosmicChaos.Core.Items.{Item, ItemRarity, RollbackHealthItem}
 import CosmicChaos.Core.World.TeleporterEventState.TeleporterEventState
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
 import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, SquidBossEntity}
@@ -31,7 +31,6 @@ class GameWorld {
 
   def initializeWorld(): Unit = {
     addGameObject(new PlayerEntity)
-    playerEntity.addItemToInventory(new FreeItemsItem, 1)
     teleportToNextLevel()
   }
 
@@ -73,6 +72,12 @@ class GameWorld {
     monsterSpawnBudget += 30.0f * dt * (if(isTeleporterEventActive) 2.0f else 1.0f)
     monsterSpawnTimer -= dt
 
+    // Disable spawning monsters once the teleporter has been fully charged
+    if(teleporterEventState == TeleporterEventState.charged) {
+      monsterSpawnTimer = 0
+      monsterSpawnBudget = 0
+    }
+
     if(monsterSpawnTimer <= 0.0f) {
       trySpawnMonsters()
       monsterSpawnTimer = 10.0f
@@ -80,6 +85,9 @@ class GameWorld {
 
     if(teleporterEventState == TeleporterEventState.charging && teleporter.charged && currentBoss.isEmpty){
       teleporterEventState = TeleporterEventState.charged
+
+      // Give a random rare item to the player
+      playerEntity.addItemToInventory(Item.getRandomItemOfRarity(ItemRarity.rare))
     }
   }
 
