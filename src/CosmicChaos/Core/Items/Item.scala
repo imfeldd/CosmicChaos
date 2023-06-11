@@ -37,7 +37,8 @@ object Item {
     new FreeItemsItem,
     new MoneyOnGetHitItem,
     new ExplodeOnKillItem,
-    new SpeedBoostOnKillItem
+    new SpeedBoostOnKillItem,
+    new FlatDamageReductionItem
   )
 
   def getRandomItemOfRarity(rarity: ItemRarity): Item = {

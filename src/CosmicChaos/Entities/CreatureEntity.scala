@@ -126,10 +126,16 @@ abstract class CreatureEntity extends Entity {
     if(isDead)
       return
 
-    currentHealth -= amount
+    var realAmount: Float = amount
+    val onGetHitItems = itemsInventory.filter(_.isInstanceOf[OnGetHitEffect]).map(_.asInstanceOf[OnGetHitEffect])
+    for (i <- onGetHitItems) {
+      realAmount = i.gotHit(source, amount, wasCrit)
+    }
+
+    currentHealth -= realAmount
 
     // Show damage number
-    val floatingText = new FloatingText(s"-${amount.toInt}", 0.66f, new Vector2(Random.between(-200, 200), 250.0f), if(wasCrit) GameplayHUD.yellowFont else GameplayHUD.redFont)
+    val floatingText = new FloatingText(s"-${realAmount.toInt}", 0.66f, new Vector2(Random.between(-200, 200), 250.0f), if(wasCrit) GameplayHUD.yellowFont else GameplayHUD.redFont)
     floatingText.position = new Vector3(position.x, position.y, 0)
     parentGameWorld.addGameObject(floatingText)
 
@@ -137,12 +143,6 @@ abstract class CreatureEntity extends Entity {
       source.onKill(this)
       deathCause = source
       onDeath(source)
-    }
-    else {
-      val onGetHitItems = itemsInventory.filter(_.isInstanceOf[OnGetHitEffect]).map(_.asInstanceOf[OnGetHitEffect])
-      for (i <- onGetHitItems) {
-        i.gotHit(source, amount, wasCrit)
-      }
     }
   }
 

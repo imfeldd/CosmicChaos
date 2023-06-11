@@ -28,10 +28,11 @@ class RollbackHealthItem extends Item with OnGetHitEffect {
     }
   }
 
-  override def gotHit(by: CreatureEntity, amount: Float, wasCrit: Boolean): Unit = {
+  override def gotHit(by: CreatureEntity, amount: Float, wasCrit: Boolean): Float = {
     if(holder.currentHealth <= holder.stats.maxHealth*0.1f && chargeTimer <= 0.0f) {
       chargeTimer = 10.0f - math.min(1.5f*stackSize, 4.5f)
       holder.heal(healthValues.max - holder.currentHealth)  // set health to highest recent value
     }
+    amount
   }
 }
