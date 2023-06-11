@@ -51,7 +51,7 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
 
     // Current objective background
     shapeRenderer.setColor(Color.DARK_GRAY)
-    shapeRenderer.rect(w - 180, h - 170, 150, 40)
+    shapeRenderer.rect(w - 280, h - 170, 250, 40)
 
     // Healthbar background
     shapeRenderer.setColor(Color.DARK_GRAY)
@@ -144,7 +144,7 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
 
     // Player money text
     greenFont.getData.setScale(0.8f)
-    greenFont.draw(spriteBatch, f"${player.cash}$$", w - 180, h - 95, 150, 1, false)
+    greenFont.draw(spriteBatch, f"${player.cash.toInt}$$", w - 180, h - 95, 150, 1, false)
 
     // Objective text
     val objective = player.parentGameWorld.teleporterEventState match {
@@ -152,7 +152,7 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
       case TeleporterEventState.charging => s"Charging (${(player.parentGameWorld.teleporter.chargePercent*100).toInt}%)"
       case TeleporterEventState.charged => "Go trough the teleporter"
     }
-    whiteFont.draw(spriteBatch, objective, w - 180, h - 145, 150, 1, false)
+    whiteFont.draw(spriteBatch, objective, w - 280, h - 145, 250, 1, false)
 
     // Interaction text
     if(player.interactableOfInterest.isDefined) {
