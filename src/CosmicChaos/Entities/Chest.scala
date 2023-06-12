@@ -12,7 +12,7 @@ abstract class Chest extends Entity with Interactable {
   protected val closedTexture: Texture
   protected val openedTexture: Texture
   protected val textureScale: Float = 1.0f
-  collisionLayer = CollisionLayers.props
+  collisionLayer = CollisionLayers.props + CollisionLayers.interactable
   collisionMask = CollisionLayers.none
 
   var basePrice: Float

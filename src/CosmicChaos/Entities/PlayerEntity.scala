@@ -1,6 +1,6 @@
 package CosmicChaos.Entities
 
-import CosmicChaos.Core.Interactable
+import CosmicChaos.Core.{Collideable, Interactable}
 import CosmicChaos.Core.Items.Item
 import CosmicChaos.Core.Stats.EntityStats
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
@@ -51,7 +51,9 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   override var stats: EntityStats = baseStats
 
   collisionLayer = CollisionLayers.player
-  collisionMask = CollisionLayers.world + CollisionLayers.props
+  collisionMask = CollisionLayers.world + CollisionLayers.props + CollisionLayers.interactable
+
+  private var lastPos: Vector3 = new Vector3(0, 0, 0)
 
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 30*spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)
@@ -118,6 +120,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     super.onUpdate(dt)
 
     interactableOfInterest = None
+
+    lastPos = new Vector3(position.x, position.y, 0)
 
     doMovement(dt)
 
@@ -206,5 +210,12 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   override def onKeyUp(i: Int): Unit = {
     keyStatus(i) = false
+  }
+
+  override def onCollideWith(other: Collideable): Unit = {
+    super.onCollideWith(other)
+    if((other.collisionLayer & CollisionLayers.world) != 0) {
+      position = lastPos
+    }
   }
 }

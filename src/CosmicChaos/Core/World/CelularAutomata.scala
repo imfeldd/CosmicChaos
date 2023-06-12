@@ -8,7 +8,7 @@ import scala.util.Random
 
 class CellularAutomata(val width: Int, val height: Int) {
 
-  private var grid: Array[Array[Boolean]] = Array.ofDim[Boolean](width, height)
+  var grid: Array[Array[Boolean]] = Array.ofDim[Boolean](width, height)
   val tileSize = 128 // Assuming a cell size of 50x50 pixels
   val numColumns = width / tileSize
   val numRows = height / tileSize
@@ -57,7 +57,7 @@ class CellularAutomata(val width: Int, val height: Int) {
   }
 
   // Count the number of alive neighbors around a cell
-  private def countAliveNeighbors(x: Int, y: Int): Int = {
+  def countAliveNeighbors(x: Int, y: Int): Int = {
     var count = 0
     for (dx <- -1 to 1;
          dy <- -1 to 1) {

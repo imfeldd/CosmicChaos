@@ -11,7 +11,7 @@ import scala.util.Random
 abstract class Warp extends Entity with Interactable {
   protected def getTexture: Texture
   protected val textureScale: Float
-  collisionLayer = CollisionLayers.props
+  collisionLayer = CollisionLayers.interactable
   collisionMask = CollisionLayers.none
 
 

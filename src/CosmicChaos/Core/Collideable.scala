@@ -14,12 +14,13 @@ trait Collideable {
 
   object CollisionLayers extends Enumeration {
     type CollisionLayers = Value
-    val none: Int   = 0
-    val player: Int = 1 << 0
-    val enemy: Int  = 1 << 1
-    val bullet: Int = 1 << 2
-    val world: Int  = 1 << 3
-    val props: Int  = 1 << 4
+    val none: Int         = 0
+    val player: Int       = 1 << 0
+    val enemy: Int        = 1 << 1
+    val bullet: Int       = 1 << 2
+    val world: Int        = 1 << 3
+    val props: Int        = 1 << 4
+    val interactable: Int = 1 << 5
     val all: Int    = Int.MaxValue
   }
 }

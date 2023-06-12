@@ -1,9 +1,9 @@
 package CosmicChaos.Core.World
 
-import CosmicChaos.Core.Items.{FreeItemsItem, RollbackHealthItem}
+import CosmicChaos.Core.Items.{Item, ItemRarity, RollbackHealthItem}
 import CosmicChaos.Core.World.TeleporterEventState.TeleporterEventState
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, SquidBossEntity}
+import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ShadowBossEntity, SquidBossEntity}
 import CosmicChaos.Entities._
 import com.badlogic.gdx.math._
 
@@ -34,13 +34,34 @@ class GameWorld {
 
   def initializeWorld(): Unit = {
     addGameObject(new PlayerEntity)
-    playerEntity.addItemToInventory(new FreeItemsItem, 1)
     teleportToNextLevel()
   }
 
   def generateLevel(): Unit = {
     teleporterEventState = TeleporterEventState.notStarted
     cellularAutomata.worldCreation()
+
+    val tileSize = cellularAutomata.tileSize
+    for (row <- 0 until cellularAutomata.numRows) {
+      for (column <- 0 until cellularAutomata.numColumns) {
+        if(!cellularAutomata.grid(column)(row) &&                 // only wall tiles
+          cellularAutomata.countAliveNeighbors(column, row) != 0  // ignore tiles completely surrounded by other tiles
+        ) {
+          val posX = column * tileSize
+          val posY = row * tileSize
+
+          val collisionBox = new GameObject with Collideable with Spatial {
+            // TODO: Why is the collision box shifted by one tile to the bottom ?
+            override val collisionBox: Rectangle = new Rectangle(0, -tileSize, 128, 128)
+            position = new Vector3(posX + tileSize/2, posY + tileSize/2, 0)
+            collisionLayer = CollisionLayers.world
+            collisionMask = CollisionLayers.none
+          }
+
+          addGameObject(collisionBox)
+        }
+      }
+    }
 
     val newPlayerPos = cellularAutomata.getRandomClearPosition(2)
     playerEntity.position = new Vector3(newPlayerPos.x, newPlayerPos.y, 0)
@@ -76,6 +97,12 @@ class GameWorld {
     monsterSpawnBudget += 30.0f * dt * (if(isTeleporterEventActive) 2.0f else 1.0f)
     monsterSpawnTimer -= dt
 
+    // Disable spawning monsters once the teleporter has been fully charged
+    if(teleporterEventState == TeleporterEventState.charged) {
+      monsterSpawnTimer = 0
+      monsterSpawnBudget = 0
+    }
+
     if(monsterSpawnTimer <= 0.0f) {
       trySpawnMonsters()
       monsterSpawnTimer = 10.0f
@@ -83,6 +110,9 @@ class GameWorld {
 
     if(teleporterEventState == TeleporterEventState.charging && teleporter.charged && currentBoss.isEmpty){
       teleporterEventState = TeleporterEventState.charged
+
+      // Give a random rare item to the player
+      playerEntity.addItemToInventory(Item.getRandomItemOfRarity(ItemRarity.rare))
     }
   }
 
@@ -139,15 +169,19 @@ class GameWorld {
   }
 
   def startTeleporterEvent(): Unit = {
+    val bosses = Array[CreatureEntity](
+      new SquidBossEntity,
+      new ShadowBossEntity
+    )
     // Spawn boss
-    val shadow = new SquidBossEntity
-    shadow.addItemToInventory(new RollbackHealthItem, 1)
+    val boss = bosses(Random.nextInt(bosses.length))
+    boss.addItemToInventory(new RollbackHealthItem, 1)
 
     val newPos: Vector2 = new Vector2(1, 1).rotate(Random.between(0, 360)).nor().scl(Random.between(50, 200))
-    shadow.position = new Vector3(playerEntity.position.x, playerEntity.position.y, 0).add(new Vector3(newPos.x, newPos.y, 0))
+    boss.position = new Vector3(playerEntity.position.x, playerEntity.position.y, 0).add(new Vector3(newPos.x, newPos.y, 0))
 
-    currentBoss = Some(shadow)
-    addGameObject(shadow)
+    currentBoss = Some(boss)
+    addGameObject(boss)
 
     teleporterEventState = TeleporterEventState.charging
   }
@@ -167,12 +201,12 @@ class GameWorld {
     generateLevel()
   }
 
-  def getCollideablesWithinCircle(circle: Circle): Array[Collideable] = {
+  def getCollideablesWithinCircle(circle: Circle, collisionMask: Int = Int.MaxValue): Array[Collideable] = {
     val collideables = gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])
     val out: ArrayBuffer[Collideable] = new ArrayBuffer[Collideable]()
     for (col <- collideables) {
       val rec = new Rectangle(col.collisionBox.x + col.position.x, col.collisionBox.y + col.position.y, col.collisionBox.getWidth, col.collisionBox.getWidth)
-      if(Intersector.overlaps(circle, rec))
+      if((collisionMask & col.collisionLayer) != 0 && Intersector.overlaps(circle, rec))
         out.append(col)
     }
     out.toArray

@@ -44,7 +44,7 @@ class Projectile(var damage: Float, val parent: CreatureEntity) extends Entity {
       case c: CreatureEntity =>
         parentGameWorld.removeGameObject(this)
         parent.dealDamageTo(damage, c)
-      case _ =>
+      case _ => parentGameWorld.removeGameObject(this)
     }
   }
 

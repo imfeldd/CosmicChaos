@@ -7,18 +7,14 @@ import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.Texture.TextureFilter
 
-class MoneyOnGetHitItem extends Item with OnGetHitEffect {
-  override val name: String = "Blood Money"
-  override val description: String = "Gain money on taking damage."
-  override val icon: Texture = new BitmapImage("data/images/items/gold.png").getImage
+class FlatDamageReductionItem extends Item with OnGetHitEffect{
+  override val name: String = "Umbrella"
+  override val description: String = "Reduces all incoming damage by 3 (+3 per stack)."
+  override val icon: Texture = new BitmapImage("data/images/items/umbrella.png").getImage
   override val rarity: ItemRarity = ItemRarity.common
   icon.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   override def gotHit(by: CreatureEntity, amount: Float, wasCrit: Boolean): Float = {
-    if(by == holder)
-      return amount
-
-    holder.cash += amount/25.0f * (1 + 0.33f*(stackSize - 1))
-    amount
+    math.max(1, amount - 3*stackSize)
   }
 }

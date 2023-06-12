@@ -27,8 +27,9 @@ class HealAfterGetHitItem extends Item with OnGetHitEffect {
     }
   }
 
-  override def gotHit(by: CreatureEntity, amount: Float, wasCrit: Boolean): Unit = {
+  override def gotHit(by: CreatureEntity, amount: Float, wasCrit: Boolean): Float = {
     gotHit = true
     healTimer = 2.0f
+    amount
   }
 }
