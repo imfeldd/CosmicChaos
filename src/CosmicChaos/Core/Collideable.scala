@@ -2,7 +2,7 @@ package CosmicChaos.Core
 
 import com.badlogic.gdx.math.Rectangle
 
-trait Collideable {
+trait Collideable extends Spatial {
   val collisionBox: Rectangle
   var collisionLayer: Int = 0   // The layer the Collideable lives on
   var collisionMask: Int = 0    // The layer the Collideable interacts with

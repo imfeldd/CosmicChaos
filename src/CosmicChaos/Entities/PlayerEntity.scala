@@ -1,9 +1,9 @@
 package CosmicChaos.Entities
 
-import CosmicChaos.Core.{Collideable, Interactable}
 import CosmicChaos.Core.Items.Item
 import CosmicChaos.Core.Stats.EntityStats
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
+import CosmicChaos.Core.{Collideable, Interactable}
 import CosmicChaos.HUD.GameplayHUD
 import CosmicChaos.Screens.GameScreen
 import CosmicChaos.Utils.Animation
@@ -13,7 +13,7 @@ import ch.hevs.gdx2d.lib.interfaces.KeyboardInterface
 import com.badlogic.gdx.graphics.Texture.TextureFilter
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.{Color, Texture}
-import com.badlogic.gdx.math.{Circle, Rectangle, Vector2, Vector3}
+import com.badlogic.gdx.math._
 import com.badlogic.gdx.{Gdx, Input}
 
 import scala.collection.mutable
@@ -64,8 +64,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   private var lastPos: Vector3 = new Vector3(0, 0, 0)
 
-  private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 30*spriteScale)
-  override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)
+  private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 25*spriteScale)
+  override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2 - 15, collBoxSize.x, collBoxSize.y)
   var interactableOfInterest: Option[Interactable] = None
 
   private val keyStatus: mutable.HashMap[Int, Boolean] = mutable.HashMap[Int, Boolean]()
@@ -75,9 +75,6 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   }
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
-    //position.x = positionInAnotherWorld.x
-    //position.y = positionInAnotherWorld.y
-
     val sprite = if(isDead) {
       deathAnimation.update(Gdx.graphics.getDeltaTime)
       deathAnimation.getCurrentFrame
@@ -217,8 +214,47 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   override def onCollideWith(other: Collideable): Unit = {
     super.onCollideWith(other)
+
+    // Handle collision with the walls
     if((other.collisionLayer & CollisionLayers.world) != 0) {
-      position = lastPos
+      val (cbPlayer, cbWall) = (collisionBox, other.collisionBox)
+      val recPlayer = new Rectangle(cbPlayer.x + position.x, cbPlayer.y + position.y, cbPlayer.getWidth, cbPlayer.getHeight)
+      val recWall = new Rectangle(cbWall.x + other.position.x, cbWall.y + other.position.y, cbWall.getWidth, cbWall.getHeight)
+
+      // Find the penetration rectangle
+      val intersection = new Rectangle()
+      val _ = Intersector.intersectRectangles(recWall, recPlayer, intersection)
+
+      val bounce: Float = -0.1f
+
+      // If the intersection width if larger than the height, it's an horizontal collision - otherwise it's a vertical collision (and if they're equal it's gonna bug out probably)
+      if (intersection.width < intersection.height) {
+        if (intersection.x == recWall.x) {
+          // Intersection from the right
+          recPlayer.x -= intersection.width
+          velocity.x *= bounce
+        }
+        else if (intersection.x + intersection.width == recWall.x + recWall.width) {
+          // Intersection from the left
+          recPlayer.x += intersection.width
+          velocity.x *= bounce
+        }
+      }
+      else {
+        if (intersection.y == recWall.y) {
+          // Intersection from the bottom
+          recPlayer.y -= intersection.height
+          velocity.y *= bounce
+        }
+        else if (intersection.y + intersection.height == recWall.y + recWall.height) {
+          // Intersection from the top
+          recPlayer.y += intersection.height
+          velocity.y *= bounce
+        }
+      }
+
+      // Move the player to the newly calculated position
+      position = new Vector3(recPlayer.x - cbPlayer.x, recPlayer.y - cbPlayer.y, 0)
     }
   }
 }
