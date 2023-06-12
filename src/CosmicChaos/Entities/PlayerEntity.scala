@@ -85,7 +85,8 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     runAnimation.reverse = math.abs(aimVector.angle(velocity)) > 90.0f
 
     if(!isDead) {
-      drawGun(gunTexture, 6, g, scale = 2, offset = new Vector2(0, 5))
+      val weaponSway = math.cos((runAnimation.getCurrentFrameIndex / runAnimation.framesCount.toFloat) * math.Pi * 4.0f ).toFloat
+      drawGun(gunTexture, 6, g, scale = 2, offset = new Vector2(weaponSway * 2.0f, 10 - weaponSway * 3.0f))
     }
 
     drawSprite(sprite, g, spriteScale)
