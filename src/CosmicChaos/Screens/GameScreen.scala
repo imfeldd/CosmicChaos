@@ -2,24 +2,22 @@ package CosmicChaos.Screens
 
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
-import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
 import CosmicChaos.Entities._
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
-import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.math.{Rectangle, Vector3}
+import com.badlogic.gdx.math.Rectangle
 
 import scala.util.Random
 
 class GameScreen extends RenderingScreen {
   val gameWorld: GameWorld = new GameWorld
-  val player: PlayerEntity = new PlayerEntity{team = 1}
-  val gameplayHud: GameplayHUD = new GameplayHUD(player, this)
-  val deathHud: DeathHUD = new DeathHUD(player)
+  def player: PlayerEntity = gameWorld.playerEntity
+  var gameplayHud: GameplayHUD = _
+  var deathHud: DeathHUD = _
   var gameTimer: Float = 0.0f
   val seed = 1234L
   val crosshair = new Pixmap(Gdx.files.internal("data/images/crosshair.png"))
@@ -29,51 +27,10 @@ class GameScreen extends RenderingScreen {
 
 
     Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, crosshair.getWidth/2, crosshair.getHeight/2))
-    // Temporary testing code
-    val testEnemy = new ImmortalSnailEnemyEntity{team = 2}
-    testEnemy.position = new Vector3(100, 100, 0)
-    val testGunner = new FlyingAlienEnemyEntity{team=2}
-    testGunner.position = new Vector3(-100, 100, 0)
-    val testGunner2 = new FlyingAlienEnemyEntity{team = 2}
-    testGunner2.position = new Vector3(-120, 170, 0)
-    val testGunner3 = new FlyingAlienEnemyEntity{team = 2}
-    testGunner3.position = new Vector3(-150, 200, 0)
 
-    player.cash = 1000000
-    for(i <- 0 until 30) {
-      val chest = new NormalChest
-      chest.position = new Vector3(-110 * i, -30, 0)
-      gameWorld.addGameObject(chest)
-    }
-    for (i <- 0 until 30) {
-      val chest = new RareChest
-      chest.position = new Vector3(-110 * i, -110, 0)
-      gameWorld.addGameObject(chest)
-    }
-    for (i <- 0 until 30) {
-      val chest = new LegendaryChest
-      chest.position = new Vector3(-110 * i, -190, 0)
-      gameWorld.addGameObject(chest)
-    }
-
-    val teleporter = new Teleporter
-    val magicMage = new FirstBossEntity
-    val shadow = new ShadowBossEntity
-    shadow.addItemToInventory(new RollbackHealthItem, 1)
-    shadow.position = new Vector3(0, -500, 0)
-
-    gameWorld.currentBoss = Some(shadow)
-
-
-    gameWorld.addGameObject(player)
-    gameWorld.addGameObject(testEnemy)
-    gameWorld.addGameObject(testGunner)
-    gameWorld.addGameObject(testGunner2)
-    gameWorld.addGameObject(testGunner3)
-    gameWorld.addGameObject(teleporter)
-    gameWorld.addGameObject(magicMage)
-    gameWorld.addGameObject(shadow)
-
+    gameWorld.initializeWorld()
+    gameplayHud = new GameplayHUD(gameWorld.playerEntity, this)
+    deathHud = new DeathHUD(gameWorld.playerEntity)
 
   }
 
@@ -93,7 +50,7 @@ class GameScreen extends RenderingScreen {
     g.begin()
     g.clear()
     doCameraShake(g)
-    gameWorld.MyAlgo.draw(g)
+    gameWorld.cellularAutomata.draw(g)
 
 
     gameWorld.update(Gdx.graphics.getDeltaTime)

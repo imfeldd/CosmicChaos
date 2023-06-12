@@ -5,6 +5,7 @@ import CosmicChaos.Core.World.TeleporterEventState.TeleporterEventState
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
 import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ShadowBossEntity, SquidBossEntity}
 import CosmicChaos.Entities._
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import com.badlogic.gdx.math._
 
 import scala.collection.mutable.ArrayBuffer
@@ -20,7 +21,8 @@ class GameWorld {
   val gameObjects: ArrayBuffer[GameObject] = new ArrayBuffer[GameObject]
   val Music = new MusicPlayer("data/music/mainMusic.mp3")
   Music.setVolume(0.5f)
-  Music.loop()
+  if(System.getProperty("user.name") != "Dimitri")  // ...
+    Music.loop()
 
   var playerEntity: PlayerEntity = _
   var teleporter: Teleporter = _
