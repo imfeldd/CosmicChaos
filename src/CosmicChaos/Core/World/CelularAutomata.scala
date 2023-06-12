@@ -57,7 +57,7 @@ class CellularAutomata(val width: Int, val height: Int) {
   }
 
   // Count the number of alive neighbors around a cell
-  private def countAliveNeighbors(x: Int, y: Int): Int = {
+  def countAliveNeighbors(x: Int, y: Int): Int = {
     var count = 0
     for (dx <- -1 to 1;
          dy <- -1 to 1) {

@@ -3,7 +3,7 @@ package CosmicChaos.Core.World
 import CosmicChaos.Core.Items.{Item, ItemRarity, RollbackHealthItem}
 import CosmicChaos.Core.World.TeleporterEventState.TeleporterEventState
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, SquidBossEntity}
+import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ShadowBossEntity, SquidBossEntity}
 import CosmicChaos.Entities._
 import com.badlogic.gdx.math._
 
@@ -41,7 +41,9 @@ class GameWorld {
     val tileSize = cellularAutomata.tileSize
     for (row <- 0 until cellularAutomata.numRows) {
       for (column <- 0 until cellularAutomata.numColumns) {
-        if(cellularAutomata.grid(column)(row) == false) {
+        if(!cellularAutomata.grid(column)(row) &&                 // only wall tiles
+          cellularAutomata.countAliveNeighbors(column, row) != 0  // ignore tiles completely surrounded by other tiles
+        ) {
           val posX = column * tileSize
           val posY = row * tileSize
 
@@ -164,15 +166,19 @@ class GameWorld {
   }
 
   def startTeleporterEvent(): Unit = {
+    val bosses = Array[CreatureEntity](
+      new SquidBossEntity,
+      new ShadowBossEntity
+    )
     // Spawn boss
-    val shadow = new SquidBossEntity
-    shadow.addItemToInventory(new RollbackHealthItem, 1)
+    val boss = bosses(Random.nextInt(bosses.length))
+    boss.addItemToInventory(new RollbackHealthItem, 1)
 
     val newPos: Vector2 = new Vector2(1, 1).rotate(Random.between(0, 360)).nor().scl(Random.between(50, 200))
-    shadow.position = new Vector3(playerEntity.position.x, playerEntity.position.y, 0).add(new Vector3(newPos.x, newPos.y, 0))
+    boss.position = new Vector3(playerEntity.position.x, playerEntity.position.y, 0).add(new Vector3(newPos.x, newPos.y, 0))
 
-    currentBoss = Some(shadow)
-    addGameObject(shadow)
+    currentBoss = Some(boss)
+    addGameObject(boss)
 
     teleporterEventState = TeleporterEventState.charging
   }
