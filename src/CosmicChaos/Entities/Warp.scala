@@ -9,11 +9,11 @@ import com.badlogic.gdx.math.{Vector2, Vector3}
 import scala.util.Random
 
 abstract class Warp extends Entity with Interactable {
-
   protected def getTexture: Texture
   protected val textureScale: Float
   collisionLayer = CollisionLayers.props
   collisionMask = CollisionLayers.none
+
 
   private def findTeleportPosition(world: CellularAutomata): Vector2 = {
     // Logic to find a valid teleport position in the new world
@@ -22,7 +22,7 @@ abstract class Warp extends Entity with Interactable {
     val randomY = Random.nextInt(world.height)
     new Vector2(randomX, randomY)
   }
-
+/*
   override def interact(player: PlayerEntity): Unit = {
     parentGameWorld.MyAlgo.worldCreation()
     val teleportPosition = findTeleportPosition(parentGameWorld.MyAlgo) // Find a valid teleport position in the new world
@@ -32,5 +32,8 @@ abstract class Warp extends Entity with Interactable {
     soundEffect.play()
   }
 
+
+ */
   override def getInteractText: String
+
 }

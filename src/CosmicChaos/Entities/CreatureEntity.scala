@@ -74,11 +74,10 @@ abstract class CreatureEntity extends Entity {
     stats.healthRegenerationAmount.multiplier += 1.0f + extraLevels * 0.33f
     stats.damage.baseAddition += extraLevels * 0.66f
 
-    for (itm <- itemsInventory) {
+    for (itm <- itemsInventory.toArray) {
       itm.update(dt)
       itm.modify(stats)
     }
-
   }
 
   def heal(amount: Float): Unit = {

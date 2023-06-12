@@ -48,8 +48,8 @@ class FirstBossEntity extends GunnerEnemyEntity {
 
   override def onUpdate(dt: Float): Unit = {
     if(parentGameWorld.playerEntity.position.dst(position) < 150) {
-      position.x = Random.between(0, parentGameWorld.MyAlgo.width)
-      position.y = Random.between(0, parentGameWorld.MyAlgo.height)
+      position.x = Random.between(0, parentGameWorld.cellularAutomata.width)
+      position.y = Random.between(0, parentGameWorld.cellularAutomata.height)
     }
 
 

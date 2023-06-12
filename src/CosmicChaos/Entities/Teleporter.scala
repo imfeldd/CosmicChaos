@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Rectangle
 
 class Teleporter extends Warp with Interactable {
   override val name: String = "RegularTeleporter"
-  override val collisionBox: Rectangle = new Rectangle(0, 0, 300, 300)
+  override val collisionBox: Rectangle = new Rectangle(-150, -100, 300, 200)
   override protected val textureScale: Float = 2.0f
   private val (frameW, frameH) = (256, 128)
   private val teleportedUncharged: Texture = new Texture("data/images/warp/teleporter_uncharged.png")
@@ -18,7 +18,7 @@ class Teleporter extends Warp with Interactable {
   private val teleporterAnimation = new Animation(0.15f, teleporterFrame(0), loop = true)
   renderLayer = -2
 
-  val chargeTime: Float = 100.0f  // seconds
+  val chargeTime: Float = 10.0f  // seconds
   var charge: Float = 0.0f
   var charging: Boolean = false
 
@@ -30,13 +30,14 @@ class Teleporter extends Warp with Interactable {
   override def onGraphicRender(g: GdxGraphics): Unit = {
     val tex = getTexture
     val (w,h) = (frameW*textureScale, frameH*textureScale)
+    val (x, y) = (position.x - (frameW*textureScale)/2, position.y - (frameH*textureScale)/2)
 
     if(charged) {
       teleporterAnimation.update(Gdx.graphics.getDeltaTime)
-      g.draw(teleporterAnimation.getCurrentFrame, position.x, position.y, w, h)
+      g.draw(teleporterAnimation.getCurrentFrame, x, y, w, h)
     }
     else {
-      g.draw(teleportedUncharged, position.x, position.y, w, h)
+      g.draw(teleportedUncharged, x, y, w, h)
     }
   }
 
@@ -49,9 +50,9 @@ class Teleporter extends Warp with Interactable {
     if(parentGameWorld.isTeleporterEventActive)
       return
 
-    if(charged)
-      super.interact(player)
-    else if(!charging) {
+    if(charged) {
+      parentGameWorld.teleportToNextLevel()
+    } else if(!charging) {
       charging = true
       parentGameWorld.startTeleporterEvent()
     }

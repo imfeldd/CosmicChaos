@@ -32,10 +32,15 @@ abstract class GunnerEnemyEntity extends CreatureEntity {
 
     aimVector = vecToPlayer
 
-    if(vecToPlayer.len() < 500) {
+    if(vecToPlayer.len() < 400) {
       // Move away from player if we're too close
       aimVector = vecToPlayer.rotate(180).nor
       position.add(new Vector3(aimVector.x, aimVector.y, 0).scl(stats.maxSpeed*dt))
+    }
+    else if(vecToPlayer.len() > 700) {
+      // Move towards the player if we're too far away
+      aimVector = vecToPlayer.nor
+      position.add(new Vector3(aimVector.x, aimVector.y, 0).scl(stats.maxSpeed * dt))
     }
     else {
       // Shoot at the player

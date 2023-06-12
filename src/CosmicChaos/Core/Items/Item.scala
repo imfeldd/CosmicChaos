@@ -33,7 +33,9 @@ object Item {
     new MoreMoneyOnKill,
     new MoreSpeedItem,
     new RollbackHealthItem,
-    new MoreHealthRegenItem
+    new MoreHealthRegenItem,
+    new FreeItemsItem,
+    new MoneyOnGetHitItem
   )
 
   def getRandomItemOfRarity(rarity: ItemRarity): Item = {
