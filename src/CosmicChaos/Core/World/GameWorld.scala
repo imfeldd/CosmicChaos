@@ -38,6 +38,26 @@ class GameWorld {
     teleporterEventState = TeleporterEventState.notStarted
     cellularAutomata.worldCreation()
 
+    val tileSize = cellularAutomata.tileSize
+    for (row <- 0 until cellularAutomata.numRows) {
+      for (column <- 0 until cellularAutomata.numColumns) {
+        if(cellularAutomata.grid(column)(row) == false) {
+          val posX = column * tileSize
+          val posY = row * tileSize
+
+          val collisionBox = new GameObject with Collideable with Spatial {
+            // TODO: Why is the collision box shifted by one tile to the bottom ?
+            override val collisionBox: Rectangle = new Rectangle(0, -tileSize, 128, 128)
+            position = new Vector3(posX + tileSize/2, posY + tileSize/2, 0)
+            collisionLayer = CollisionLayers.world
+            collisionMask = CollisionLayers.none
+          }
+
+          addGameObject(collisionBox)
+        }
+      }
+    }
+
     val newPlayerPos = cellularAutomata.getRandomClearPosition(2)
     playerEntity.position = new Vector3(newPlayerPos.x, newPlayerPos.y, 0)
 
@@ -172,12 +192,12 @@ class GameWorld {
     generateLevel()
   }
 
-  def getCollideablesWithinCircle(circle: Circle): Array[Collideable] = {
+  def getCollideablesWithinCircle(circle: Circle, collisionMask: Int = Int.MaxValue): Array[Collideable] = {
     val collideables = gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])
     val out: ArrayBuffer[Collideable] = new ArrayBuffer[Collideable]()
     for (col <- collideables) {
       val rec = new Rectangle(col.collisionBox.x + col.position.x, col.collisionBox.y + col.position.y, col.collisionBox.getWidth, col.collisionBox.getWidth)
-      if(Intersector.overlaps(circle, rec))
+      if((collisionMask & col.collisionLayer) != 0 && Intersector.overlaps(circle, rec))
         out.append(col)
     }
     out.toArray
