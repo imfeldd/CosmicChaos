@@ -2,6 +2,7 @@ package CosmicChaos.Entities
 
 import CosmicChaos.Core.Interactable
 import CosmicChaos.Core.Items.{Item, ItemRarity}
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture
 

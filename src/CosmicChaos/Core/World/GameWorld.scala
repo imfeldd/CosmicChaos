@@ -18,6 +18,9 @@ object TeleporterEventState extends Enumeration {
 class GameWorld {
 
   val gameObjects: ArrayBuffer[GameObject] = new ArrayBuffer[GameObject]
+  val Music = new MusicPlayer("data/music/mainMusic.mp3")
+  Music.setVolume(0.5f)
+  Music.loop()
 
   var playerEntity: PlayerEntity = _
   var teleporter: Teleporter = _

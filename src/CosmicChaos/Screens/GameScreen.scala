@@ -2,35 +2,33 @@ package CosmicChaos.Screens
 
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
+import CosmicChaos.Entities.Enemies.{FirstBossEntity, FlyingAlienEnemyEntity, ImmortalSnailEnemyEntity}
 import CosmicChaos.Entities._
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
+import ch.hevs.gdx2d.components.audio.MusicPlayer
 import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.{Rectangle, Vector3}
 
 import scala.util.Random
 
 class GameScreen extends RenderingScreen {
   val gameWorld: GameWorld = new GameWorld
-  def player: PlayerEntity = gameWorld.playerEntity
-  var gameplayHud: GameplayHUD = new GameplayHUD(player, this)
-  var deathHud: DeathHUD = new DeathHUD(player)
+  val player: PlayerEntity = new PlayerEntity{team = 1}
+  val gameplayHud: GameplayHUD = new GameplayHUD(player, this)
+  val deathHud: DeathHUD = new DeathHUD(player)
   var gameTimer: Float = 0.0f
   val seed = 1234L
   val crosshair = new Pixmap(Gdx.files.internal("data/images/crosshair.png"))
 
   override def onInit(): Unit = {
+
+
+
     Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, crosshair.getWidth/2, crosshair.getHeight/2))
-
-    //gameWorld.generateLevel()
-    gameWorld.initializeWorld()
-    gameplayHud = new GameplayHUD(gameWorld.playerEntity, this)
-    deathHud = new DeathHUD(gameWorld.playerEntity)
-
-    /*
     // Temporary testing code
     val testEnemy = new ImmortalSnailEnemyEntity{team = 2}
     testEnemy.position = new Vector3(100, 100, 0)
@@ -60,7 +58,12 @@ class GameScreen extends RenderingScreen {
 
     val teleporter = new Teleporter
     val magicMage = new FirstBossEntity
-    //val goldenTeleporter = new GoldenTeleporter
+    val shadow = new ShadowBossEntity
+    shadow.addItemToInventory(new RollbackHealthItem, 1)
+    shadow.position = new Vector3(0, -500, 0)
+
+    gameWorld.currentBoss = Some(shadow)
+
 
     gameWorld.addGameObject(player)
     gameWorld.addGameObject(testEnemy)
@@ -69,10 +72,9 @@ class GameScreen extends RenderingScreen {
     gameWorld.addGameObject(testGunner3)
     gameWorld.addGameObject(teleporter)
     gameWorld.addGameObject(magicMage)
-    //gameWorld.addGameObject(shadow)
-    //gameWorld.addGameObject(goldenTeleporter)
+    gameWorld.addGameObject(shadow)
 
-     */
+
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -91,7 +93,7 @@ class GameScreen extends RenderingScreen {
     g.begin()
     g.clear()
     doCameraShake(g)
-    gameWorld.cellularAutomata.draw(g)
+    gameWorld.MyAlgo.draw(g)
 
 
     gameWorld.update(Gdx.graphics.getDeltaTime)
