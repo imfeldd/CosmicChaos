@@ -3,7 +3,7 @@ package CosmicChaos.HUD
 import CosmicChaos.Core.Items.{Item, ItemRarity}
 import CosmicChaos.Core.World.TeleporterEventState
 import CosmicChaos.Entities.PlayerEntity
-import CosmicChaos.HUD.GameplayHUD._
+import CosmicChaos.HUD.GameplayHUD.{whiteFont, _}
 import CosmicChaos.Screens.GameScreen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -179,7 +179,8 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     whiteFont.draw(spriteBatch, f"lvl. ${player.level.toInt}", 30, 105, 350, 1, false)
 
     // Player ammo counter
-    whiteFont.draw(spriteBatch, s"${player.weapon.currentAmmoCount}/${player.weapon.ammoCapacity}",  Gdx.input.getX + 24, Gdx.graphics.getHeight - Gdx.input.getY)
+    val ammoStr = if(player.weapon.isMagasineEmpty) "RELOADING" else s"${player.weapon.currentAmmoCount}/${player.weapon.ammoCapacity}"
+    whiteFont.draw(spriteBatch, ammoStr,  Gdx.input.getX + 24, Gdx.graphics.getHeight - Gdx.input.getY)
 
     // Boss health text
     if(player.parentGameWorld.currentBoss.nonEmpty) {

@@ -98,10 +98,6 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
     if(!isDead) {
       drawGun(gunTexture, 6, g, scale = 2, offset = new Vector2(0, 5))
-
-      if(weapon.isMagasineEmpty) {
-        g.drawString(position.x, position.y + 80, "RELOADING", 1)
-      }
     }
 
     drawSprite(sprite, g, spriteScale)

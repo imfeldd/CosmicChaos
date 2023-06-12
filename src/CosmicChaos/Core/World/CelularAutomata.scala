@@ -90,9 +90,7 @@ class CellularAutomata(val width: Int, val height: Int) {
     while(true) {
       val x = Random.between(clearingRadius + 1, numColumns - clearingRadius - 1)
       val y = Random.between(clearingRadius + 1, numRows - clearingRadius - 1)
-      println(x, y)
       if(checkClear(x, y)) {
-        println("okü")
         return new Vector2(x * tileSize, y * tileSize)
       }
     }
