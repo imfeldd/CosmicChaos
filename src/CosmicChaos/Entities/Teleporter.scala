@@ -18,7 +18,7 @@ class Teleporter extends Warp with Interactable {
   private val teleporterAnimation = new Animation(0.15f, teleporterFrame(0), loop = true)
   renderLayer = -2
 
-  val chargeTime: Float = 10.0f  // seconds
+  val chargeTime: Float = 100.0f  // seconds
   var charge: Float = 0.0f
   var charging: Boolean = false
 
