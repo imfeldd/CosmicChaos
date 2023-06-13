@@ -14,6 +14,6 @@ class MoreAmmoItem extends Item {
   icon.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   override def modify(entityStats: EntityStats): Unit = {
-    entityStats.attackCapacity.flatAddition += 0.15f + 0.1f * (stackSize - 1)
+    entityStats.attackCapacity.multiplier += 0.25f*stackSize
   }
 }
