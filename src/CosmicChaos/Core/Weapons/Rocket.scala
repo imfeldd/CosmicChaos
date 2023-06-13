@@ -4,7 +4,7 @@ import CosmicChaos.Core.Collideable
 import CosmicChaos.Entities.{CreatureEntity, Explosion}
 import com.badlogic.gdx.math.Vector3
 
-class Rocket(damage: Float, parent: CreatureEntity) extends Projectile(damage, parent) {
+class Rocket(_damage: Float, _parent: CreatureEntity) extends Projectile(_damage, _parent) {
   override val name: String = "Rocket"
 
   private var initialPosition: Vector3 = _

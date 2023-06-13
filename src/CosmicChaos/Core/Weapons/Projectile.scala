@@ -38,8 +38,6 @@ class Projectile(var damage: Float, val parent: CreatureEntity) extends Entity {
   }
 
   override def onCollideWith(other: Collideable): Unit = {
-    super.onCollideWith(other)
-
     other match {
       case c: CreatureEntity =>
         parentGameWorld.removeGameObject(this)

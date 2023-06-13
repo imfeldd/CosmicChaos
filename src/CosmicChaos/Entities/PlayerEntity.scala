@@ -21,7 +21,7 @@ import scala.collection.mutable
 
 class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
-  private val gunTexture = new BitmapImage("data/images/weapons/gun.png").getImage
+  private val gunTexture = new BitmapImage("data/images/weapons/DMR.png").getImage
   gunTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   private val (frameW, frameH) = (48, 48)
@@ -35,7 +35,9 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
   private val deathAnimation = new Animation(0.120f, deathFrames(0), loop = false)
 
-  val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, baseAmmoCapacity = 14, reloadTime = 0.66f) {}
+  val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, baseAmmoCapacity = 14, reloadTime = 0.66f)
+  //val weapon: Weapon = new Weapon(new PiercingProjectile(8f, this), false, 2, this, inaccuracy = 0.0f, baseAmmoCapacity = 1, reloadTime = 0.66f)
+ // val weapon = new Shotgun(new PiercingProjectile(2.5f, this), this, 20, baseAmmoCapacity = 4)
 
 
   override val name: String = "Player"
@@ -52,8 +54,6 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   collisionLayer = CollisionLayers.player
   collisionMask = CollisionLayers.world + CollisionLayers.props + CollisionLayers.interactable
-
-  private var lastPos: Vector3 = new Vector3(0, 0, 0)
 
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 25*spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2 - 15, collBoxSize.x, collBoxSize.y)
@@ -114,8 +114,6 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     super.onUpdate(dt)
 
     interactableOfInterest = None
-
-    lastPos = new Vector3(position.x, position.y, 0)
 
     doMovement(dt)
 
