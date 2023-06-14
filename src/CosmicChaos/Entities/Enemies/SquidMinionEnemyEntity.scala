@@ -36,7 +36,7 @@ class SquidMinionEnemyEntity extends CreatureEntity {
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-framwH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)
 
   collisionLayer = CollisionLayers.enemy
-  collisionMask = CollisionLayers.world + CollisionLayers.props
+  collisionMask = CollisionLayers.worldSolid + CollisionLayers.props
 
   cash = 20
 

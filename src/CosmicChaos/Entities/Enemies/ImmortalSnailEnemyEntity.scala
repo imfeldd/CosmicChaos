@@ -25,7 +25,7 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
   override val collisionBox: Rectangle = new Rectangle(-snailTexture.getWidth*scale/2, -snailTexture.getHeight/2, snailTexture.getWidth*scale, snailTexture.getHeight*scale)
 
   collisionLayer = CollisionLayers.enemy
-  collisionMask = CollisionLayers.world + CollisionLayers.props
+  collisionMask = CollisionLayers.worldSolid + CollisionLayers.props
 
   override def onGraphicRender(g: GdxGraphics): Unit = {
     drawSprite(snailTexture, g, scale)

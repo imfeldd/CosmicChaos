@@ -10,7 +10,7 @@ class Projectile(var damage: Float, val parent: CreatureEntity) extends Entity {
   override val name: String = "Bullet"
   override val collisionBox: Rectangle = new Rectangle(-4, -4, 8, 8)
   collisionLayer = CollisionLayers.bullet
-  collisionMask = CollisionLayers.enemy + CollisionLayers.player + CollisionLayers.world + CollisionLayers.props
+  collisionMask = CollisionLayers.enemy + CollisionLayers.player + CollisionLayers.worldSolid + CollisionLayers.props
 
   protected var timer: Float = 0
 

@@ -21,7 +21,7 @@ import scala.collection.mutable
 
 class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
-  private val gunTexture = new BitmapImage("data/images/weapons/DMR.png").getImage
+  private val gunTexture = new BitmapImage("data/images/weapons/gun.png").getImage
   gunTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest)
 
   private val (frameW, frameH) = (48, 48)
