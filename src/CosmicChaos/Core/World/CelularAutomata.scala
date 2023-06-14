@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 
+import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 class CellularAutomata(val width: Int, val height: Int) {
@@ -12,10 +13,14 @@ class CellularAutomata(val width: Int, val height: Int) {
   private val grassTextures: Array[TextureRegion] =
     TextureRegion.split(new Texture("data/images/world/tiles/grass.png"), 32, 32)(0)
 
+  private val scorchedGrassTextures: Array[TextureRegion] =
+    TextureRegion.split(new Texture("data/images/world/tiles/scorched_grass.png"), 32, 32)(0)
+
   private val waterTextures: Array[TextureRegion] =
     TextureRegion.split(new Texture("data/images/world/tiles/water.png"), 32, 32)(0)
 
   var grid: Array[Array[Boolean]] = Array.ofDim[Boolean](width, height)
+  var scorchedTiles: ArrayBuffer[(Int, Int)] = ArrayBuffer[(Int, Int)]()
   val tileSize = 128 // Assuming a cell size of 50x50 pixels
   val numColumns = width / tileSize
   val numRows = height / tileSize
@@ -47,9 +52,12 @@ class CellularAutomata(val width: Int, val height: Int) {
 
         val tileHash = ((posX + posY)*(posX + posY + 1)/2) + posY // https://stackoverflow.com/a/682617
         val tileTexture =
-          if(grid(column)(row))
-            grassTextures(tileHash % grassTextures.length)
-          else
+          if(grid(column)(row)) {
+            if(scorchedTiles.contains((column, row)))
+              scorchedGrassTextures(tileHash % scorchedGrassTextures.length)
+            else
+              grassTextures(tileHash % grassTextures.length)
+          } else
             waterTextures(tileHash % waterTextures.length)
 
         g.draw(tileTexture, posX + tileSize/2, posY - tileSize/2, tileSize, tileSize)

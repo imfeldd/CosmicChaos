@@ -159,16 +159,16 @@ abstract class CreatureEntity extends Entity {
     experience += killed.level * 5.0f
   }
 
-  protected def drawSprite(sprite: Texture, g: GdxGraphics, scale: Float = 1.0f): Unit = {
+  protected def drawSprite(sprite: Texture, g: GdxGraphics, scale: Float): Unit = {
     val (spriteW, spriteH) = (sprite.getWidth*scale, sprite.getHeight*scale)
     val flipX = aimVector.angle() > 90 && aimVector.angle() < 280
     g.draw(sprite, position.x - spriteW / 2, position.y - spriteH / 2, spriteW, spriteH, 0, 0, sprite.getWidth, sprite.getHeight, flipX, false)
   }
 
-  protected def drawSprite(sprite: TextureRegion, g: GdxGraphics, scale: Float): Unit = {
+  protected def drawSprite(sprite: TextureRegion, g: GdxGraphics, scale: Float, offset: Vector2 = new Vector2(0, 0)): Unit = {
     val (spriteW, spriteH) = (sprite.getRegionWidth * scale, sprite.getRegionHeight * scale)
     val flipX = aimVector.angle() > 90 && aimVector.angle() < 280
-    g.draw(sprite.getTexture, position.x - spriteW / 2, position.y - spriteH / 2, spriteW, spriteH, sprite.getRegionX, sprite.getRegionY, sprite.getRegionWidth, sprite.getRegionHeight, flipX, false)
+    g.draw(sprite.getTexture, position.x - spriteW / 2 + offset.x, position.y - spriteH / 2 + offset.y, spriteW, spriteH, sprite.getRegionX, sprite.getRegionY, sprite.getRegionWidth, sprite.getRegionHeight, flipX, false)
   }
 
   protected def drawGun(sprite: Texture, distance: Float, g: GdxGraphics, scale: Float = 1.0f, offset: Vector2 = new Vector2(0, 0)): Unit = {

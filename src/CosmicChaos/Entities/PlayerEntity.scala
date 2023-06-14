@@ -116,6 +116,10 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
     interactableOfInterest = None
 
+    if(keyStatus.getOrElse(Input.Keys.T, false)) {
+      position = new Vector3(parentGameWorld.teleporter.position.x, parentGameWorld.teleporter.position.y, 0)
+    }
+
     doMovement(dt)
 
     if(isDead)
