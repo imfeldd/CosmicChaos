@@ -54,6 +54,7 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
   collisionLayer = CollisionLayers.player
   collisionMask = CollisionLayers.world + CollisionLayers.props + CollisionLayers.interactable
+  team = 1
 
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 25*spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2 - 15, collBoxSize.x, collBoxSize.y)
