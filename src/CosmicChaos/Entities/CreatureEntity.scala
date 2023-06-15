@@ -3,7 +3,7 @@ package CosmicChaos.Entities
 import CosmicChaos.Core.Items.Effects.{BeforeDealDamageEffect, DealtDamageEffect, OnGetHitEffect, OnKillEffect}
 import CosmicChaos.Utils.Animation
 import CosmicChaos.Core.Items.Item
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.HUD.GameplayHUD
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
@@ -27,6 +27,7 @@ abstract class CreatureEntity extends Entity {
 
   val baseStats: EntityStats
   var stats: EntityStats
+  var statsScaling: EntityStatsScaling
 
   var cash: Float = 0.0f
   var experience: Float = 0.0f
@@ -70,9 +71,9 @@ abstract class CreatureEntity extends Entity {
 
   protected def computeStats(dt: Float): Unit = {
     val extraLevels = math.floor(level - 1).toFloat
-    stats.maxHealth.baseAddition += extraLevels * 5.0f
-    stats.healthRegenerationAmount.multiplier += 1.0f + extraLevels * 0.33f
-    stats.damage.baseAddition += extraLevels * 0.66f
+    stats.maxHealth.baseAddition += extraLevels * statsScaling.maxHealthPerLevel
+    stats.healthRegenerationAmount.multiplier += 1.0f + extraLevels * statsScaling.healthRegenPerItem
+    stats.damage.baseAddition += extraLevels * statsScaling.damagePerLevel
 
     for (itm <- itemsInventory.toArray) {
       itm.update(dt)
@@ -159,16 +160,16 @@ abstract class CreatureEntity extends Entity {
     experience += killed.level * 5.0f
   }
 
-  protected def drawSprite(sprite: Texture, g: GdxGraphics, scale: Float = 1.0f): Unit = {
+  protected def drawSprite(sprite: Texture, g: GdxGraphics, scale: Float): Unit = {
     val (spriteW, spriteH) = (sprite.getWidth*scale, sprite.getHeight*scale)
     val flipX = aimVector.angle() > 90 && aimVector.angle() < 280
     g.draw(sprite, position.x - spriteW / 2, position.y - spriteH / 2, spriteW, spriteH, 0, 0, sprite.getWidth, sprite.getHeight, flipX, false)
   }
 
-  protected def drawSprite(sprite: TextureRegion, g: GdxGraphics, scale: Float): Unit = {
+  protected def drawSprite(sprite: TextureRegion, g: GdxGraphics, scale: Float, offset: Vector2 = new Vector2(0, 0)): Unit = {
     val (spriteW, spriteH) = (sprite.getRegionWidth * scale, sprite.getRegionHeight * scale)
     val flipX = aimVector.angle() > 90 && aimVector.angle() < 280
-    g.draw(sprite.getTexture, position.x - spriteW / 2, position.y - spriteH / 2, spriteW, spriteH, sprite.getRegionX, sprite.getRegionY, sprite.getRegionWidth, sprite.getRegionHeight, flipX, false)
+    g.draw(sprite.getTexture, position.x - spriteW / 2 + offset.x, position.y - spriteH / 2 + offset.y, spriteW, spriteH, sprite.getRegionX, sprite.getRegionY, sprite.getRegionWidth, sprite.getRegionHeight, flipX, false)
   }
 
   protected def drawGun(sprite: Texture, distance: Float, g: GdxGraphics, scale: Float = 1.0f, offset: Vector2 = new Vector2(0, 0)): Unit = {

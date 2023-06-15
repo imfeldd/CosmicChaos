@@ -1,6 +1,6 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Core.Weapons.{ShadowProjectile, Weapon}
 import CosmicChaos.Entities.CreatureEntity
 import CosmicChaos.Utils.Animation
@@ -24,6 +24,11 @@ class ShadowBossEntity extends CreatureEntity {
     attackSpeed = 1
   )
   override var stats: EntityStats = baseStats
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 75.0f,
+    damagePerLevel = 0.5f,
+    healthRegenPerItem = 0.0f
+  )
   override val name: String = "Shadow Figure"
   override val nameSubtitle: String = "Emissary of Darkness"
 

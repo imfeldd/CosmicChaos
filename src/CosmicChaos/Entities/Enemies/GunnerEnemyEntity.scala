@@ -8,7 +8,7 @@ abstract class GunnerEnemyEntity extends CreatureEntity {
   override val name: String = "Gunner"
   override val collisionBox: Rectangle = new Rectangle(-32, -32, 64, 64)
   collisionLayer = CollisionLayers.enemy
-  collisionMask = CollisionLayers.world + CollisionLayers.props
+  collisionMask = CollisionLayers.worldSolid + CollisionLayers.props
 
   protected val weapon: Weapon
   protected var aggro: Entity = null

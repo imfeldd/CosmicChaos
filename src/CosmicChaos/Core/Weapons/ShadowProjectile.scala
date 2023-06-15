@@ -12,7 +12,7 @@ class ShadowProjectile(damage: Float, holder: CreatureEntity) extends Projectile
   private var freezeTimer: Float = 0.2f
 
   collisionLayer = CollisionLayers.bullet
-  collisionMask = CollisionLayers.player + CollisionLayers.world + CollisionLayers.props
+  collisionMask = CollisionLayers.player + CollisionLayers.worldSolid + CollisionLayers.props
 
   override def onEnterGameWorld(): Unit = {
     super.onEnterGameWorld()

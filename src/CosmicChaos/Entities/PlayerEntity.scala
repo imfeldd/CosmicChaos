@@ -1,7 +1,7 @@
 package CosmicChaos.Entities
 
 import CosmicChaos.Core.Items.Item
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import CosmicChaos.Core.{Collideable, Interactable}
 import CosmicChaos.HUD.GameplayHUD
@@ -35,7 +35,9 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
   private val deathFrames: Array[Array[TextureRegion]] = TextureRegion.split(deathSpritesheet, frameW, frameH)
   private val deathAnimation = new Animation(0.120f, deathFrames(0), loop = false)
 
-  val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, baseAmmoCapacity = 14, reloadTime = 0.66f) {}
+  val weapon: Weapon = new Weapon(new Projectile(.7f, this), true, 14, this, inaccuracy = 4.5f, baseAmmoCapacity = 14, reloadTime = 0.66f)
+  //val weapon: Weapon = new Weapon(new PiercingProjectile(8f, this), false, 2, this, inaccuracy = 0.0f, baseAmmoCapacity = 1, reloadTime = 0.66f)
+ // val weapon = new Shotgun(new PiercingProjectile(2.5f, this), this, 20, baseAmmoCapacity = 4)
 
 
   override val name: String = "Player"
@@ -49,11 +51,15 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     healthRegenAmount = 1.0f
   )
   override var stats: EntityStats = baseStats
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 5.0f,
+    damagePerLevel = 0.6f,
+    healthRegenPerItem = 0.33f
+  )
 
   collisionLayer = CollisionLayers.player
   collisionMask = CollisionLayers.world + CollisionLayers.props + CollisionLayers.interactable
-
-  private var lastPos: Vector3 = new Vector3(0, 0, 0)
+  team = 1
 
   private val collBoxSize: Vector2 = new Vector2(25*spriteScale, 25*spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-frameH*spriteScale + collBoxSize.y)/2 - 15, collBoxSize.x, collBoxSize.y)
@@ -115,7 +121,9 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
 
     interactableOfInterest = None
 
-    lastPos = new Vector3(position.x, position.y, 0)
+    if(keyStatus.getOrElse(Input.Keys.T, false)) {
+      position = new Vector3(parentGameWorld.teleporter.position.x, parentGameWorld.teleporter.position.y, 0)
+    }
 
     doMovement(dt)
 

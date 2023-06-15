@@ -1,5 +1,5 @@
 package CosmicChaos.Entities.Enemies
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics

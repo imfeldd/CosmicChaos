@@ -4,11 +4,11 @@ import CosmicChaos.Core.Collideable
 import CosmicChaos.Entities.{CreatureEntity, Explosion}
 import com.badlogic.gdx.math.Vector3
 
-class Rocket(damage: Float, parent: CreatureEntity) extends Projectile(damage, parent) {
+class Rocket(_damage: Float, _parent: CreatureEntity) extends Projectile(_damage, _parent) {
   override val name: String = "Rocket"
 
   private var initialPosition: Vector3 = _
-  private val distanceToTravel = parent.aimVector.len()
+  protected val distanceToTravel = parent.aimVector.len()
 
   override def onEnterGameWorld(): Unit = {
     super.onEnterGameWorld()
@@ -23,7 +23,7 @@ class Rocket(damage: Float, parent: CreatureEntity) extends Projectile(damage, p
     }
   }
 
-  private def explode(): Unit = {
+  protected def explode(): Unit = {
     val explosion = new Explosion(damage * parent.stats.damage, 96, parent)
     explosion.position = new Vector3(position.x, position.y, 0)
     parentGameWorld.addGameObject(explosion)

@@ -1,14 +1,26 @@
 package CosmicChaos.Core.World
 
 import ch.hevs.gdx2d.lib.GdxGraphics
-import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.math.Vector2
 
+import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
 class CellularAutomata(val width: Int, val height: Int) {
 
+  private val grassTextures: Array[TextureRegion] =
+    TextureRegion.split(new Texture("data/images/world/tiles/grass.png"), 32, 32)(0)
+
+  private val scorchedGrassTextures: Array[TextureRegion] =
+    TextureRegion.split(new Texture("data/images/world/tiles/scorched_grass.png"), 32, 32)(0)
+
+  private val waterTextures: Array[TextureRegion] =
+    TextureRegion.split(new Texture("data/images/world/tiles/water.png"), 32, 32)(0)
+
   var grid: Array[Array[Boolean]] = Array.ofDim[Boolean](width, height)
+  var scorchedTiles: ArrayBuffer[(Int, Int)] = ArrayBuffer[(Int, Int)]()
   val tileSize = 128 // Assuming a cell size of 50x50 pixels
   val numColumns = width / tileSize
   val numRows = height / tileSize
@@ -16,29 +28,43 @@ class CellularAutomata(val width: Int, val height: Int) {
 
 
   def worldCreation() = {
-    //size world
-
     val random = new Random()
+
+    scorchedTiles.clear()
 
     // Initialize the grid randomly
     for (row <- 0 until numRows) {
       for (column <- 0 until numColumns) {
-        grid(column)(row) = random.nextFloat() <= probabilityWall
+        grid(column)(row) =
+          if(row == 0 || column == 0 || row == numRows - 1 || column == numColumns - 1)
+            false
+          else
+            random.nextFloat() <= probabilityWall
       }
     }
     iterate(3)
   }
 
   def draw(g: GdxGraphics) = {
-    for (row <- 0 until numRows) {
+    g.clear(new Color(22/255.0f, 108/255.0f, 154/255.0f, 1))
 
+    // Draw the map
+    for (row <- 0 until numRows) {
       for (column <- 0 until numColumns) {
         val posX = column * tileSize
         val posY = row * tileSize
 
-        val cellColor = if (grid(column)(row)) Color.GRAY else Color.WHITE
-        g.drawFilledRectangle(posX, posY, tileSize, tileSize, 0)
-        g.setColor(cellColor)
+        val tileHash = ((posX + posY)*(posX + posY + 1)/2) + posY // https://stackoverflow.com/a/682617
+        val tileTexture =
+          if(grid(column)(row))
+            if(scorchedTiles.contains((column, row)))
+              scorchedGrassTextures(tileHash % scorchedGrassTextures.length)
+            else
+              grassTextures(tileHash % grassTextures.length)
+          else
+            waterTextures(tileHash % waterTextures.length)
+
+        g.draw(tileTexture, posX + tileSize/2, posY - tileSize/2, tileSize, tileSize)
       }
     }
   }
@@ -47,7 +73,6 @@ class CellularAutomata(val width: Int, val height: Int) {
   def iterate(iterations: Int): Unit = {
     val newGrid = Array.ofDim[Boolean](numColumns, numRows)
     for (_ <- 0 until iterations) {
-
       for (x <- 0 until numColumns; y <- 0 until numRows) {
         val count = countAliveNeighbors(x, y) + (if(grid(x)(y)) 1 else 0)
         newGrid(x)(y) = shouldLive(grid(x)(y), count)

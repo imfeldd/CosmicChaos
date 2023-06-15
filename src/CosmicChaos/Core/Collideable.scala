@@ -19,8 +19,10 @@ trait Collideable extends Spatial {
     val enemy: Int        = 1 << 1
     val bullet: Int       = 1 << 2
     val world: Int        = 1 << 3
-    val props: Int        = 1 << 4
-    val interactable: Int = 1 << 5
+    val worldEmpty: Int   = 1 << 4
+    val worldSolid: Int   = 1 << 5
+    val props: Int        = 1 << 6
+    val interactable: Int = 1 << 7
     val all: Int    = Int.MaxValue
   }
 }

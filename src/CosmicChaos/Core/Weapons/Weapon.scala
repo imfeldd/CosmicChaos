@@ -14,7 +14,7 @@ class Weapon(var projectile: Projectile, val isFullAuto: Boolean, var shotsPerSe
   protected val hasAmmoCapacity: Boolean = baseAmmoCapacity != -1
   protected var reloadTimer: Float = 0.0f
 
-  def isMagasineEmpty: Boolean = hasAmmoCapacity && ammoCount == 0
+  def isMagazineEmpty: Boolean = hasAmmoCapacity && ammoCount == 0
   def currentAmmoCount: Int = ammoCount
   def ammoCapacity: Int = (baseAmmoCapacity * holder.stats.attackCapacity).toInt
   def shotFrequency: Float = 1.0f/shotsPerSecond * holder.stats.attackSpeed
@@ -31,7 +31,7 @@ class Weapon(var projectile: Projectile, val isFullAuto: Boolean, var shotsPerSe
 
     // If we've reached the end of the reload timer, load a full mag
     if(reloadTimer <= 0 && ammoCount == 0)
-      ammoCount = (baseAmmoCapacity * holder.stats.attackCapacity).toInt
+      ammoCount = ammoCapacity
 
     if(triggerHeld && canShootThisFrame) {
       shootTimer = shotFrequency
@@ -53,7 +53,6 @@ class Weapon(var projectile: Projectile, val isFullAuto: Boolean, var shotsPerSe
 
   def shootProjectile(): Unit = {
     // TODO: Implement a pool of projectiles to prevent creating a new instance each shot?
-    // TODO: Actual projectile firing shouldn't be done here. The holder entity should take care of that
     val shotInaccuracy =
     if(inaccuracy != 0)
       Random.between(-inaccuracy, inaccuracy) * (1.0f / holder.stats.attackAccuracy)

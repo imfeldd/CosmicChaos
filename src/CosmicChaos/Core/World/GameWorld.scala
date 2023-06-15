@@ -3,7 +3,7 @@ package CosmicChaos.Core.World
 import CosmicChaos.Core.Items.{Item, ItemRarity, RollbackHealthItem}
 import CosmicChaos.Core.World.TeleporterEventState.TeleporterEventState
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, MageBossEntity, ShadowBossEntity, SquidBossEntity}
+import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, MageBossEntity, ShadowBossEntity, SquidBossEntity, DemonBossEntity}
 import CosmicChaos.Entities._
 import ch.hevs.gdx2d.components.audio.MusicPlayer
 import com.badlogic.gdx.math._
@@ -56,7 +56,7 @@ class GameWorld {
             // TODO: Why is the collision box shifted by one tile to the bottom ?
             override val collisionBox: Rectangle = new Rectangle(0, -tileSize, 128, 128)
             position = new Vector3(posX + tileSize/2, posY + tileSize/2, 0)
-            collisionLayer = CollisionLayers.world
+            collisionLayer = CollisionLayers.worldEmpty + CollisionLayers.world
             collisionMask = CollisionLayers.none
           }
 
@@ -172,7 +172,10 @@ class GameWorld {
 
   def startTeleporterEvent(): Unit = {
     val bosses = Array[CreatureEntity](
-      new MageBossEntity
+      new MageBossEntity,
+      new SquidBossEntity,
+      new ShadowBossEntity,
+      new DemonBossEntity,
     )
     // Spawn boss
     val boss = bosses(Random.nextInt(bosses.length))

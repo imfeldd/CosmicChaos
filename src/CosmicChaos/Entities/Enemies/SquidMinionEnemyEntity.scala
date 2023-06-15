@@ -1,6 +1,6 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Entities.CreatureEntity
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
@@ -31,12 +31,17 @@ class SquidMinionEnemyEntity extends CreatureEntity {
     attackSpeed = 1.0f
   )
   override var stats: EntityStats = baseStats
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 1.0f,
+    damagePerLevel = 0.2f,
+    healthRegenPerItem = 0.0f
+  )
 
   private val collBoxSize: Vector2 = new Vector2(20 * spriteScale, 40 * spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2, (-framwH*spriteScale + collBoxSize.y)/2, collBoxSize.x, collBoxSize.y)
 
   collisionLayer = CollisionLayers.enemy
-  collisionMask = CollisionLayers.world + CollisionLayers.props
+  collisionMask = CollisionLayers.worldSolid + CollisionLayers.props
 
   cash = 20
 

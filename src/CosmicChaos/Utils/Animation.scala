@@ -6,9 +6,11 @@ class Animation(val frameTime: Float, val frames: Array[TextureRegion], var loop
 
   val framesCount: Int = frames.length
   var animationCounter: Float = 0.0f
+  var paused: Boolean = false
 
   def update(dt: Float): Unit = {
-    animationCounter += dt
+    if(!paused)
+      animationCounter += dt
   }
 
   def getFrameIndex(t: Float): Int = {
@@ -41,6 +43,14 @@ class Animation(val frameTime: Float, val frames: Array[TextureRegion], var loop
 
   def reset(): Unit = {
     animationCounter = 0.0f
+  }
+
+  def pause(): Unit = {
+    paused = true
+  }
+
+  def resume(): Unit = {
+    paused = false
   }
 
   def isOver(t: Float): Boolean = {

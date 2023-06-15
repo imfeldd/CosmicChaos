@@ -179,7 +179,7 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     whiteFont.draw(spriteBatch, f"lvl. ${player.level.toInt}", 30, 105, 350, 1, false)
 
     // Player ammo counter
-    val ammoStr = if(player.weapon.isMagasineEmpty) "RELOADING" else s"${player.weapon.currentAmmoCount}/${player.weapon.ammoCapacity}"
+    val ammoStr = if(player.weapon.isMagazineEmpty) "RELOADING" else s"${player.weapon.currentAmmoCount}/${player.weapon.ammoCapacity}"
     whiteFont.draw(spriteBatch, ammoStr,  Gdx.input.getX + 24, Gdx.graphics.getHeight - Gdx.input.getY)
 
     // Boss health text

@@ -10,7 +10,7 @@ class NormalChest extends Chest {
   override val textureScale: Float = 2.5f
 
   override var basePrice: Float = 120.0f
-  override val commonChance: Float = 0.8f
-  override val rareChance: Float = 0.15f
-  override val legendaryChance: Float = 0.05f
+  override val commonChance: Float = 0.85f
+  override val rareChance: Float = 0.14f
+  override val legendaryChance: Float = 0.01f
 }
