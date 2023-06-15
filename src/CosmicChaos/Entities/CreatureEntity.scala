@@ -3,7 +3,7 @@ package CosmicChaos.Entities
 import CosmicChaos.Core.Items.Effects.{BeforeDealDamageEffect, DealtDamageEffect, OnGetHitEffect, OnKillEffect}
 import CosmicChaos.Utils.Animation
 import CosmicChaos.Core.Items.Item
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.HUD.GameplayHUD
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
@@ -27,6 +27,7 @@ abstract class CreatureEntity extends Entity {
 
   val baseStats: EntityStats
   var stats: EntityStats
+  var statsScaling: EntityStatsScaling
 
   var cash: Float = 0.0f
   var experience: Float = 0.0f
@@ -70,9 +71,9 @@ abstract class CreatureEntity extends Entity {
 
   protected def computeStats(dt: Float): Unit = {
     val extraLevels = math.floor(level - 1).toFloat
-    stats.maxHealth.baseAddition += extraLevels * 5.0f
-    stats.healthRegenerationAmount.multiplier += 1.0f + extraLevels * 0.33f
-    stats.damage.baseAddition += extraLevels * 0.66f
+    stats.maxHealth.baseAddition += extraLevels * statsScaling.maxHealthPerLevel
+    stats.healthRegenerationAmount.multiplier += 1.0f + extraLevels * statsScaling.healthRegenPerItem
+    stats.damage.baseAddition += extraLevels * statsScaling.damagePerLevel
 
     for (itm <- itemsInventory.toArray) {
       itm.update(dt)

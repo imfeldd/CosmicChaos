@@ -1,6 +1,6 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Core.Weapons.{DemonFireProjectile, Weapon}
 import CosmicChaos.Entities.CreatureEntity
 import CosmicChaos.Screens.GameScreen
@@ -24,6 +24,11 @@ class DemonBossEntity extends CreatureEntity {
     attackSpeed = 1
   )
   override var stats: EntityStats = baseStats
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 65.0f,
+    damagePerLevel = 8.0f,
+    healthRegenPerItem = 0.0f
+  )
 
   override val name: String = "Hellfire Overlord"
   override val nameSubtitle: String = "Inferno's Wrath"

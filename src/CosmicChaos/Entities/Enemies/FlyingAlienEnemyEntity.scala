@@ -1,6 +1,6 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import CosmicChaos.Entities.Entity
 import CosmicChaos.Utils.Animation
@@ -20,6 +20,11 @@ class FlyingAlienEnemyEntity extends GunnerEnemyEntity {
     attackSpeed = 1.0f
   )
   override var stats: EntityStats = baseStats
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 5.0f,
+    damagePerLevel = 0.7f,
+    healthRegenPerItem = 0.0f
+  )
   override val name: String = "Flying Alien"
 
   private val spritesheet: Texture = new Texture("data/images/entities/flyingAlien.png")

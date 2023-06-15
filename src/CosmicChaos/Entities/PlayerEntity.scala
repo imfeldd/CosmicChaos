@@ -1,7 +1,7 @@
 package CosmicChaos.Entities
 
 import CosmicChaos.Core.Items.Item
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import CosmicChaos.Core.{Collideable, Interactable}
 import CosmicChaos.HUD.GameplayHUD
@@ -51,6 +51,11 @@ class PlayerEntity extends CreatureEntity with KeyboardInterface {
     healthRegenAmount = 1.0f
   )
   override var stats: EntityStats = baseStats
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 5.0f,
+    damagePerLevel = 0.6f,
+    healthRegenPerItem = 0.33f
+  )
 
   collisionLayer = CollisionLayers.player
   collisionMask = CollisionLayers.world + CollisionLayers.props + CollisionLayers.interactable

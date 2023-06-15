@@ -1,6 +1,6 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Entities.CreatureEntity
 import CosmicChaos.Entities.Enemies.SquidBossPhase.SquidBossPhase
 import CosmicChaos.Utils.Animation
@@ -26,6 +26,11 @@ class SquidBossEntity extends CreatureEntity {
     damage = 30,
     criticalChance = 0,
     attackSpeed = 1
+  )
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 99.0f,
+    damagePerLevel = 0.4f,
+    healthRegenPerItem = 0.0f
   )
   override var stats: EntityStats = baseStats
 

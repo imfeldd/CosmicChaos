@@ -1,6 +1,6 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Entities.CreatureEntity
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
@@ -22,6 +22,11 @@ class ImmortalSnailEnemyEntity extends CreatureEntity {
     attackSpeed = 1.0f
   )
   override var stats: EntityStats = baseStats
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 0.0f,
+    damagePerLevel = 0.0f,
+    healthRegenPerItem = 0.0f
+  )
   override val collisionBox: Rectangle = new Rectangle(-snailTexture.getWidth*scale/2, -snailTexture.getHeight/2, snailTexture.getWidth*scale, snailTexture.getHeight*scale)
 
   collisionLayer = CollisionLayers.enemy

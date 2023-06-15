@@ -1,5 +1,5 @@
 package CosmicChaos.Entities.Enemies
-import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
 import CosmicChaos.Core.Weapons.{Projectile, Weapon}
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
@@ -20,6 +20,11 @@ class FirstBossEntity extends GunnerEnemyEntity {
     attackSpeed = 0
   )
   override var stats: EntityStats = baseStats
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 15.0f,
+    damagePerLevel = 3.0f,
+    healthRegenPerItem = 0.0f
+  )
   override val name: String = "MAGIC MAGE"
 
   private val (frameW, frameH) = (83, 64)
