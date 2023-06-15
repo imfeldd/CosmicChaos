@@ -35,7 +35,11 @@ class CellularAutomata(val width: Int, val height: Int) {
     // Initialize the grid randomly
     for (row <- 0 until numRows) {
       for (column <- 0 until numColumns) {
-        grid(column)(row) = random.nextFloat() <= probabilityWall
+        grid(column)(row) =
+          if(row == 0 || column == 0 || row == numRows - 1 || column == numColumns - 1)
+            false
+          else
+            random.nextFloat() <= probabilityWall
       }
     }
     iterate(3)
