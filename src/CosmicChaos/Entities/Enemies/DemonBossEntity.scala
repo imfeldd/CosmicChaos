@@ -1,6 +1,7 @@
 package CosmicChaos.Entities.Enemies
 
 import CosmicChaos.Core.Stats.EntityStats
+import CosmicChaos.Core.Weapons.{DemonFireProjectile, Weapon}
 import CosmicChaos.Entities.CreatureEntity
 import CosmicChaos.Screens.GameScreen
 import CosmicChaos.Utils.Animation
@@ -26,6 +27,16 @@ class DemonBossEntity extends CreatureEntity {
 
   override val name: String = "Hellfire Overlord"
   override val nameSubtitle: String = "Inferno's Wrath"
+
+  private val weapon: Weapon = new Weapon(
+    new DemonFireProjectile(0.33f, this),
+    isFullAuto = true,
+    shotsPerSecond = 2,
+    holder =  this,
+    inaccuracy = 1.5f,
+    baseAmmoCapacity = 1,
+    reloadTime = 5.0f
+  ) {}
 
   private val spriteScale = 3.5f
 
@@ -94,8 +105,9 @@ class DemonBossEntity extends CreatureEntity {
       // Move towards the player
       val (a, b) = (parentGameWorld.playerEntity.position, position)
       val vecToPlayer = new Vector2(a.x - b.x, a.y - b.y)
-      aimVector = vecToPlayer.nor()
-      position.add(aimVector.x * stats.maxSpeed * dt, aimVector.y * stats.maxSpeed * dt, 0)
+      aimVector = vecToPlayer
+      val norm = new Vector2(aimVector.x, aimVector.y).nor()
+      position.add(norm.x * stats.maxSpeed * dt, norm.y * stats.maxSpeed * dt, 0)
 
       // Shake the screen on foot stomping frames
       if (walkAnimation.getCurrentFrameIndex == 1 || walkAnimation.getCurrentFrameIndex == 6) {
@@ -108,6 +120,8 @@ class DemonBossEntity extends CreatureEntity {
         phaseTimer = 0
         walkAnimation.reset()
       }
+
+      weapon.update(triggerHeld = phaseTimer >= 1.0f, dt)
     }
     else {
       if(attackAnimation.getCurrentFrameIndex == 6) {
@@ -125,8 +139,8 @@ class DemonBossEntity extends CreatureEntity {
         if (position.dst(new Vector3(attackPoint.x, attackPoint.y, 0)) > 250) {
           val (a, b) = (attackPoint, position)
           val vecToPlayer = new Vector2(a.x - b.x, a.y - b.y)
-          aimVector = vecToPlayer.nor()
-          position.add(aimVector.x * stats.maxSpeed * 150 * dt, aimVector.y * stats.maxSpeed * 150 * dt, 0)
+          aimVector = vecToPlayer
+          position.add(aimVector.nor().x * stats.maxSpeed * 150 * dt, aimVector.nor().y * stats.maxSpeed * 150 * dt, 0)
           attackAnimation.pause()
         }
         else {
@@ -138,7 +152,7 @@ class DemonBossEntity extends CreatureEntity {
 
         // Check if we should inflict damage to the player
         // TODO: Should also check the angle between the player and the aimVector. Can't figure out the vector magic tho
-        if (position.dst(parentGameWorld.playerEntity.position) < 400 && attackTimer <= 0.0f) {
+        if (attackPoint.dst(parentGameWorld.playerEntity.position.x, parentGameWorld.playerEntity.position.y) < 200 && attackTimer <= 0.0f) {
           dealDamageTo(stats.damage, parentGameWorld.playerEntity)
           attackTimer = 2.0f
         }
