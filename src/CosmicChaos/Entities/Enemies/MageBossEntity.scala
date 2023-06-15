@@ -1,7 +1,7 @@
 package CosmicChaos.Entities.Enemies
 
-import CosmicChaos.Core.Stats.EntityStats
-import CosmicChaos.Core.Weapons.{MagicProjectile, ShadowProjectile, MagicGun, Weapon}
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
+import CosmicChaos.Core.Weapons.{MagicGun, MagicProjectile, ShadowProjectile, Weapon}
 import CosmicChaos.Entities.CreatureEntity
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
@@ -23,6 +23,11 @@ class MageBossEntity extends CreatureEntity{
     damage = 30,
     criticalChance = 0,
     attackSpeed = 1
+  )
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 65.0f,
+    damagePerLevel = 8.0f,
+    healthRegenPerItem = 0.0f
   )
 
   override var stats: EntityStats = baseStats

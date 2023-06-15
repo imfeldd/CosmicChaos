@@ -2,7 +2,7 @@ package CosmicChaos.Core.Items.Debuff
 
 import CosmicChaos.Core.Items.{Item, ItemRarity}
 import CosmicChaos.Core.Items.ItemRarity.ItemRarity
-import CosmicChaos.Core.Stats.{EntityStats, PlayerStats}
+import CosmicChaos.Core.Stats.{EntityStats}
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap

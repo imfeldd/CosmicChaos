@@ -2,8 +2,8 @@ package CosmicChaos.Entities.Enemies
 
 import CosmicChaos.Core.Items.Debuff.FlipMovement
 import CosmicChaos.Core.{Collideable, GameObject, Renderable, Spatial}
-import CosmicChaos.Core.Stats.EntityStats
-import CosmicChaos.Core.Weapons.{MagicProjectile, MagicGun}
+import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
+import CosmicChaos.Core.Weapons.{MagicGun, MagicProjectile}
 import CosmicChaos.Entities.CreatureEntity
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
@@ -25,6 +25,11 @@ class FakeMageBossEntity(parent: MageBossEntity, appearDelay: Float = 0.0f) exte
     damage = 5,
     criticalChance = 0,
     attackSpeed = 1
+  )
+  override var statsScaling: EntityStatsScaling = EntityStatsScaling(
+    maxHealthPerLevel = 65.0f,
+    damagePerLevel = 8.0f,
+    healthRegenPerItem = 0.0f
   )
 
   override var stats: EntityStats = baseStats
