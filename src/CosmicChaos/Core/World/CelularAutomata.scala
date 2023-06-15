@@ -1,8 +1,8 @@
 package CosmicChaos.Core.World
 
 import ch.hevs.gdx2d.lib.GdxGraphics
-import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.math.Vector2
 
 import scala.collection.mutable.ArrayBuffer
@@ -28,9 +28,9 @@ class CellularAutomata(val width: Int, val height: Int) {
 
 
   def worldCreation() = {
-    //size world
-
     val random = new Random()
+
+    scorchedTiles.clear()
 
     // Initialize the grid randomly
     for (row <- 0 until numRows) {
@@ -56,12 +56,12 @@ class CellularAutomata(val width: Int, val height: Int) {
 
         val tileHash = ((posX + posY)*(posX + posY + 1)/2) + posY // https://stackoverflow.com/a/682617
         val tileTexture =
-          if(grid(column)(row)) {
+          if(grid(column)(row))
             if(scorchedTiles.contains((column, row)))
               scorchedGrassTextures(tileHash % scorchedGrassTextures.length)
             else
               grassTextures(tileHash % grassTextures.length)
-          } else
+          else
             waterTextures(tileHash % waterTextures.length)
 
         g.draw(tileTexture, posX + tileSize/2, posY - tileSize/2, tileSize, tileSize)
