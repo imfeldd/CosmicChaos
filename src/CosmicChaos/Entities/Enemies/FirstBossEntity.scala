@@ -20,7 +20,8 @@ class FirstBossEntity extends GunnerEnemyEntity {
     attackSpeed = 0
   )
   override var stats: EntityStats = baseStats
-  override val name: String = "MAGIC MAGE"
+  override val name: String = "Magic Mage"
+  override val nameSubtitle: String = "Something FUnny"
 
   private val (frameW, frameH) = (83, 64)
   override val collisionBox: Rectangle = new Rectangle(-32,-32,64,64)

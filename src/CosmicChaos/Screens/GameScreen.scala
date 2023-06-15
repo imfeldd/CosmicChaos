@@ -2,6 +2,7 @@ package CosmicChaos.Screens
 
 import CosmicChaos.Core.World.GameWorld
 import CosmicChaos.Core.{Collideable, Renderable, Spatial}
+import CosmicChaos.Entities.Enemies.{FakeMageBossEntity, MageBossEntity}
 import CosmicChaos.Entities._
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
@@ -9,7 +10,7 @@ import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.math.{Rectangle, Vector3}
 
 import scala.util.Random
 

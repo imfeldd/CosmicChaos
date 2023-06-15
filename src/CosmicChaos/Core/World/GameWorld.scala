@@ -3,7 +3,7 @@ package CosmicChaos.Core.World
 import CosmicChaos.Core.Items.{Item, ItemRarity, RollbackHealthItem}
 import CosmicChaos.Core.World.TeleporterEventState.TeleporterEventState
 import CosmicChaos.Core.{Collideable, GameObject, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, ShadowBossEntity, SquidBossEntity}
+import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, MageBossEntity, ShadowBossEntity, SquidBossEntity}
 import CosmicChaos.Entities._
 import ch.hevs.gdx2d.components.audio.MusicPlayer
 import com.badlogic.gdx.math._
@@ -172,8 +172,7 @@ class GameWorld {
 
   def startTeleporterEvent(): Unit = {
     val bosses = Array[CreatureEntity](
-      new SquidBossEntity,
-      new ShadowBossEntity
+      new MageBossEntity
     )
     // Spawn boss
     val boss = bosses(Random.nextInt(bosses.length))
