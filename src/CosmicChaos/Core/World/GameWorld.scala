@@ -17,7 +17,6 @@ object TeleporterEventState extends Enumeration {
 }
 
 class GameWorld {
-
   val gameObjects: ArrayBuffer[GameObject] = new ArrayBuffer[GameObject]
   val Music = new MusicPlayer("data/music/mainMusic.mp3")
   Music.setVolume(0.5f)
@@ -31,6 +30,8 @@ class GameWorld {
 
   var monsterSpawnTimer: Float = 0.0f
   var monsterSpawnBudget: Float = 0.0f
+
+  var difficultyScale: Float = 1.0f
 
   var cellularAutomata = new CellularAutomata(width = 6000, height = 6000)
 
@@ -96,7 +97,9 @@ class GameWorld {
       currentBoss = None
     }
 
-    monsterSpawnBudget += 30.0f * dt * (if(isTeleporterEventActive) 2.0f else 1.0f)
+    difficultyScale += dt/60.0f
+
+    monsterSpawnBudget += 30.0f * dt * (if(isTeleporterEventActive) 1.66f else 1.0f)
     monsterSpawnTimer -= dt
 
     // Disable spawning monsters once the teleporter has been fully charged
@@ -110,6 +113,7 @@ class GameWorld {
       monsterSpawnTimer = 10.0f
     }
 
+    // Teleporter is fully charged and boss has been defeated
     if(teleporterEventState == TeleporterEventState.charging && teleporter.charged && currentBoss.isEmpty){
       teleporterEventState = TeleporterEventState.charged
 
@@ -163,10 +167,11 @@ class GameWorld {
         } while (dist >= 900.0f && dist <= 400.0f)
 
         monsterInstance.position = new Vector3(pos.x, pos.y, 0)
+        monsterInstance.setLevel(difficultyScale * 4)
         monsterSpawnBudget -= cost
+        println(s"Spawned an enemy at level ${monsterInstance.level}")
         addGameObject(monsterInstance)
       }
-
     }
   }
 
@@ -176,11 +181,12 @@ class GameWorld {
       new ShadowBossEntity,
       new DemonBossEntity,
     )
+
     // Spawn boss
     val boss = bosses(Random.nextInt(bosses.length))
     boss.addItemToInventory(new RollbackHealthItem, 1)
 
-    val newPos: Vector2 = new Vector2(1, 1).rotate(Random.between(0, 360)).nor().scl(Random.between(50, 200))
+    val newPos: Vector2 = new Vector2(1, 1).rotate(Random.between(0, 360)).nor().scl(Random.between(250, 300))
     boss.position = new Vector3(playerEntity.position.x, playerEntity.position.y, 0).add(new Vector3(newPos.x, newPos.y, 0))
 
     currentBoss = Some(boss)

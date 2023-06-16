@@ -44,6 +44,8 @@ class Teleporter extends Warp with Interactable {
   override def onUpdate(dt: Float): Unit = {
     if(charging && charge < chargeTime)
       charge += dt
+
+    isInteractable = !parentGameWorld.isTeleporterEventActive
   }
 
   override def interact(player: PlayerEntity): Unit = {
@@ -59,9 +61,6 @@ class Teleporter extends Warp with Interactable {
   }
 
   override def getInteractText: String = {
-    if(parentGameWorld.isTeleporterEventActive)
-      return ""
-
     if(charged)
       "Teleport..."
     else

@@ -19,13 +19,9 @@ class GameScreen extends RenderingScreen {
   var gameplayHud: GameplayHUD = _
   var deathHud: DeathHUD = _
   var gameTimer: Float = 0.0f
-  val seed = 1234L
   val crosshair = new Pixmap(Gdx.files.internal("data/images/crosshair.png"))
 
   override def onInit(): Unit = {
-
-
-
     Gdx.graphics.setCursor(Gdx.graphics.newCursor(crosshair, crosshair.getWidth/2, crosshair.getHeight/2))
 
     gameWorld.initializeWorld()
@@ -52,11 +48,7 @@ class GameScreen extends RenderingScreen {
     doCameraShake(g)
     gameWorld.cellularAutomata.draw(g)
 
-
     gameWorld.update(Gdx.graphics.getDeltaTime)
-
-    g.getCamera.zoom = 1
-
 
     gameTimer += Gdx.graphics.getDeltaTime
 
