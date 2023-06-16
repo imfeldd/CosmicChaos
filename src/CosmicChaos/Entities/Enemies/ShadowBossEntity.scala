@@ -69,7 +69,6 @@ class ShadowBossEntity extends CreatureEntity {
     if (appearAnimation.isCurrentlyOver) {
       if (appearAnimation.reverse) {
         // Descending animation done, start teleporting
-
         teleportingTimer = 3.0f
 
         // Teleport somewhere around the player

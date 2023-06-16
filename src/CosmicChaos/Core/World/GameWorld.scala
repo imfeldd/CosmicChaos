@@ -47,6 +47,8 @@ class GameWorld {
     cellularAutomata.worldCreation()
 
     val tileSize = cellularAutomata.tileSize
+
+    // Generate collision boxes for walls
     for (row <- 0 until cellularAutomata.numRows) {
       for (column <- 0 until cellularAutomata.numColumns) {
         if(!cellularAutomata.grid(column)(row) &&                 // only wall tiles
@@ -68,14 +70,17 @@ class GameWorld {
       }
     }
 
+    // Spawn the player in a clear zone
     val newPlayerPos = cellularAutomata.getRandomClearPosition(2)
     playerEntity.position = new Vector3(newPlayerPos.x, newPlayerPos.y, 0)
 
+    // Spawn the teleporter in a clear zone
     val newTelePos = cellularAutomata.getRandomClearPosition(4)
     val tp = new Teleporter
     tp.position = new Vector3(newTelePos.x, newTelePos.y, 0)
     addGameObject(tp)
 
+    // Spawn chests over the level
     var chestBudget: Float = 20000.0f
     while(chestBudget > 0.0f) {
       val roll: Float = Random.nextFloat()
@@ -95,6 +100,7 @@ class GameWorld {
   }
 
   def update(dt: Float): Unit = {
+    // Clear the current boss if it just died
     if (currentBoss.isDefined && currentBoss.get.isDead) {
       currentBoss = None
     }
@@ -135,8 +141,8 @@ class GameWorld {
   def draw(g: GdxGraphics): Unit = {
     cellularAutomata.draw(g)
 
-    val renderablesWithSpatial = gameObjects.filter(_.isInstanceOf[Renderable with Spatial]).map(_.asInstanceOf[Renderable with Spatial])
-    for (renderable <- renderablesWithSpatial.sortBy(x => (x.renderLayer, -x.position.y))) { // Sort by render layer descending, then by y pos ascending
+    val renderables = gameObjects.filter(_.isInstanceOf[Renderable with Spatial]).map(_.asInstanceOf[Renderable with Spatial])
+    for (renderable <- renderables.sortBy(x => (x.renderLayer, -x.position.y))) { // Sort by render layer descending, then by y pos ascending
       renderable.onGraphicRender(g)
     }
   }

@@ -1,6 +1,5 @@
 package CosmicChaos.Entities
 import CosmicChaos.Core.Collideable
-import CosmicChaos.Entities.Enemies.DemonBossEntity
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Texture
@@ -35,7 +34,7 @@ class Fire(damage: Float, radius: Float, parent: CreatureEntity) extends Entity 
 
   override def onCollideWith(other: Collideable): Unit = {
     other match {
-      case _: DemonBossEntity =>
+      case c: CreatureEntity if c == parent =>  // Don't collide with whoever threw that fire
       case c: CreatureEntity =>
         if(hitTimer <= 0.0f) {
           parent.dealDamageTo(damage, c)

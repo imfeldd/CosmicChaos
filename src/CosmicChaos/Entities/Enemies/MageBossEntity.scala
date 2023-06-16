@@ -1,7 +1,7 @@
 package CosmicChaos.Entities.Enemies
 
 import CosmicChaos.Core.Stats.{EntityStats, EntityStatsScaling}
-import CosmicChaos.Core.Weapons.{MagicGun, MagicProjectile, ShadowProjectile, Weapon}
+import CosmicChaos.Core.Weapons.{MagicGun, MagicProjectile}
 import CosmicChaos.Entities.CreatureEntity
 import CosmicChaos.Utils.Animation
 import ch.hevs.gdx2d.lib.GdxGraphics
@@ -32,7 +32,7 @@ class MageBossEntity extends CreatureEntity{
 
   override var stats: EntityStats = baseStats
   override val name: String = "Cosmic Mage"
-  override val nameSubtitle: String = "Ruler of this world"
+  override val nameSubtitle: String = "Ruler of this World"
 
   collisionLayer = CollisionLayers.enemy
   collisionMask = CollisionLayers.none
@@ -61,11 +61,13 @@ class MageBossEntity extends CreatureEntity{
 
   private val collBoxSize: Vector2 = new Vector2(50 * spriteScale, 70 * spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-firstFrameW * spriteScale + collBoxSize.x) / 2, (-firstFrameH * spriteScale + collBoxSize.y) / 2, collBoxSize.x, collBoxSize.y)
+
+  private var state: Int = 1
   private var phaseTimer: Float = 0.0f
-  private var floatTimer: Float = 0.0f
-  private var damageTakenThisPhase: Float = 0.0f
   val newPos: Vector2 = new Vector2(1, 1).rotate(Random.between(0, 360)).nor().scl(Random.between(500, 600))
   var limit = 0
+
+
   override def onEnterGameWorld(): Unit = {
     setLevel(30)
     super.onEnterGameWorld()
@@ -81,15 +83,16 @@ class MageBossEntity extends CreatureEntity{
     aimVector = vecToPlayer
     teleportingTimer -= dt
 
-
     if (currentHealth > baseStats.maxHealth * 0.8) {
-      adjWeapon.mageState = 1
-    } else if (currentHealth < baseStats.maxHealth * 0.8 && currentHealth > baseStats.maxHealth * 0.5) {
-      adjWeapon.mageState = 2
+      state = 1
+    }
+    else if (currentHealth < baseStats.maxHealth * 0.8 && currentHealth > baseStats.maxHealth * 0.5) {
+      state = 2
     }
     else {
-      adjWeapon.mageState = 3
+      state = 3
 
+      // Spawn fake mages
       if ( limit < 2 ) {
         val fakeMage = new FakeMageBossEntity(this, appearDelay = Random.between(8f, 10f))
         val aroundPos: Vector2 = new Vector2(1, 1).rotate(Random.between(0, 360)).nor().scl(Random.between(120, 900))
@@ -98,35 +101,34 @@ class MageBossEntity extends CreatureEntity{
         parentGameWorld.addGameObject(fakeMage)
         limit +=1
       }
-
     }
+
+    adjWeapon.mageState = state
 
     if (vecToPlayer.len() > 800 && teleportingTimer <= 0.0f) {
       // Move towards the player if we're too far away
       position = new Vector3(parentGameWorld.playerEntity.position.x, parentGameWorld.playerEntity.position.y, 0).add(new Vector3(newPos.x, newPos.y, 0))
       teleportingTimer = 3.0f
     }
-
-
   }
+
   override def onGraphicRender(g: GdxGraphics): Unit = {
     if (!isDead) {
-
-      if (currentHealth > baseStats.maxHealth * 0.8) {
+      if (state == 1) {
         firstAnimation.update(Gdx.graphics.getDeltaTime)
         drawSprite(firstAnimation.getCurrentFrame, g, spriteScale)
-      } else if (currentHealth < baseStats.maxHealth * 0.8 && currentHealth > baseStats.maxHealth * 0.5) {
+      }
+      else if (state == 2) {
         secondAnimation.update(Gdx.graphics.getDeltaTime)
         drawSprite(secondAnimation.getCurrentFrame, g, spriteScale)
       }
       else {
         thirdAnimation.update(Gdx.graphics.getDeltaTime)
         drawSprite(thirdAnimation.getCurrentFrame, g, spriteScale)
-
-
       }
     }
-    else drawDeathExplosionAnimation(g)
+    else
+      drawDeathExplosionAnimation(g)
   }
 
 }

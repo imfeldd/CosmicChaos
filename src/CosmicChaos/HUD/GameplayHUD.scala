@@ -109,6 +109,7 @@ class GameplayHUD(player: PlayerEntity, gameScreen: GameScreen) {
     shapeRenderer.end()
     spriteBatch.begin()
 
+    // Player's inventory
     val itemsPerCol = 8
     val iconSize = 64
     val iconMargin = 16

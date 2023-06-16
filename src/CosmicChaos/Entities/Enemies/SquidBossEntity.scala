@@ -83,6 +83,8 @@ class SquidBossEntity extends CreatureEntity {
       minionSpawnTimer -= dt
       // If we're in the minion-spawning phase, we're invulnerable
       collisionLayer = CollisionLayers.none
+
+      // If 10 seconds have passed or all the minions are dead, go to the defenseless phase
       if(phaseTimer > 10.0f && !spawnedMinions.exists(!_.isDead)) {
         currentPhase = SquidBossPhase.defenseless
         damageTakenThisPhase = 0
@@ -90,6 +92,7 @@ class SquidBossEntity extends CreatureEntity {
         spawnedMinions.clear()
       }
       else {
+        // Spawn minions if we haven't spawned one too recently or there are too many
         if(minionSpawnTimer <= 0.0f && spawnedMinions.length < 10) {
           val minion = new SquidMinionEnemyEntity
           minion.position = new Vector3(position.x, position.y, 0)
@@ -101,6 +104,8 @@ class SquidBossEntity extends CreatureEntity {
     }
     else {
       collisionLayer = CollisionLayers.enemy
+
+      // Go to the minion spawning phase if 10 seconds have passed or we've taken too much damage
       if(phaseTimer >= 10.0f || damageTakenThisPhase > stats.maxHealth/3.0f) {
         currentPhase = SquidBossPhase.spawnMinion
         damageTakenThisPhase = 0
@@ -115,12 +120,14 @@ class SquidBossEntity extends CreatureEntity {
       return
     }
 
+    // Animate up and down to make it look like we're floating
     floatTimer += Gdx.graphics.getDeltaTime
     position.y += math.sin(floatTimer*3.0f).toFloat*0.5f
 
     animation.update(Gdx.graphics.getDeltaTime)
     drawSprite(animation.getCurrentFrame, g, spriteScale)
 
+    // Draw the shield during the minion spawning phase
     if(currentPhase == SquidBossPhase.spawnMinion) {
       shieldAnimation.update(Gdx.graphics.getDeltaTime)
       drawSprite(shieldAnimation.getCurrentFrame, g, spriteScale)

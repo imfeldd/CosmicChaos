@@ -29,6 +29,7 @@ class DemonFireProjectile(damage: Float, holder: CreatureEntity) extends Rocket(
   }
 
   override def explode(): Unit = {
+    // Spawn the explosion
     val explosion = new Explosion(damage * parent.stats.damage, 96, parent)
     explosion.position = new Vector3(position.x, position.y, 0)
     parentGameWorld.addGameObject(explosion)

@@ -25,7 +25,6 @@ class GameScreen extends RenderingScreen {
     gameWorld.initializeWorld()
     gameplayHud = new GameplayHUD(gameWorld.playerEntity, this)
     deathHud = new DeathHUD(gameWorld.playerEntity)
-
   }
 
   override def onKeyDown(keycode: Int): Unit = {
@@ -43,8 +42,8 @@ class GameScreen extends RenderingScreen {
   override def onGraphicRender(g: GdxGraphics): Unit = {
     g.begin()
     g.clear()
-    doCameraShake(g)
 
+    doCameraShake(g)
 
     gameTimer += Gdx.graphics.getDeltaTime
 

@@ -41,7 +41,7 @@ class DemonBossEntity extends CreatureEntity {
     inaccuracy = 1.5f,
     baseAmmoCapacity = 1,
     reloadTime = 5.0f
-  ) {}
+  )
 
   private val spriteScale = 3.5f
 
@@ -65,7 +65,6 @@ class DemonBossEntity extends CreatureEntity {
   private val collBoxSize: Vector2 = new Vector2(80 * spriteScale, 100 * spriteScale)
   override val collisionBox: Rectangle = new Rectangle((-frameW*spriteScale + collBoxSize.x)/2 + 45*spriteScale, (-framwH*spriteScale + collBoxSize.y)/2 + 20*spriteScale, collBoxSize.x, collBoxSize.y)
 
-  private var damageTakenThisPhase: Float = 0.0f
   private var ringOfFireRadius: Float = 0.0f
   private val scorchRadius = 1024
   private var lifetimeTimer: Float = 0.0f
@@ -182,6 +181,7 @@ class DemonBossEntity extends CreatureEntity {
       return
     }
 
+    // Only appear once the arena has fully appeared
     if(ringOfFireRadius < scorchRadius)
       return
 
@@ -208,6 +208,5 @@ class DemonBossEntity extends CreatureEntity {
 
   override def onReceiveDamage(amount: Float, source: CreatureEntity, wasCrit: Boolean): Unit = {
     super.onReceiveDamage(amount, source, wasCrit)
-    damageTakenThisPhase += amount
   }
 }

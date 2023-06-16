@@ -51,7 +51,8 @@ class MagicProjectile(damage: Float, holder: CreatureEntity) extends Projectile(
     if (mageState == 1) {
       projectileAnimation.update(Gdx.graphics.getDeltaTime)
       g.draw(projectileAnimation.getCurrentFrame, position.x, position.y, 100, 100)
-    } else {
+    }
+    else {
       projectileBlueFireAnimation.update(Gdx.graphics.getDeltaTime)
       g.draw(projectileBlueFireAnimation.getCurrentFrame, position.x, position.y, 100, 100)
     }

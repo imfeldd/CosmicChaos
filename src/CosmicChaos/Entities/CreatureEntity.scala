@@ -82,6 +82,7 @@ abstract class CreatureEntity extends Entity {
   }
 
   def heal(amount: Float): Unit = {
+    // Skip states where it doesn't make sense to heal
     if(isDead || currentHealth >= stats.maxHealth.value - Float.MinPositiveValue || amount <= Float.MinPositiveValue)
       return
 
