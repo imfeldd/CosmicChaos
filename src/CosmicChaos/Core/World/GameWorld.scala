@@ -2,10 +2,12 @@ package CosmicChaos.Core.World
 
 import CosmicChaos.Core.Items.{Item, ItemRarity, RollbackHealthItem}
 import CosmicChaos.Core.World.TeleporterEventState.TeleporterEventState
-import CosmicChaos.Core.{Collideable, GameObject, Spatial}
-import CosmicChaos.Entities.Enemies.{FlyingAlienEnemyEntity, MageBossEntity, ShadowBossEntity, SquidBossEntity, DemonBossEntity}
+import CosmicChaos.Core.{Collideable, GameObject, Renderable, Spatial}
+import CosmicChaos.Entities.Enemies._
 import CosmicChaos.Entities._
 import ch.hevs.gdx2d.components.audio.MusicPlayer
+import ch.hevs.gdx2d.lib.GdxGraphics
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math._
 
 import scala.collection.mutable.ArrayBuffer
@@ -108,6 +110,7 @@ class GameWorld {
       monsterSpawnBudget = 0
     }
 
+    // Try to spawn a group of monsters if we're allowed to
     if(monsterSpawnTimer <= 0.0f) {
       trySpawnMonsters()
       monsterSpawnTimer = 10.0f
@@ -119,6 +122,41 @@ class GameWorld {
 
       // Give a random rare item to the player
       playerEntity.addItemToInventory(Item.getRandomItemOfRarity(ItemRarity.rare))
+    }
+
+    checkCollisions(dt)
+
+    // Update all of our GameObjects
+    for (gameObject <- gameObjects.toArray) {
+      gameObject.onUpdate(Gdx.graphics.getDeltaTime)
+    }
+  }
+
+  def draw(g: GdxGraphics): Unit = {
+    cellularAutomata.draw(g)
+
+    val renderablesWithSpatial = gameObjects.filter(_.isInstanceOf[Renderable with Spatial]).map(_.asInstanceOf[Renderable with Spatial])
+    for (renderable <- renderablesWithSpatial.sortBy(x => (x.renderLayer, -x.position.y))) { // Sort by render layer descending, then by y pos ascending
+      renderable.onGraphicRender(g)
+    }
+  }
+
+  def checkCollisions(dt: Float): Unit = {
+    val collideables = gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])
+    for(firstCollidableIndex <- collideables.indices) {
+      for(secondCollidableIndex <- firstCollidableIndex + 1 until collideables.length) {
+        val (c1, c2) = (collideables(firstCollidableIndex), collideables(secondCollidableIndex))
+        val (cb1, cb2) = (c1.collisionBox, c2.collisionBox)
+        val (rec1, rec2) = (new Rectangle(cb1.x, cb1.y, cb1.getWidth, cb1.getWidth), new Rectangle(cb2.x, cb2.y, cb2.getWidth, cb2.getHeight))
+        if(rec1.setPosition(rec1.x + c1.position.x, rec1.y + c1.position.y).overlaps(rec2.setPosition(rec2.x + c2.position.x, rec2.y + c2.position.y))) {
+          if(c1.shouldCollideWith(c2)) {
+            c1.onCollideWith(c2)
+          }
+          if(c2.shouldCollideWith(c1)) {
+            c2.onCollideWith(c1)
+          }
+        }
+      }
     }
   }
 
@@ -169,7 +207,6 @@ class GameWorld {
         monsterInstance.position = new Vector3(pos.x, pos.y, 0)
         monsterInstance.setLevel(difficultyScale / 4.0f)
         monsterSpawnBudget -= cost
-        println(s"Spawned an enemy at level ${monsterInstance.level}")
         addGameObject(monsterInstance)
       }
     }

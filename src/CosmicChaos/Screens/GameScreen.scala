@@ -1,8 +1,6 @@
 package CosmicChaos.Screens
 
 import CosmicChaos.Core.World.GameWorld
-import CosmicChaos.Core.{Collideable, Renderable, Spatial}
-import CosmicChaos.Entities.Enemies.{FakeMageBossEntity, MageBossEntity}
 import CosmicChaos.Entities._
 import CosmicChaos.HUD.{DeathHUD, GameplayHUD}
 import CosmicChaos.Screens.GameScreen.cameraShake
@@ -10,7 +8,6 @@ import ch.hevs.gdx2d.components.screen_management.RenderingScreen
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.math.{Rectangle, Vector3}
 
 import scala.util.Random
 
@@ -47,38 +44,13 @@ class GameScreen extends RenderingScreen {
     g.begin()
     g.clear()
     doCameraShake(g)
-    gameWorld.cellularAutomata.draw(g)
 
-    gameWorld.update(Gdx.graphics.getDeltaTime)
 
     gameTimer += Gdx.graphics.getDeltaTime
 
-    // TODO: Move all this shit to GameWorld
-    val collideables = gameWorld.gameObjects.filter(_.isInstanceOf[Collideable with Spatial]).map(_.asInstanceOf[Collideable with Spatial])
-    for(firstCollidableIndex <- collideables.indices) {
-      for(secondCollidableIndex <- firstCollidableIndex + 1 until collideables.length) {
-        val (c1, c2) = (collideables(firstCollidableIndex), collideables(secondCollidableIndex))
-        val (cb1, cb2) = (c1.collisionBox, c2.collisionBox)
-        val (rec1, rec2) = (new Rectangle(cb1.x, cb1.y, cb1.getWidth, cb1.getWidth), new Rectangle(cb2.x, cb2.y, cb2.getWidth, cb2.getHeight))
-        if(rec1.setPosition(rec1.x + c1.position.x, rec1.y + c1.position.y).overlaps(rec2.setPosition(rec2.x + c2.position.x, rec2.y + c2.position.y))) {
-          if(c1.shouldCollideWith(c2)) {
-            c1.onCollideWith(c2)
-          }
-          if(c2.shouldCollideWith(c1)) {
-            c2.onCollideWith(c1)
-          }
-        }
-      }
-    }
+    gameWorld.update(Gdx.graphics.getDeltaTime)
 
-    for(gameObject <- gameWorld.gameObjects.toArray) {
-      gameObject.onUpdate(Gdx.graphics.getDeltaTime)
-    }
-
-    val renderablesWithSpatial = gameWorld.gameObjects.filter(_.isInstanceOf[Renderable with Spatial]).map(_.asInstanceOf[Renderable with Spatial])
-    for (renderable <- renderablesWithSpatial.sortBy(x => (x.renderLayer, -x.position.y))) {  // Sort by render layer descending, then by y pos ascending
-      renderable.onGraphicRender(g)
-    }
+    gameWorld.draw(g)
 
     g.end()
 
