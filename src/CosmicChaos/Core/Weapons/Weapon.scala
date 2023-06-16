@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2
 
 import scala.util.Random
 
-class Weapon(var projectile: Projectile, val isFullAuto: Boolean, val shotsPerSecond: Int, val holder: CreatureEntity, val baseAmmoCapacity: Int = -1, val reloadTime: Float = 0.0f, val inaccuracy: Float = 0.0f) {
+class Weapon(var projectile: Projectile, val isFullAuto: Boolean, var shotsPerSecond: Int, val holder: CreatureEntity, val baseAmmoCapacity: Int = -1, val reloadTime: Float = 0.0f, val inaccuracy: Float = 0.0f) {
 
   private var shootTimer: Float = 0
   private var triggerHeldLastFrame: Boolean = false
