@@ -167,7 +167,7 @@ class GameWorld {
         } while (dist >= 900.0f && dist <= 400.0f)
 
         monsterInstance.position = new Vector3(pos.x, pos.y, 0)
-        monsterInstance.setLevel(difficultyScale * 4)
+        monsterInstance.setLevel(difficultyScale / 4.0f)
         monsterSpawnBudget -= cost
         println(s"Spawned an enemy at level ${monsterInstance.level}")
         addGameObject(monsterInstance)
